@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Free Credit Analysis & 90-Day Game Plan — Rodrigo DeOliveira Mortgage</title>
+<meta name="description" content="Free credit analysis and personalized 90-day game plan for future home buyers, homeowners considering a refi/HELOC, and investors. Bilingual EN/PT. Rodrigo DeOliveira, Ideal Lending LLC." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0f18'/%3E%3Ctext x='50' y='66' text-anchor='middle' font-size='52' font-weight='700' fill='%23f0c85a' font-family='serif'%3ER%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<!-- UserWay accessibility widget (matches ideallending.net account) — ADA/WCAG 2.1 conformance assist -->
+<script src="https://cdn.userway.org/widget.js" data-account="IUuYGCGogX"></script>
+
+<script>
+const CONFIG = {
+  loName: "Rodrigo DeOliveira",
+  loTitle: "Mortgage Loan Officer",
+  loPhone: "(561) 613-1935",
+  loPhoneTel: "+15616131935",
+  loEmail: "rodrigo@ideallending.net",
+  nmls: "NMLS #1435896",
+  company: "Ideal Lending LLC",
+  companyNmls: "NMLS #2471779",
+  companyStateLicense: "FL Lic. MLD2414",
+  companyAddress: "5589 Okeechobee Blvd STE 101, West Palm Beach, FL 33417",
+  states: ["CT", "FL", "MA"],
+  loHeadshot: "https://www.ideallending.net/wp-content/uploads/rodrigo-2024-350.png",
+  formspreeEndpoint: "https://formspree.io/f/mqewrlyl",
+  instagramUrl: "https://www.instagram.com/rodmortgage",
+  privacyPolicyUrl: "https://rodmortgage.netlify.app/privacy_policy",
+  nmlsConsumerAccessUrl: "https://www.nmlsconsumeraccess.org/",
+  accessibilityStatementUrl: "https://www.ideallending.net/accessibility/",
+  // Google Calendar appointment-schedule embed URL (gv=true = inline iframe form)
+  calendarEmbedUrl: "https://calendar.google.com/calendar/appointments/schedules/AcZssZ1jCHtZHW219HOtCUi2_87Nb5mvECiNMl5EREa0xxc-PWtZcyOi2GNIhiBC1f4NSFv7NjVZvkeS?gv=true",
+  calendarShareUrl: "https://calendar.app.google/M685UpALDBEUYxpJA",
+};
+
+const i18n = {
+  en: {
+    langSwitch: "Português",
+    badge: "FREE CREDIT ANALYSIS + GAME PLAN",
+    heroTitle: "Free Credit Analysis & 90-Day Game Plan",
+    heroSub: "Answer 8 quick questions. I'll review your situation, tell you which mortgage programs typically fit, and send you a personalized credit game plan based on what you share. No fee, no application, no obligation. We do not pull your credit.",
+    notAppNote: "This is a free informational inquiry — not a mortgage application or a commitment to lend.",
+    trustFree: "100% Free",
+    trustFreeSub: "Analysis + game plan",
+    trustNoPull: "No Credit Pulled",
+    trustNoPullSub: "We never touch your score",
+    trustTime: "3 Minutes",
+    trustTimeSub: "8 quick questions",
+    startBtn: "Start My Free Analysis →",
+    croaDisclaimer: "Note: Rodrigo DeOliveira and Ideal Lending LLC are not a credit repair organization and do not offer credit repair, credit improvement, or credit counseling services.",
+    stepOf: "Question {0} of {1}",
+    back: "← Back",
+    next: "Next →",
+
+    q1Title: "Which state do you live in?",
+    q1Help: "I'm licensed in Connecticut, Florida, and Massachusetts.",
+    stCT: "Connecticut",
+    stFL: "Florida",
+    stMA: "Massachusetts",
+    stOther: "Other state",
+
+    q2Title: "What's your residency status?",
+    q2Help: "Asked solely to identify which mortgage programs are available to you. Citizenship/immigration status will not be used as a basis to deny credit (ECOA, 12 CFR 1002.5(d)(2)). I work with citizens, residents, visa holders and ITIN borrowers — many programs available.",
+    resCitizen: "U.S. Citizen",
+    resPR: "Permanent Resident (Green Card)",
+    resEAD: "Work Authorization (EAD / Visa)",
+    resITIN: "ITIN (no SSN)",
+    resDACA: "DACA",
+    resOther: "Other / not sure",
+
+    q3Title: "How do you earn your income?",
+    q3Help: "Both W-2 and self-employed borrowers can qualify — the paperwork is just different.",
+    empW2: "W-2 Employee",
+    empSelf: "Self-Employed / 1099",
+    empBoth: "Both W-2 and self-employed",
+    empRetired: "Retired / Fixed Income",
+    empNone: "Not currently working",
+
+    // Q4 — Situation (combines ownership + intent in one tap)
+    q4Title: "What's your situation right now?",
+    q4Help: "If you already own, I want to know what you're trying to do next — refi, HELOC, or buy another property all have very different paths.",
+    sitRentBuy: "I rent — looking to buy my first home",
+    sitRentInvest: "I rent — buying for family or as an investment",
+    sitOwnRefi: "I own my home — looking to refinance (better rate or term)",
+    sitOwnHeloc: "I own my home — want a HELOC or cash-out",
+    sitOwnBuyAnother: "I own my home — buying another (next primary or investment)",
+    sitOwnSell: "I own my home — planning to sell first",
+    sitExplore: "Just exploring / building credit toward buying",
+
+    // Q5 — Timeline
+    q5Title: "When are you looking to act?",
+    q5Help: "Knowing your timeline tells me whether we're prepping a file or building credit first.",
+    tlNow: "Within 30 days",
+    tl1_3: "1–3 months",
+    tl3_6: "3–6 months",
+    tl6_12: "6–12 months",
+    tl12plus: "12+ months / just planning",
+
+    // Q6 — FICO score
+    q6Title: "What's your FICO credit score?",
+    q6Help: "Mortgage uses FICO 2/4/5, which can differ 20–40 points from the score in your bank app. A rough range is fine — be honest. Quick reference for what fits each path: <strong>first-time owner-occupied purchase</strong> FHA goes down to <strong>580</strong>; <strong>refinance or HELOC</strong> typically needs <strong>640+</strong>; <strong>everything else</strong> (investment, second home, etc.) <strong>620+</strong>. If you're below the floor on one path, another path might still work.",
+    scoreExcellent: "Excellent (740+)",
+    scoreGood: "Good (680 – 739)",
+    scoreFair: "Fair (620 – 679)",
+    scoreBelow620: "Below 620 (rebuilding)",
+    scoreUnknown: "I don't know / never checked",
+    scoreNoFile: "No credit history at all (new to the U.S. or ITIN)",
+
+    // Q7 — Report items (multi-select)
+    q7Title: "Anything like this on your credit report?",
+    q7Help: "Select all that apply. This is the single most useful question — these items shape which mortgage program fits and how soon. Pick \"None\" if your report is clean.",
+    q7HelpMulti: "(Pick all that apply, then tap Next.)",
+    itemCollections: "Collections in last 7 years",
+    itemLate: "30+ day late payment in last 24 months",
+    itemMedical: "Medical debt over $500",
+    itemBK: "Bankruptcy (any time)",
+    itemFC: "Foreclosure or short sale",
+    itemAU: "Mostly authorized-user accounts (not primary)",
+    itemMaxed: "Credit cards at or near their limit",
+    itemNone: "None of the above — clean",
+    itemNotSure: "I'm not sure",
+
+    // Q8 — Contact (was Q6)
+    q8Title: "Where should I send your game plan?",
+    q8Help: "I'll review your answers and send your personalized game plan within one business day. Pick how you'd like to be reached.",
+    firstName: "First name",
+    lastName: "Last name",
+    emailLabel: "Email",
+    phoneLabel: "Phone / WhatsApp (for the call only — not displayed)",
+    bestTime: "Best time to talk",
+    timeMorning: "Morning",
+    timeAfternoon: "Afternoon",
+    timeEvening: "Evening",
+    timeAny: "Anytime",
+    consentText: "By checking this box and clicking Submit, I expressly consent to receive marketing and informational telephone calls, text messages (SMS/MMS, including WhatsApp), and emails from Rodrigo DeOliveira and Ideal Lending LLC at the phone number and email I provided above, including calls and texts placed via an automatic telephone dialing system or pre-recorded/artificial voice. Consent is not a condition of purchase or service. Message and data rates may apply; message frequency varies. I may revoke consent at any time by replying STOP to a text, clicking 'unsubscribe' in any email, or asking to be removed. Reply HELP for help.",
+    consentErr: "Please consent so I can send you your game plan.",
+    fieldErr: "Please answer this question.",
+    multiSelectErr: "Pick at least one option (use \"None\" if your report is clean).",
+    emailErr: "Please enter a valid email.",
+    phoneErr: "Please enter a valid phone number.",
+    submitBtn: "Send My Free Game Plan",
+    submitting: "Sending…",
+    submitErr: "Something went wrong. Please email me at " + CONFIG.loEmail + " or DM me on Instagram @rodmortgage.",
+
+    okTitle: "You're all set!",
+    okSubGoodFit: "Thanks — I'll build your personalized game plan and send it within one business day. Want to skip the wait? Book a 15-minute call below — pick any time that works.",
+    okSubOutOfState: "Thanks for reaching out. I'm only licensed in Connecticut, Florida, and Massachusetts, so I'm not able to put together a personalized plan outside those states. The credit resources below are free and work in any state — feel free to use them.",
+    okSubChallenge: "Your situation deserves a real conversation, not just a form. I'll personally reach out within one business day with a game plan. While you wait, the resources below will help you get your numbers in front of you.",
+    okSubLowInfo: "Got it — let's get your numbers in front of you first. I'll personally reach out within one business day. While you wait, use the free resources below to pull your credit report and see your FICO score. No card needed, no cost.",
+    okSubBorderline: "Your score range straddles the minimum for the path you picked, so I can't say for sure yet. Pull your exact FICO using the free resources below — once you have the number, I'll personally walk you through whether we move now or what to fix first to get there. I'll reach out within one business day.",
+    okBookHeader: "Book your 15-min game plan call",
+    okBookFallback: "If the calendar doesn't load:",
+    okBookFallbackLink: "Open in Google Calendar →",
+    okEmailMe: "Email Rodrigo",
+    okDmMe: "DM @rodmortgage on Instagram",
+    okInstagram: "Follow me on Instagram",
+    okStartOver: "Start over",
+
+    // Credit homework section (all outcomes)
+    homeworkHeader: "Your free credit homework",
+    homeworkIntro: "Before our call (or anytime), pull your free credit report and free FICO score. These are independent third-party services — Rodrigo and Ideal Lending receive no compensation, kickback, or referral fee from any of them.",
+    homeworkReportTitle: "Step 1 — Pull your free credit report",
+    homeworkReportBody: "Federally mandated free service from the 3 bureaus (Equifax, Experian, TransUnion). One free weekly report per bureau. No credit card, no trial. The only website authorized by the Federal Trade Commission.",
+    homeworkReportLink: "AnnualCreditReport.com →",
+    homeworkScoreTitle: "Step 2 — See your FICO score (free)",
+    homeworkScoreBody: "The report above shows your history but not your score. Use one of these free sources to see your FICO 8:",
+    homeworkSrcDiscover: "Discover Credit Scorecard (no Discover account needed)",
+    homeworkSrcExperian: "Experian free account",
+    homeworkSrcBankApp: "Your bank's app — Chase Credit Journey, Capital One CreditWise, Wells Fargo, Bank of America, Citi",
+    homeworkFicoNote: "Heads up: the score in your bank app and the score a mortgage lender sees can differ by 20–40 points. Mortgage uses FICO 2/4/5 (older, stricter versions). myFICO.com is the only consumer source that shows mortgage-specific FICO 2/4/5 (paid plans starting at $19.95/mo). Worth a 1-month subscription right before you formally apply — not needed today.",
+    homeworkMyFicoLink: "myFICO.com (paid — optional)",
+    fcraNotice: "FCRA notice: This consultation does not include a credit pull, soft or hard. Any future hard credit inquiry to evaluate you for a mortgage will only happen with your separate written authorization.",
+    noCompensationNotice: "Disclosure: Rodrigo DeOliveira and Ideal Lending LLC receive no compensation, kickback, or referral fee from AnnualCreditReport.com, Discover, Experian, Capital One, myFICO, Equifax, TransUnion, or any credit-monitoring service mentioned on this page. These are independent third parties; links provided for your convenience only.",
+
+    // Optional enrichment widget
+    enrichTitle: "Help Rod prep for your call (optional, 30 seconds)",
+    enrichIntro: "The more you share, the more personalized your call will be. Skip anything you're not sure about.",
+    enrichTimelineLabel: "When are you looking to buy or refinance?",
+    enrichTLNow: "Within 30 days",
+    enrichTL3: "1–3 months",
+    enrichTL6: "3–6 months",
+    enrichTL12: "6–12 months",
+    enrichTL12plus: "12+ months / just planning",
+    enrichGoalLabel: "What's your main goal?",
+    enrichGoalBuy1st: "Buy my first home",
+    enrichGoalBuyAdd: "Buy another home or investment",
+    enrichGoalRefi: "Refinance my current home",
+    enrichGoalBuild: "Build credit so I can buy later",
+    enrichKnowScoreLabel: "Do you know your FICO score?",
+    enrichKnowSpecific: "Yes — I know the number",
+    enrichKnowRange: "Yes — roughly",
+    enrichKnowNo: "No / never checked",
+    enrichScoreNumLabel: "Your most recent FICO (300–850)",
+    enrichItemsLabel: "Anything like this on your report? (select all that apply)",
+    enrichItemCollections: "Collections",
+    enrichItemLate: "Late payments (last 2 years)",
+    enrichItemMedical: "Medical debt over $500",
+    enrichItemBK: "Bankruptcy (any time)",
+    enrichItemFC: "Foreclosure or short sale",
+    enrichItemAU: "Mostly authorized-user accounts only",
+    enrichItemNone: "None of the above",
+    enrichItemNotSure: "Not sure",
+    enrichSubmit: "Send to Rod",
+    enrichSubmitting: "Sending…",
+    enrichDone: "Got it — Rod has your details. Talk soon.",
+    enrichSkip: "Skip — I'll cover it on the call",
+
+    // Footer — compliance block
+    footerOfficer: "Loan Originator",
+    footerCompany: "Mortgage Lender",
+    footerLicensesLabel: "State Licenses",
+    footerStateLicenseLine: "Florida Office Lic. MLD2414 · Massachusetts Mortgage Loan Originator License #1435896 · Licensed in CT, FL, MA",
+    footerAddressLabel: "Office",
+    footerNmlsLink: "Verify on NMLS Consumer Access",
+    footerPrivacyLink: "Privacy Policy",
+    footerAccessibilityLink: "Accessibility Statement",
+    footerEho: "Equal Housing Lender · Equal Opportunity Employer",
+    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA) or any government agency or government-sponsored entity and this offer is not being made by an agency of the government. Ideal Lending LLC is a Licensed Mortgage Lender Servicer, FL MLD2414; Ideal Lending LLC only lends in CO, CT, FL, GA, MA, NJ, TN, TX. Reverse mortgages are not available in the state of MA. Refer to www.nmlsconsumeraccess.org and input NMLS 2471779 to see where Ideal Lending LLC is licensed. Equal Opportunity Employer; Equal Opportunity Lender. This is not an offer for extension of credit or commitment to lend. All loans must satisfy underwriting guidelines. Not all applicants qualify. Information and pricing are subject to change at any time and without notice. Certain restrictions may apply.",
+    footerCanSpam: "This page and any follow-up email communications are sent by Ideal Lending LLC, 5589 Okeechobee Blvd STE 101, West Palm Beach, FL 33417. To stop receiving emails, reply 'unsubscribe' or use the link in any email we send. To stop text messages, reply STOP.",
+    footerCopyright: "© Ideal Lending LLC. All rights reserved.",
+  },
+  pt: {
+    langSwitch: "English",
+    badge: "ANÁLISE DE CRÉDITO + PLANO DE AÇÃO (GRÁTIS)",
+    heroTitle: "Análise de Crédito Grátis + Plano de 90 Dias",
+    heroSub: "Responda 8 perguntas rápidas. Eu reviso a sua situação, te digo quais programas de financiamento normalmente se encaixam, e te mando um plano personalizado de crédito baseado no que você compartilhou. Sem taxa, sem aplicação, sem compromisso. Não consultamos o seu crédito.",
+    notAppNote: "Esta é uma consulta informativa gratuita — não é uma aplicação para financiamento nem um compromisso de empréstimo.",
+    trustFree: "100% Grátis",
+    trustFreeSub: "Análise + plano",
+    trustNoPull: "Sem Consulta de Crédito",
+    trustNoPullSub: "Nunca tocamos no seu score",
+    trustTime: "3 Minutos",
+    trustTimeSub: "8 perguntas rápidas",
+    startBtn: "Quero Minha Análise Grátis →",
+    croaDisclaimer: "Nota: Rodrigo DeOliveira e Ideal Lending LLC não são uma organização de reparo de crédito (credit repair organization) e não oferecem serviços de reparo, melhoria ou aconselhamento de crédito.",
+    stepOf: "Pergunta {0} de {1}",
+    back: "← Voltar",
+    next: "Próximo →",
+
+    q1Title: "Em qual estado você mora?",
+    q1Help: "Sou licenciado em Connecticut, Florida e Massachusetts.",
+    stCT: "Connecticut",
+    stFL: "Florida",
+    stMA: "Massachusetts",
+    stOther: "Outro estado",
+
+    q2Title: "Qual é o seu status de imigração?",
+    q2Help: "Pergunta feita apenas para identificar quais programas de financiamento estão disponíveis para você. Status de cidadania/imigração não será usado como base para negar crédito (ECOA, 12 CFR 1002.5(d)(2)). Atendo cidadãos, residentes, visto de trabalho e ITIN — temos programas para todos.",
+    resCitizen: "Cidadão Americano",
+    resPR: "Residente Permanente (Green Card)",
+    resEAD: "Visto de Trabalho (EAD / Visa)",
+    resITIN: "ITIN (sem SSN)",
+    resDACA: "DACA",
+    resOther: "Outro / não tenho certeza",
+
+    q3Title: "Como você recebe sua renda?",
+    q3Help: "Tanto W-2 quanto autônomo se qualificam — a documentação é só diferente.",
+    empW2: "Funcionário W-2",
+    empSelf: "Autônomo / 1099",
+    empBoth: "Os dois (W-2 e autônomo)",
+    empRetired: "Aposentado / Renda Fixa",
+    empNone: "Não estou trabalhando",
+
+    // Q4 — Situação (combina posse + intenção em um toque)
+    q4Title: "Qual é a sua situação hoje?",
+    q4Help: "Se você já é dono, eu quero saber o que você quer fazer a seguir — refi, HELOC ou comprar outro imóvel têm caminhos bem diferentes.",
+    sitRentBuy: "Eu alugo — quero comprar minha primeira casa",
+    sitRentInvest: "Eu alugo — comprando para família ou investimento",
+    sitOwnRefi: "Já tenho minha casa — quero refinanciar (taxa ou prazo melhor)",
+    sitOwnHeloc: "Já tenho minha casa — quero HELOC ou cash-out",
+    sitOwnBuyAnother: "Já tenho minha casa — comprando outra (próxima principal ou investimento)",
+    sitOwnSell: "Já tenho minha casa — pretendo vender primeiro",
+    sitExplore: "Só explorando / construindo crédito para comprar",
+
+    // Q5 — Timeline
+    q5Title: "Quando você quer agir?",
+    q5Help: "Saber o seu prazo me diz se estamos preparando um arquivo ou construindo crédito primeiro.",
+    tlNow: "Em até 30 dias",
+    tl1_3: "1–3 meses",
+    tl3_6: "3–6 meses",
+    tl6_12: "6–12 meses",
+    tl12plus: "12+ meses / só planejando",
+
+    // Q6 — FICO score
+    q6Title: "Qual é o seu FICO score?",
+    q6Help: "Mortgage usa FICO 2/4/5, que pode diferir 20–40 pontos do score no app do seu banco. Uma faixa aproximada serve — seja honesto. Referência rápida do que se encaixa em cada caminho: <strong>compra de primeira casa, owner-occupied</strong> FHA vai até <strong>580</strong>; <strong>refinanciamento ou HELOC</strong> normalmente precisa <strong>640+</strong>; <strong>todo o resto</strong> (investimento, segunda casa, etc.) <strong>620+</strong>. Se você está abaixo do mínimo de um caminho, outro caminho pode funcionar.",
+    scoreExcellent: "Excelente (740+)",
+    scoreGood: "Bom (680 – 739)",
+    scoreFair: "Razoável (620 – 679)",
+    scoreBelow620: "Abaixo de 620 (reconstruindo)",
+    scoreUnknown: "Não sei / nunca chequei",
+    scoreNoFile: "Sem histórico nenhum (recém-chegado ou ITIN)",
+
+    // Q7 — Itens no report (múltipla escolha)
+    q7Title: "Algo assim no seu credit report?",
+    q7Help: "Selecione todos que se aplicam. É a pergunta mais útil de todas — esses itens definem qual programa serve e quão cedo. Marque \"Nenhum\" se seu report está limpo.",
+    q7HelpMulti: "(Selecione todos que se aplicam, depois toque em Próximo.)",
+    itemCollections: "Collections nos últimos 7 anos",
+    itemLate: "Atraso de 30+ dias nos últimos 24 meses",
+    itemMedical: "Dívida médica acima de $500",
+    itemBK: "Falência (qualquer época)",
+    itemFC: "Foreclosure ou short sale",
+    itemAU: "Maioria das contas como authorized user (não primário)",
+    itemMaxed: "Cartões no limite ou perto disso",
+    itemNone: "Nenhum dos acima — limpo",
+    itemNotSure: "Não tenho certeza",
+
+    // Q8 — Contato (era Q6)
+    q8Title: "Para onde mando seu plano?",
+    q8Help: "Eu reviso suas respostas e te mando o plano personalizado em até 1 dia útil. Escolha como prefere ser contatado.",
+    firstName: "Nome",
+    lastName: "Sobrenome",
+    emailLabel: "E-mail",
+    phoneLabel: "Telefone / WhatsApp (só para a ligação — não é mostrado)",
+    bestTime: "Melhor horário para conversar",
+    timeMorning: "Manhã",
+    timeAfternoon: "Tarde",
+    timeEvening: "Noite",
+    timeAny: "Qualquer hora",
+    consentText: "Ao marcar esta caixa e clicar em Enviar, eu autorizo expressamente Rodrigo DeOliveira e Ideal Lending LLC a entrar em contato comigo por ligações telefônicas e mensagens de texto (SMS/MMS, incluindo WhatsApp) de marketing e informativas, e por e-mail, no telefone e e-mail que forneci acima, incluindo ligações e mensagens feitas por sistema automatizado de discagem ou voz pré-gravada/artificial. A autorização não é condição para receber o serviço. Podem se aplicar custos de mensagens e dados; a frequência das mensagens pode variar. Posso revogar a autorização a qualquer momento respondendo STOP a uma mensagem, clicando em 'cancelar inscrição' em qualquer e-mail, ou pedindo para ser removido. Responda HELP para ajuda.",
+    consentErr: "Por favor autorize para que eu possa enviar seu plano.",
+    fieldErr: "Por favor responda esta pergunta.",
+    multiSelectErr: "Selecione pelo menos uma opção (use \"Nenhum\" se seu report estiver limpo).",
+    emailErr: "Por favor insira um e-mail válido.",
+    phoneErr: "Por favor insira um telefone válido.",
+    submitBtn: "Enviar Meu Plano Grátis",
+    submitting: "Enviando…",
+    submitErr: "Algo deu errado. Por favor me mande e-mail em " + CONFIG.loEmail + " ou DM no Instagram @rodmortgage.",
+
+    okTitle: "Pronto!",
+    okSubGoodFit: "Obrigado — vou montar seu plano personalizado e te enviar em até 1 dia útil. Não quer esperar? Agende uma ligação de 15 minutos abaixo — escolha qualquer horário.",
+    okSubOutOfState: "Obrigado pelo contato. Só sou licenciado em Connecticut, Florida e Massachusetts, então não posso montar um plano personalizado fora desses estados. Os recursos de crédito abaixo são gratuitos e funcionam em qualquer estado — use à vontade.",
+    okSubChallenge: "Sua situação merece uma conversa de verdade, não só um formulário. Eu mesmo vou te contatar em até 1 dia útil com um plano. Enquanto espera, os recursos abaixo te ajudam a ter seus números na mão.",
+    okSubLowInfo: "Entendi — vamos primeiro colocar seus números na mesa. Eu mesmo vou te contatar em até 1 dia útil. Enquanto espera, use os recursos gratuitos abaixo para puxar seu credit report e ver seu FICO. Sem cartão, sem custo.",
+    okSubBorderline: "Sua faixa de score está em cima do mínimo do caminho que você escolheu, então não dá pra cravar ainda. Use os recursos gratuitos abaixo para puxar seu FICO exato — com o número na mão, eu mesmo te explico se a gente avança agora ou o que ajustar primeiro pra chegar lá. Te contato em até 1 dia útil.",
+    okBookHeader: "Agende sua chamada de plano de 15 min",
+    okBookFallback: "Se o calendário não carregar:",
+    okBookFallbackLink: "Abrir no Google Calendar →",
+    okEmailMe: "Mandar e-mail para Rodrigo",
+    okDmMe: "DM @rodmortgage no Instagram",
+    okInstagram: "Me siga no Instagram",
+    okStartOver: "Recomeçar",
+
+    // Seção de homework de crédito (todos os outcomes)
+    homeworkHeader: "Seu dever de casa de crédito (grátis)",
+    homeworkIntro: "Antes da nossa ligação (ou a qualquer hora), puxe seu credit report grátis e seu FICO grátis. Esses são serviços independentes — Rodrigo e Ideal Lending NÃO recebem compensação, comissão ou taxa de referência de nenhum deles.",
+    homeworkReportTitle: "Passo 1 — Puxe seu credit report grátis",
+    homeworkReportBody: "Serviço gratuito obrigatório por lei federal, dos 3 bureaus (Equifax, Experian, TransUnion). Um report grátis por semana por bureau. Sem cartão de crédito, sem trial. É o único site autorizado pelo Federal Trade Commission.",
+    homeworkReportLink: "AnnualCreditReport.com →",
+    homeworkScoreTitle: "Passo 2 — Veja seu FICO score (grátis)",
+    homeworkScoreBody: "O report acima mostra seu histórico, mas não o score. Use uma destas fontes gratuitas para ver seu FICO 8:",
+    homeworkSrcDiscover: "Discover Credit Scorecard (não precisa ser cliente do Discover)",
+    homeworkSrcExperian: "Conta gratuita da Experian",
+    homeworkSrcBankApp: "App do seu banco — Chase Credit Journey, Capital One CreditWise, Wells Fargo, Bank of America, Citi",
+    homeworkFicoNote: "Atenção: o score que aparece no app do seu banco e o score que o mortgage lender vê podem ter 20–40 pontos de diferença. Mortgage usa FICO 2/4/5 (versões mais antigas e mais duras). myFICO.com é a única fonte ao consumidor que mostra os FICO específicos de mortgage (planos pagos a partir de $19.95/mês). Vale assinar 1 mês perto de aplicar — não precisa hoje.",
+    homeworkMyFicoLink: "myFICO.com (pago — opcional)",
+    fcraNotice: "Aviso FCRA: Esta consulta não inclui consulta ao seu crédito, nem soft nem hard. Qualquer consulta formal (hard inquiry) futura para te avaliar para mortgage só vai acontecer com sua autorização por escrito separada.",
+    noCompensationNotice: "Divulgação: Rodrigo DeOliveira e Ideal Lending LLC não recebem compensação, comissão ou taxa de referência de AnnualCreditReport.com, Discover, Experian, Capital One, myFICO, Equifax, TransUnion, ou qualquer serviço de monitoramento de crédito mencionado nesta página. São terceiros independentes; links fornecidos apenas para sua conveniência.",
+
+    // Widget opcional de enriquecimento
+    enrichTitle: "Ajude Rod a se preparar para sua chamada (opcional, 30 segundos)",
+    enrichIntro: "Quanto mais você compartilhar, mais personalizada será sua ligação. Pule o que não souber.",
+    enrichTimelineLabel: "Quando você quer comprar ou refinanciar?",
+    enrichTLNow: "Em até 30 dias",
+    enrichTL3: "1–3 meses",
+    enrichTL6: "3–6 meses",
+    enrichTL12: "6–12 meses",
+    enrichTL12plus: "12+ meses / só planejando",
+    enrichGoalLabel: "Qual é o seu objetivo principal?",
+    enrichGoalBuy1st: "Comprar minha primeira casa",
+    enrichGoalBuyAdd: "Comprar outra casa ou investimento",
+    enrichGoalRefi: "Refinanciar minha casa atual",
+    enrichGoalBuild: "Construir crédito para comprar depois",
+    enrichKnowScoreLabel: "Você sabe seu FICO score?",
+    enrichKnowSpecific: "Sim — sei o número",
+    enrichKnowRange: "Sim — mais ou menos",
+    enrichKnowNo: "Não / nunca chequei",
+    enrichScoreNumLabel: "Seu FICO mais recente (300–850)",
+    enrichItemsLabel: "Algo assim no seu report? (selecione todos que se aplicam)",
+    enrichItemCollections: "Collections (cobrança)",
+    enrichItemLate: "Atrasos (últimos 2 anos)",
+    enrichItemMedical: "Dívida médica acima de $500",
+    enrichItemBK: "Falência (qualquer época)",
+    enrichItemFC: "Foreclosure ou short sale",
+    enrichItemAU: "Só contas como authorized user",
+    enrichItemNone: "Nenhum dos acima",
+    enrichItemNotSure: "Não tenho certeza",
+    enrichSubmit: "Enviar para Rod",
+    enrichSubmitting: "Enviando…",
+    enrichDone: "Recebido — Rod já tem seus detalhes. Falamos em breve.",
+    enrichSkip: "Pular — falo na ligação",
+
+    // Footer — bloco de compliance
+    footerOfficer: "Originador de Empréstimo",
+    footerCompany: "Credor Hipotecário",
+    footerLicensesLabel: "Licenças Estaduais",
+    footerStateLicenseLine: "Florida Office Lic. MLD2414 · Massachusetts Mortgage Loan Originator License #1435896 · Licenciado em CT, FL, MA",
+    footerAddressLabel: "Escritório",
+    footerNmlsLink: "Verificar no NMLS Consumer Access",
+    footerPrivacyLink: "Política de Privacidade",
+    footerAccessibilityLink: "Declaração de Acessibilidade",
+    footerEho: "Equal Housing Lender · Equal Opportunity Employer",
+    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 não é afiliada nem está agindo em nome ou sob a direção da Federal Housing Administration (FHA) ou de qualquer agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Ideal Lending LLC é um Licensed Mortgage Lender Servicer, FL MLD2414; Ideal Lending LLC empresta apenas em CO, CT, FL, GA, MA, NJ, TN, TX. Hipotecas reversas não estão disponíveis no estado de MA. Consulte www.nmlsconsumeraccess.org e insira NMLS 2471779 para ver onde a Ideal Lending LLC está licenciada. Equal Opportunity Employer; Equal Opportunity Lender. Isto não é uma oferta de extensão de crédito ou compromisso de empréstimo. Todos os empréstimos devem atender às diretrizes de subscrição. Nem todos os candidatos se qualificam. Informações e preços estão sujeitos a alterações a qualquer momento e sem aviso prévio. Certas restrições podem se aplicar.",
+    footerCanSpam: "Esta página e qualquer comunicação por e-mail subsequente são enviadas por Ideal Lending LLC, 5589 Okeechobee Blvd STE 101, West Palm Beach, FL 33417. Para parar de receber e-mails, responda 'unsubscribe' ou use o link em qualquer e-mail que enviarmos. Para parar mensagens de texto, responda STOP.",
+    footerCopyright: "© Ideal Lending LLC. Todos os direitos reservados.",
+  }
+};
+</script>
+
+<style>
+:root {
+  --gold: #d4a843;
+  --gold2: #f0c85a;
+  --dark: #0b0f18;
+  --dark2: #101520;
+  --dark3: #181f2e;
+  --dark4: #1f2738;
+  --cream: #e8edf8;
+  --muted: #7a8bae;
+  --border: rgba(255,255,255,0.08);
+  --green: #4ade80;
+  --red: #ff6b6b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--dark);
+  color: var(--cream);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: 'Lora', Georgia, serif; font-weight: 700; line-height: 1.2; }
+
+a { color: var(--gold2); text-decoration: none; }
+a:hover { color: var(--gold); }
+
+/* TOP BAR */
+.topbar {
+  background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: var(--dark3); }
+.brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.brand-text strong { color: var(--cream); font-size: 13px; font-weight: 700; }
+.brand-text span { color: var(--muted); font-size: 11px; }
+.lang-btn {
+  background: transparent; color: var(--cream); border: 1px solid var(--border);
+  padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.lang-btn:hover { border-color: var(--gold); color: var(--gold2); }
+
+/* CONTAINER */
+.wrap { max-width: 640px; margin: 0 auto; padding: 32px 20px 80px; }
+
+/* HERO */
+.badge {
+  display: inline-block; background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--dark); font-weight: 800; font-size: 11px; letter-spacing: 0.08em;
+  padding: 6px 12px; border-radius: 999px; margin-bottom: 18px;
+}
+.hero h1 {
+  font-size: clamp(28px, 6vw, 40px);
+  color: var(--cream); margin-bottom: 14px;
+}
+.hero h1 .gold { color: var(--gold2); }
+.hero p.sub { color: var(--muted); font-size: 16px; margin-bottom: 24px; }
+
+.trust-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px;
+}
+.trust-pill {
+  background: var(--dark2); border: 1px solid var(--border); border-radius: 14px;
+  padding: 12px 10px; text-align: center;
+}
+.trust-pill .dot { color: var(--gold); font-size: 18px; line-height: 1; }
+.trust-pill strong { display: block; color: var(--cream); font-size: 13px; font-weight: 700; margin-top: 6px; }
+.trust-pill span { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+.btn-primary {
+  display: block; width: 100%; background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--dark); font-weight: 800; font-size: 16px;
+  padding: 16px 20px; border: 0; border-radius: 14px; cursor: pointer;
+  font-family: inherit; transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 6px 20px rgba(212,168,67,0.25);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(212,168,67,0.35); }
+.btn-primary:disabled { background: var(--dark3); color: var(--muted); box-shadow: none; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  background: transparent; color: var(--cream); border: 1px solid var(--border);
+  padding: 12px 18px; border-radius: 12px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold2); }
+
+/* FORM CARD */
+.card {
+  background: var(--dark2); border: 1px solid var(--border); border-radius: 18px;
+  padding: 24px 22px; margin-top: 8px;
+}
+.progress {
+  height: 6px; background: var(--dark3); border-radius: 999px; overflow: hidden; margin-bottom: 18px;
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold2));
+  transition: width .3s ease; border-radius: 999px;
+}
+.step-meta { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+.q-title { font-size: 22px; color: var(--cream); margin-bottom: 6px; }
+.q-help { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+.choice-grid { display: grid; gap: 10px; }
+.choice {
+  display: block; width: 100%; text-align: left;
+  background: var(--dark3); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px; color: var(--cream); font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all .15s ease;
+}
+.choice:hover { border-color: var(--gold); background: var(--dark4); }
+.choice.selected { border-color: var(--gold); background: rgba(212,168,67,0.10); color: var(--gold2); }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.field input, .field select {
+  width: 100%; background: var(--dark3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 13px 14px; color: var(--cream); font-size: 15px;
+  font-family: inherit; outline: none;
+}
+.field input:focus, .field select:focus { border-color: var(--gold); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.error { color: var(--red); font-size: 13px; margin-top: 6px; min-height: 16px; }
+
+.consent {
+  display: flex; gap: 10px; align-items: flex-start; margin: 16px 0;
+  font-size: 12px; color: var(--muted); line-height: 1.4;
+}
+.consent input { margin-top: 3px; flex: 0 0 auto; }
+
+.nav-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px;
+}
+
+/* SUCCESS */
+.success-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--dark); font-size: 32px; font-weight: 800;
+  margin: 0 auto 18px;
+}
+.success-title { text-align: center; font-size: 26px; color: var(--cream); margin-bottom: 10px; }
+.success-sub { text-align: center; color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+
+.calendar-wrap {
+  background: var(--dark3); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-top: 14px;
+}
+.calendar-wrap iframe { display: block; width: 100%; height: 700px; border: 0; background: #fff; }
+.calendar-fallback { text-align: center; padding: 12px; color: var(--muted); font-size: 13px; }
+.calendar-fallback a { font-weight: 700; }
+
+.success-actions { display: flex; justify-content: center; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+
+/* Credit homework block */
+.homework {
+  margin-top: 28px; padding: 22px 20px;
+  background: var(--dark3); border: 1px solid var(--border); border-radius: 14px;
+}
+.homework h3 { font-size: 18px; color: var(--cream); margin-bottom: 8px; }
+.homework .intro { color: var(--muted); font-size: 13px; margin-bottom: 18px; line-height: 1.5; }
+.homework .step { padding: 14px 0; border-top: 1px solid var(--border); }
+.homework .step:first-of-type { border-top: 0; padding-top: 4px; }
+.homework .step h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px; color: var(--gold); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;
+}
+.homework .step p { color: var(--cream); font-size: 13px; line-height: 1.55; margin-bottom: 10px; }
+.homework .step ul { list-style: none; padding: 0; margin: 8px 0; }
+.homework .step ul li {
+  padding: 8px 0 8px 18px; color: var(--cream); font-size: 13px;
+  position: relative; line-height: 1.45;
+}
+.homework .step ul li::before {
+  content: "●"; color: var(--gold); position: absolute; left: 0; top: 8px; font-size: 10px;
+}
+.homework .step a {
+  display: inline-block; background: rgba(212,168,67,0.15); color: var(--gold2);
+  padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 13px;
+  margin-top: 6px; border: 1px solid rgba(212,168,67,0.3);
+}
+.homework .step a:hover { background: rgba(212,168,67,0.25); }
+.homework .fico-note {
+  background: var(--dark4); padding: 12px 14px; border-radius: 10px;
+  font-size: 12px; color: var(--muted); line-height: 1.55; margin-top: 8px;
+}
+
+.legal-notice {
+  margin-top: 16px; padding: 12px 14px;
+  background: var(--dark3); border-left: 3px solid var(--gold);
+  border-radius: 8px; font-size: 11px; color: var(--muted); line-height: 1.55;
+}
+.legal-notice + .legal-notice { margin-top: 8px; }
+
+/* Enrichment widget */
+.enrich {
+  margin-top: 22px; padding: 22px 20px;
+  background: var(--dark2); border: 1px solid var(--border); border-radius: 14px;
+}
+.enrich h3 { font-size: 17px; color: var(--cream); margin-bottom: 6px; }
+.enrich .intro { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
+.enrich .group { margin-bottom: 16px; }
+.enrich .group .label {
+  display: block; color: var(--cream); font-size: 13px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.enrich .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.enrich .pill {
+  background: var(--dark3); border: 1px solid var(--border); border-radius: 999px;
+  padding: 8px 14px; color: var(--cream); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.enrich .pill:hover { border-color: var(--gold); }
+.enrich .pill.selected { border-color: var(--gold); background: rgba(212,168,67,0.15); color: var(--gold2); }
+.enrich input[type="number"] {
+  width: 100%; background: var(--dark3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 11px 14px; color: var(--cream); font-size: 15px;
+  font-family: inherit; outline: none;
+}
+.enrich input[type="number"]:focus { border-color: var(--gold); }
+.enrich .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.enrich .done {
+  text-align: center; padding: 18px; color: var(--gold2);
+  font-weight: 600; font-size: 14px;
+}
+
+/* FOOTER — compliance block */
+footer {
+  margin-top: 40px; padding: 28px 20px 40px;
+  border-top: 1px solid var(--border);
+  background: var(--dark2);
+  color: var(--muted); font-size: 12px; line-height: 1.6;
+}
+.foot-wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.foot-identity { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.foot-block { background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.foot-block .label { font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+.foot-block .name { color: var(--cream); font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+.foot-block .meta { font-size: 11px; color: var(--muted); }
+.foot-block .meta a { color: var(--gold2); }
+.foot-licenses { background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.foot-licenses .row { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 11px; }
+.foot-licenses .row strong { color: var(--cream); }
+.foot-eho { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; }
+.foot-eho .eho-logo { width: 36px; height: 36px; flex: 0 0 36px; }
+.foot-eho strong { color: var(--cream); font-size: 12px; }
+.foot-legal { font-size: 11px; line-height: 1.65; color: var(--muted); padding: 0 4px; }
+.foot-canspam { font-size: 11px; color: var(--muted); padding: 12px 14px; background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; padding: 0 4px; }
+.foot-links a { color: var(--gold2); font-weight: 600; }
+.foot-copyright { font-size: 11px; color: var(--muted); text-align: center; padding-top: 8px; border-top: 1px solid var(--border); }
+@media (max-width: 540px) {
+  .foot-identity { grid-template-columns: 1fr; }
+}
+
+.disclosure-pill {
+  display: block; background: var(--dark3); border: 1px solid var(--border);
+  border-left: 3px solid var(--gold); border-radius: 10px;
+  padding: 10px 14px; font-size: 12px; color: var(--muted); margin-bottom: 14px;
+  line-height: 1.45;
+}
+
+/* RESPONSIVE */
+@media (max-width: 420px) {
+  .trust-row { grid-template-columns: 1fr; }
+  .trust-pill { display: flex; align-items: center; justify-content: flex-start; gap: 10px; text-align: left; padding: 10px 14px; }
+  .trust-pill .dot { font-size: 22px; }
+  .trust-pill strong { margin-top: 0; }
+  .trust-pill span { margin-top: 0; }
+  .field-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <img id="brand-img" alt="Rodrigo DeOliveira headshot" src="" onerror="this.style.display='none'" />
+    <div class="brand-text">
+      <strong id="brand-name"></strong>
+      <span id="brand-title"></span>
+    </div>
+  </div>
+  <button class="lang-btn" id="lang-btn" type="button"></button>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<footer id="site-footer"></footer>
+
+<script>
+// ============================================================================
+// STATE
+// ============================================================================
+const state = {
+  lang: (navigator.language || "en").toLowerCase().startsWith("pt") ? "pt" : "en",
+  view: "hero",            // hero | form | success
+  step: 0,
+  answers: {
+    state: null,
+    residency: null,
+    employment: null,
+    situation: null,       // rent+intent OR own+intent (refi/HELOC/buy-another/sell) OR exploring
+    timeline: null,        // now / 1to3 / 3to6 / 6to12 / 12plus
+    scoreRange: null,      // excellent / good / fair / below620 / unknown / noFile
+    reportItems: [],       // multi-select: collections / late / medical / bk / fc / au / maxed / none / notSure
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    bestTime: "any",
+    consent: false,
+  },
+  outcome: null,           // goodFit | outOfState | challenge | lowInfo
+  submitting: false,
+  submitError: "",
+};
+
+const TOTAL_STEPS = 8;
+const MULTI_STEP_INDEX = 6;  // Q7 (zero-indexed = 6) is multi-select — requires Next button
+
+function t(key, ...args) {
+  let s = i18n[state.lang][key] || i18n.en[key] || key;
+  args.forEach((a, i) => { s = s.replace("{" + i + "}", a); });
+  return s;
+}
+
+// ============================================================================
+// RENDERING
+// ============================================================================
+function render() {
+  document.documentElement.lang = state.lang;
+  document.getElementById("brand-img").src = CONFIG.loHeadshot;
+  document.getElementById("brand-name").textContent = CONFIG.loName;
+  document.getElementById("brand-title").textContent = CONFIG.loTitle + " · " + CONFIG.nmls;
+  document.getElementById("lang-btn").textContent = t("langSwitch");
+  document.getElementById("site-footer").innerHTML = renderFooter();
+
+  const app = document.getElementById("app");
+  if (state.view === "hero") app.innerHTML = renderHero();
+  else if (state.view === "form") app.innerHTML = renderForm();
+  else if (state.view === "success") app.innerHTML = renderSuccess();
+
+  wireHandlers();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderHero() {
+  return `
+    <section class="hero">
+      <span class="badge">${t("badge")}</span>
+      <h1>${t("heroTitle")}</h1>
+      <p class="sub">${t("heroSub")}</p>
+      <div class="disclosure-pill">${t("notAppNote")}</div>
+      <div class="trust-row">
+        <div class="trust-pill"><span class="dot">●</span><strong>${t("trustFree")}</strong><span>${t("trustFreeSub")}</span></div>
+        <div class="trust-pill"><span class="dot">●</span><strong>${t("trustNoPull")}</strong><span>${t("trustNoPullSub")}</span></div>
+        <div class="trust-pill"><span class="dot">●</span><strong>${t("trustTime")}</strong><span>${t("trustTimeSub")}</span></div>
+      </div>
+      <button class="btn-primary" id="start-btn" type="button">${t("startBtn")}</button>
+      <p style="margin-top:14px;font-size:11px;color:var(--muted);line-height:1.5;">${t("croaDisclaimer")}</p>
+    </section>
+  `;
+}
+
+function ehoLogoSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" class="eho-svg" width="36" height="36" aria-label="Equal Housing Lender">
+    <rect width="120" height="120" fill="#000"/>
+    <polygon points="60,20 18,52 102,52 60,20" fill="#fff"/>
+    <rect x="22" y="52" width="76" height="44" fill="#fff"/>
+    <rect x="42" y="64" width="36" height="6" fill="#000"/>
+    <rect x="42" y="78" width="36" height="6" fill="#000"/>
+    <rect x="0" y="96" width="120" height="24" fill="#000"/>
+    <text x="60" y="106" font-family="Arial, sans-serif" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">EQUAL HOUSING</text>
+    <text x="60" y="116" font-family="Arial, sans-serif" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">LENDER</text>
+  </svg>`;
+}
+
+function renderFooter() {
+  return `
+    <div class="foot-wrap">
+      <div class="foot-identity">
+        <div class="foot-block">
+          <div class="label">${t("footerOfficer")}</div>
+          <div class="name">${CONFIG.loName}</div>
+          <div class="meta">${CONFIG.loTitle} · ${CONFIG.nmls}</div>
+          <div class="meta"><a href="mailto:${CONFIG.loEmail}">${CONFIG.loEmail}</a> · <a href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">@rodmortgage</a></div>
+        </div>
+        <div class="foot-block">
+          <div class="label">${t("footerCompany")}</div>
+          <div class="name">${CONFIG.company}</div>
+          <div class="meta">${CONFIG.companyNmls} · ${CONFIG.companyStateLicense}</div>
+          <div class="meta">${t("footerAddressLabel")}: ${CONFIG.companyAddress}</div>
+        </div>
+      </div>
+
+      <div class="foot-licenses">
+        <div class="label" style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">${t("footerLicensesLabel")}</div>
+        <div class="row"><strong>${t("footerStateLicenseLine")}</strong></div>
+      </div>
+
+      <div class="foot-eho">
+        ${ehoLogoSvg()}
+        <strong>${t("footerEho")}</strong>
+      </div>
+
+      <div class="foot-links">
+        <a href="${CONFIG.privacyPolicyUrl}" target="_blank" rel="noopener">${t("footerPrivacyLink")}</a>
+        <a href="${CONFIG.accessibilityStatementUrl}" target="_blank" rel="noopener">${t("footerAccessibilityLink")}</a>
+        <a href="${CONFIG.nmlsConsumerAccessUrl}" target="_blank" rel="noopener">${t("footerNmlsLink")} (NMLS 2471779)</a>
+        <a href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">Instagram @rodmortgage</a>
+      </div>
+
+      <p class="foot-legal">${t("footerLegalBlock")}</p>
+
+      <div class="foot-canspam">${t("footerCanSpam")}</div>
+
+      <div class="foot-copyright">${t("footerCopyright")}</div>
+    </div>
+  `;
+}
+
+function renderForm() {
+  const stepHtml = [
+    renderQ1, renderQ2, renderQ3, renderQ4, renderQ5, renderQ6, renderQ7, renderQ8
+  ][state.step]();
+  const pct = ((state.step + 1) / TOTAL_STEPS) * 100;
+  const isLast = state.step === TOTAL_STEPS - 1;
+  // Steps that require an explicit Next button (multi-select + contact form):
+  const needsNextButton = state.step === MULTI_STEP_INDEX || isLast;
+  return `
+    <section class="card">
+      <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="step-meta">${t("stepOf", state.step + 1, TOTAL_STEPS)}</div>
+      ${stepHtml}
+      <div class="nav-row">
+        ${state.step > 0 ? `<button class="btn-secondary" id="back-btn" type="button">${t("back")}</button>` : "<span></span>"}
+        ${isLast
+          ? `<button class="btn-primary" id="submit-btn" type="button" style="width:auto;padding:14px 22px;">${state.submitting ? t("submitting") : t("submitBtn")}</button>`
+          : (needsNextButton
+              ? `<button class="btn-primary" id="next-btn" type="button" style="width:auto;padding:14px 22px;">${t("next")}</button>`
+              : "<span></span>")}
+      </div>
+      <div class="error" id="step-error">${state.submitError}</div>
+    </section>
+  `;
+}
+
+function choiceRow(field, options) {
+  return `<div class="choice-grid">${options.map(opt => `
+    <button type="button" class="choice ${state.answers[field] === opt.v ? "selected" : ""}" data-field="${field}" data-value="${opt.v}">
+      ${opt.label}
+    </button>`).join("")}</div>`;
+}
+
+function renderQ1() {
+  return `
+    <h2 class="q-title">${t("q1Title")}</h2>
+    <p class="q-help">${t("q1Help")}</p>
+    ${choiceRow("state", [
+      { v: "FL", label: t("stFL") },
+      { v: "CT", label: t("stCT") },
+      { v: "MA", label: t("stMA") },
+      { v: "OTHER", label: t("stOther") },
+    ])}
+  `;
+}
+function renderQ2() {
+  return `
+    <h2 class="q-title">${t("q2Title")}</h2>
+    <p class="q-help">${t("q2Help")}</p>
+    ${choiceRow("residency", [
+      { v: "citizen", label: t("resCitizen") },
+      { v: "pr", label: t("resPR") },
+      { v: "ead", label: t("resEAD") },
+      { v: "itin", label: t("resITIN") },
+      { v: "daca", label: t("resDACA") },
+      { v: "other", label: t("resOther") },
+    ])}
+  `;
+}
+function renderQ3() {
+  return `
+    <h2 class="q-title">${t("q3Title")}</h2>
+    <p class="q-help">${t("q3Help")}</p>
+    ${choiceRow("employment", [
+      { v: "w2", label: t("empW2") },
+      { v: "self", label: t("empSelf") },
+      { v: "both", label: t("empBoth") },
+      { v: "retired", label: t("empRetired") },
+      { v: "none", label: t("empNone") },
+    ])}
+  `;
+}
+function renderQ4() {
+  return `
+    <h2 class="q-title">${t("q4Title")}</h2>
+    <p class="q-help">${t("q4Help")}</p>
+    ${choiceRow("situation", [
+      { v: "rent_buy",        label: t("sitRentBuy") },
+      { v: "rent_invest",     label: t("sitRentInvest") },
+      { v: "own_refi",        label: t("sitOwnRefi") },
+      { v: "own_heloc",       label: t("sitOwnHeloc") },
+      { v: "own_buy_another", label: t("sitOwnBuyAnother") },
+      { v: "own_sell",        label: t("sitOwnSell") },
+      { v: "explore",         label: t("sitExplore") },
+    ])}
+  `;
+}
+function renderQ5() {
+  return `
+    <h2 class="q-title">${t("q5Title")}</h2>
+    <p class="q-help">${t("q5Help")}</p>
+    ${choiceRow("timeline", [
+      { v: "now",     label: t("tlNow") },
+      { v: "1to3",    label: t("tl1_3") },
+      { v: "3to6",    label: t("tl3_6") },
+      { v: "6to12",   label: t("tl6_12") },
+      { v: "12plus",  label: t("tl12plus") },
+    ])}
+  `;
+}
+function renderQ6() {
+  return `
+    <h2 class="q-title">${t("q6Title")}</h2>
+    <p class="q-help">${t("q6Help")}</p>
+    ${choiceRow("scoreRange", [
+      { v: "excellent", label: t("scoreExcellent") },
+      { v: "good",      label: t("scoreGood") },
+      { v: "fair",      label: t("scoreFair") },
+      { v: "below620",  label: t("scoreBelow620") },
+      { v: "unknown",   label: t("scoreUnknown") },
+      { v: "noFile",    label: t("scoreNoFile") },
+    ])}
+  `;
+}
+function renderQ7() {
+  // Multi-select — requires Next button (handled in renderForm)
+  const items = state.answers.reportItems || [];
+  const itemBtn = (v, label) => `
+    <button type="button" class="choice ${items.includes(v) ? "selected" : ""}" data-multi-item="${v}">
+      ${label}
+    </button>`;
+  return `
+    <h2 class="q-title">${t("q7Title")}</h2>
+    <p class="q-help">${t("q7Help")}</p>
+    <div class="choice-grid">
+      ${itemBtn("collections", t("itemCollections"))}
+      ${itemBtn("late",        t("itemLate"))}
+      ${itemBtn("medical",     t("itemMedical"))}
+      ${itemBtn("bk",          t("itemBK"))}
+      ${itemBtn("fc",          t("itemFC"))}
+      ${itemBtn("au",          t("itemAU"))}
+      ${itemBtn("maxed",       t("itemMaxed"))}
+      ${itemBtn("none",        t("itemNone"))}
+      ${itemBtn("notSure",     t("itemNotSure"))}
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px;">${t("q7HelpMulti")}</p>
+  `;
+}
+function renderQ8() {
+  const a = state.answers;
+  return `
+    <h2 class="q-title">${t("q8Title")}</h2>
+    <p class="q-help">${t("q8Help")}</p>
+    <div class="field-row">
+      <div class="field"><label>${t("firstName")}</label><input id="f-firstName" type="text" value="${escapeHtml(a.firstName)}" autocomplete="given-name" /></div>
+      <div class="field"><label>${t("lastName")}</label><input id="f-lastName" type="text" value="${escapeHtml(a.lastName)}" autocomplete="family-name" /></div>
+    </div>
+    <div class="field"><label>${t("emailLabel")}</label><input id="f-email" type="email" value="${escapeHtml(a.email)}" autocomplete="email" inputmode="email" /></div>
+    <div class="field"><label>${t("phoneLabel")}</label><input id="f-phone" type="tel" value="${escapeHtml(a.phone)}" autocomplete="tel" inputmode="tel" /></div>
+    <div class="field">
+      <label>${t("bestTime")}</label>
+      <select id="f-bestTime">
+        <option value="any" ${a.bestTime==="any"?"selected":""}>${t("timeAny")}</option>
+        <option value="morning" ${a.bestTime==="morning"?"selected":""}>${t("timeMorning")}</option>
+        <option value="afternoon" ${a.bestTime==="afternoon"?"selected":""}>${t("timeAfternoon")}</option>
+        <option value="evening" ${a.bestTime==="evening"?"selected":""}>${t("timeEvening")}</option>
+      </select>
+    </div>
+    <label class="consent">
+      <input type="checkbox" id="f-consent" ${a.consent ? "checked" : ""} />
+      <span>${t("consentText")}</span>
+    </label>
+  `;
+}
+
+function renderSuccess() {
+  const showCalendar = showCalendarFor(state.outcome);
+  let sub = t("okSubGoodFit");
+  if (state.outcome === "outOfState") sub = t("okSubOutOfState");
+  if (state.outcome === "challenge")  sub = t("okSubChallenge");
+  if (state.outcome === "lowInfo")    sub = t("okSubLowInfo");
+  if (state.outcome === "borderline") sub = t("okSubBorderline");
+
+  const callBlock = showCalendar ? `
+    <h3 style="font-size:18px;color:var(--cream);margin:18px 0 10px;">${t("okBookHeader")}</h3>
+    <div class="calendar-wrap">
+      <iframe src="${CONFIG.calendarEmbedUrl}" title="Book a call with Rodrigo" loading="lazy"></iframe>
+      <div class="calendar-fallback">${t("okBookFallback")} <a href="${CONFIG.calendarShareUrl}" target="_blank" rel="noopener">${t("okBookFallbackLink")}</a></div>
+    </div>
+  ` : (state.outcome === "outOfState" ? "" : `
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px;">
+      <a class="btn-primary" style="display:inline-block;text-decoration:none;padding:13px 20px;font-size:14px;" href="mailto:${CONFIG.loEmail}?subject=${encodeURIComponent('Credit analysis follow-up')}">${t("okEmailMe")}</a>
+      <a class="btn-secondary" href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">${t("okDmMe")}</a>
+    </div>
+  `);
+
+  return `
+    <section class="card">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">${t("okTitle")}</h2>
+      <p class="success-sub">${sub}</p>
+
+      ${callBlock}
+
+      ${renderHomework()}
+
+      <div class="success-actions">
+        <a class="btn-secondary" href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">${t("okInstagram")}</a>
+        <button class="btn-secondary" id="restart-btn" type="button">${t("okStartOver")}</button>
+      </div>
+    </section>
+  `;
+}
+
+function renderHomework() {
+  return `
+    <div class="homework">
+      <h3>${t("homeworkHeader")}</h3>
+      <p class="intro">${t("homeworkIntro")}</p>
+
+      <div class="step">
+        <h4>${t("homeworkReportTitle")}</h4>
+        <p>${t("homeworkReportBody")}</p>
+        <a href="https://www.annualcreditreport.com/" target="_blank" rel="noopener nofollow">${t("homeworkReportLink")}</a>
+      </div>
+
+      <div class="step">
+        <h4>${t("homeworkScoreTitle")}</h4>
+        <p>${t("homeworkScoreBody")}</p>
+        <ul>
+          <li><a href="https://www.discover.com/credit-cards/free-credit-score/" target="_blank" rel="noopener nofollow" style="background:transparent;padding:0;border:0;color:var(--gold2);">${t("homeworkSrcDiscover")}</a></li>
+          <li><a href="https://www.experian.com/consumer-products/free-credit-report.html" target="_blank" rel="noopener nofollow" style="background:transparent;padding:0;border:0;color:var(--gold2);">${t("homeworkSrcExperian")}</a></li>
+          <li>${t("homeworkSrcBankApp")}</li>
+        </ul>
+        <p class="fico-note">${t("homeworkFicoNote")}</p>
+        <a href="https://www.myfico.com/" target="_blank" rel="noopener nofollow">${t("homeworkMyFicoLink")}</a>
+      </div>
+
+      <div class="legal-notice">${t("fcraNotice")}</div>
+      <div class="legal-notice">${t("noCompensationNotice")}</div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// HANDLERS
+// ============================================================================
+function wireHandlers() {
+  document.getElementById("lang-btn").onclick = () => {
+    state.lang = state.lang === "en" ? "pt" : "en";
+    render();
+  };
+
+  if (state.view === "hero") {
+    const b = document.getElementById("start-btn");
+    if (b) b.onclick = () => { state.view = "form"; state.step = 0; render(); };
+    return;
+  }
+
+  if (state.view === "form") {
+    // Single-select choices (Q1-Q6): auto-advance on click
+    document.querySelectorAll(".choice[data-field]").forEach(btn => {
+      btn.onclick = () => {
+        const f = btn.dataset.field;
+        state.answers[f] = btn.dataset.value;
+        state.submitError = "";
+        if (state.step < TOTAL_STEPS - 1) state.step++;
+        render();
+      };
+    });
+
+    // Multi-select items (Q7): toggle, require Next
+    document.querySelectorAll("[data-multi-item]").forEach(btn => {
+      btn.onclick = () => {
+        const v = btn.dataset.multiItem;
+        const items = state.answers.reportItems;
+        // "none" and "notSure" are mutually exclusive with everything else
+        if (v === "none" || v === "notSure") {
+          state.answers.reportItems = items.includes(v) ? [] : [v];
+        } else {
+          const filtered = items.filter(x => x !== "none" && x !== "notSure");
+          state.answers.reportItems = filtered.includes(v)
+            ? filtered.filter(x => x !== v)
+            : [...filtered, v];
+        }
+        state.submitError = "";
+        render();
+      };
+    });
+
+    const back = document.getElementById("back-btn");
+    if (back) back.onclick = () => { state.step = Math.max(0, state.step - 1); state.submitError = ""; render(); };
+
+    const next = document.getElementById("next-btn");
+    if (next) next.onclick = () => {
+      if (!validateStep()) { render(); return; }
+      state.step++;
+      state.submitError = "";
+      render();
+    };
+
+    const submit = document.getElementById("submit-btn");
+    if (submit) submit.onclick = handleSubmit;
+
+    // Contact step (Q8, zero-indexed = 7)
+    if (state.step === 7) {
+      ["firstName","lastName","email","phone","bestTime"].forEach(k => {
+        const el = document.getElementById("f-" + k);
+        if (el) el.oninput = el.onchange = (e) => { state.answers[k] = e.target.value; };
+      });
+      const c = document.getElementById("f-consent");
+      if (c) c.onchange = (e) => { state.answers.consent = e.target.checked; };
+    }
+    return;
+  }
+
+  if (state.view === "success") {
+    const r = document.getElementById("restart-btn");
+    if (r) r.onclick = () => {
+      Object.assign(state.answers, {
+        state:null, residency:null, employment:null, situation:null,
+        timeline:null, scoreRange:null, reportItems:[],
+        firstName:"", lastName:"", email:"", phone:"", bestTime:"any", consent:false,
+      });
+      state.view = "hero"; state.step = 0; state.outcome = null; state.submitError = "";
+      render();
+    };
+  }
+}
+
+function validateStep() {
+  const a = state.answers;
+  // Steps 0..5 are single-select; step 6 is multi-select; step 7 is contact.
+  const singleFields = ["state","residency","employment","situation","timeline","scoreRange"];
+  if (state.step <= 5) {
+    if (!a[singleFields[state.step]]) { state.submitError = t("fieldErr"); return false; }
+    return true;
+  }
+  if (state.step === 6) {
+    if (!a.reportItems || a.reportItems.length === 0) {
+      state.submitError = t("multiSelectErr");
+      return false;
+    }
+    return true;
+  }
+  // Step 7 — contact
+  if (!a.firstName || !a.lastName) { state.submitError = t("fieldErr"); return false; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email)) { state.submitError = t("emailErr"); return false; }
+  if (a.phone.replace(/\D/g, "").length < 10) { state.submitError = t("phoneErr"); return false; }
+  if (!a.consent) { state.submitError = t("consentErr"); return false; }
+  return true;
+}
+
+// ============================================================================
+// FIT LOGIC — decides which success message + whether to show calendar
+// ============================================================================
+// Items severe enough to require a personal conversation (no self-serve booking).
+const SEVERE_ITEMS = new Set(["bk", "fc", "medical"]);
+
+// Lender overlays per Rod's shop:
+//   FHA 580 (first-time, owner-occupied purchase only)
+//   Refinance / HELOC: 640 minimum
+//   Everything else: 620 minimum
+function programMinimum(situation) {
+  if (situation === "sit_own_refi" || situation === "sit_own_heloc") return 640;
+  if (situation === "sit_rent_buy" || situation === "sit_explore")   return 580;
+  return 620;
+}
+
+// Numerical bounds for each reported score bucket.
+function scoreRangeBounds(scoreRange) {
+  switch (scoreRange) {
+    case "excellent": return [740, 850];
+    case "good":      return [680, 739];
+    case "fair":      return [620, 679];
+    case "below620":  return [300, 619];
+    default:          return null; // unknown / noFile
+  }
+}
+
+function computeOutcome(a) {
+  if (a.state === "OTHER") return "outOfState";
+
+  // Severe report items always require a personal conversation.
+  const hasSevereItem = (a.reportItems || []).some(x => SEVERE_ITEMS.has(x));
+  if (hasSevereItem) return "challenge";
+
+  // No score info — Rod needs to walk through it personally.
+  if (a.scoreRange === "unknown" || a.scoreRange === "noFile") return "lowInfo";
+  if ((a.reportItems || []).includes("notSure")) return "lowInfo";
+
+  const min = programMinimum(a.situation);
+  const bounds = scoreRangeBounds(a.scoreRange);
+  if (!bounds) return "lowInfo";
+
+  // Entire range below the situation's minimum -> not eligible without rebuild.
+  if (bounds[1] < min) return "challenge";
+  // Entire range at or above minimum -> eligible, self-serve booking OK.
+  if (bounds[0] >= min) return "goodFit";
+  // Range straddles minimum -> need exact number to confirm.
+  return "borderline";
+}
+
+// Show calendar only for outcomes where self-serve booking is appropriate.
+function showCalendarFor(outcome) {
+  return outcome === "goodFit";
+}
+
+function buildLeadSummary(a, outcome) {
+  const min = programMinimum(a.situation);
+  const bounds = scoreRangeBounds(a.scoreRange);
+  const rangeStr = bounds ? (bounds[0] + "–" + bounds[1]) : (a.scoreRange || "n/a");
+  return [
+    "=== LEAD: Free Credit Analysis + Game Plan ===",
+    "Outcome: " + outcome,
+    "State: " + a.state,
+    "Residency: " + a.residency,
+    "Employment: " + a.employment,
+    "Situation/Intent: " + a.situation,
+    "Program minimum FICO (this path): " + min,
+    "Timeline: " + a.timeline,
+    "Score bucket: " + a.scoreRange + " (" + rangeStr + ")",
+    "Report items: " + (a.reportItems || []).join(", "),
+    "Best time: " + a.bestTime,
+    "Language: " + state.lang,
+    "Submitted: " + new Date().toISOString(),
+  ].join("\n");
+}
+
+// ============================================================================
+// SUBMIT — Formspree
+// ============================================================================
+async function handleSubmit() {
+  if (!validateStep()) { render(); return; }
+  state.submitting = true;
+  state.submitError = "";
+  render();
+
+  const a = state.answers;
+  const outcome = computeOutcome(a);
+  const payload = {
+    _subject: `Credit Analysis Lead — ${a.firstName} ${a.lastName} (${a.state}, ${outcome}, ${a.situation || "?"})`,
+    name: `${a.firstName} ${a.lastName}`,
+    firstName: a.firstName,
+    lastName: a.lastName,
+    email: a.email,
+    phone: a.phone,
+    bestTime: a.bestTime,
+    state: a.state,
+    residency: a.residency,
+    employment: a.employment,
+    situation: a.situation,
+    timeline: a.timeline,
+    scoreRange: a.scoreRange,
+    reportItems: (a.reportItems || []).join(", "),
+    outcome: outcome,
+    language: state.lang,
+    consentGiven: a.consent ? "yes" : "no",
+    leadSummary: buildLeadSummary(a, outcome),
+    source: "rodmortgage.netlify.app/credit",
+  };
+
+  try {
+    const res = await fetch(CONFIG.formspreeEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Formspree " + res.status);
+    state.outcome = outcome;
+    state.view = "success";
+    state.submitting = false;
+    render();
+  } catch (err) {
+    console.error(err);
+    state.submitting = false;
+    state.submitError = t("submitErr");
+    render();
+  }
+}
+
+// ============================================================================
+// HELPERS
+// ============================================================================
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, ch => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[ch]));
+}
+
+// boot
+render();
+</script>
+</body>
+</html>
