@@ -36,10 +36,45 @@ const CONFIG = {
   companyLogo: "https://www.ideallending.net/wp-content/uploads/131x38-ideal-lending-logo-new.png",
 
   // Integrations
+  // formspreeEndpoint kept here as a fallback / reference; the form now posts to the
+  // Netlify Function below, which fans out to Formspree (Rod) + the partner realtor (if any).
   formspreeEndpoint: "https://formspree.io/f/mqewrlyl",
+  leadRouterEndpoint: "/.netlify/functions/lead-router",
   calendarUrl: "https://calendar.app.google/M685UpALDBEUYxpJA",
   reviewsUrl: "https://my.ideal5star.com/showcase/rodrigo-deoliveira",
   instagramUrl: "https://www.instagram.com/rodmortgage",
+
+  // -------------------------------------------------------------------------
+  // CO-MARKETING REALTOR PARTNERS  (RESPA §8(c)(2) safe-harbor compliant)
+  // -------------------------------------------------------------------------
+  // Each realtor gets a personalized URL: rodmortgage.net/?r=<slug>
+  // Onboarding: realtor sends Rod their info, Rod adds an entry below, commits, pushes.
+  // Leads are auto-delivered to BOTH Rod AND the matched realtor by the Netlify
+  // Function at /netlify/functions/lead-router.mts.
+  //
+  // To remove a realtor: delete or comment out their entry, push.
+  // To pause without deleting: set `paused: true`.
+  realtors: {
+    "demo-realtor": {
+      name: "Demo Realtor (placeholder)",
+      title: "REALTOR®",
+      license: "FL BK0000000",
+      brokerage: "Sample Brokerage",
+      email: "demo@example.com",
+      photo: "",                 // direct URL to headshot (jpg/png); leave "" to show initials
+      paused: false,
+    },
+    // Add more entries here. Example:
+    // "jane-doe": {
+    //   name: "Jane Doe",
+    //   title: "REALTOR®",
+    //   license: "FL BK1234567",
+    //   brokerage: "ABC Realty",
+    //   email: "jane@abcrealty.com",
+    //   photo: "https://example.com/jane.jpg",
+    //   paused: false,
+    // },
+  },
 
   // Conventional rate matrix (BPMI, par rates, primary, SFR)
   rates: {
@@ -104,7 +139,14 @@ const i18n = {
     cmpAprLabel: "Estimated APR",
     aprNote: "*Estimated APR (Annual Percentage Rate) includes typical lender fees and points and may be higher than the interest rate displayed. Actual APR depends on your final loan terms, credit profile, and closing costs. This is an estimate only, not a commitment to lend.",
     consentText: "By submitting, I consent to receive phone calls, text messages (SMS), and emails from Rodrigo DeOliveira and Ideal Lending LLC at the contact info I provide, including via automated technology and pre-recorded messages, regarding my mortgage inquiry. Consent is not required as a condition of service. Message and data rates may apply. Reply STOP to opt out.",
+    consentRealtorAddendum: " I also consent to share my contact information with {realtor} of {brokerage} so they can follow up about my home search.",
     consentErr: "Please consent to be contacted to continue.",
+
+    // Realtor co-marketing strings
+    partnerBadgeLabel: "In partnership with",
+    partnerLicenseLabel: "License",
+    antiTyingTitle: "Your choice, your right",
+    antiTyingNotice: "You are not required to use Rodrigo DeOliveira / Ideal Lending for your mortgage even if you choose {realtor} to represent you in your home purchase. You may shop for your loan and your real estate agent independently. {realtor} and Rodrigo are independent service providers.",
     privacyHeader: "Your privacy",
     privacyNotice: "Your information is used only to respond to your mortgage inquiry. Data is transmitted via Formspree (our form processor) to Rodrigo DeOliveira at Ideal Lending LLC. We do not sell your information.",
     privacyPolicyLink: "Privacy Policy",
@@ -275,7 +317,14 @@ const i18n = {
     cmpAprLabel: "APR Estimado",
     aprNote: "*APR estimado (Taxa Percentual Anual) inclui taxas típicas do credor e pontos e pode ser maior que a taxa de juros exibida. O APR real depende dos seus termos finais de empréstimo, perfil de crédito e custos de fechamento. Esta é uma estimativa apenas, não um compromisso de empréstimo.",
     consentText: "Ao enviar, eu autorizo receber ligações, mensagens de texto (SMS) e e-mails de Rodrigo DeOliveira e Ideal Lending LLC nos contatos fornecidos, incluindo por tecnologia automatizada e mensagens pré-gravadas, sobre minha consulta hipotecária. O consentimento não é condição para o serviço. Tarifas de mensagem e dados podem ser aplicadas. Responda STOP para cancelar.",
+    consentRealtorAddendum: " Também autorizo compartilhar minhas informações de contato com {realtor} da {brokerage} para que possam dar continuidade à minha busca por imóvel.",
     consentErr: "Por favor autorize o contato para continuar.",
+
+    // Strings de co-marketing com corretor
+    partnerBadgeLabel: "Em parceria com",
+    partnerLicenseLabel: "Licença",
+    antiTyingTitle: "Sua escolha, seu direito",
+    antiTyingNotice: "Você não é obrigado a usar Rodrigo DeOliveira / Ideal Lending para seu financiamento mesmo que escolha {realtor} para te representar na compra. Você pode escolher seu empréstimo e seu corretor de imóveis de forma independente. {realtor} e Rodrigo são prestadores de serviços independentes.",
     privacyHeader: "Sua privacidade",
     privacyNotice: "Suas informações são usadas apenas para responder à sua consulta hipotecária. Os dados são transmitidos via Formspree (nosso processador de formulários) para Rodrigo DeOliveira na Ideal Lending LLC. Não vendemos suas informações.",
     privacyPolicyLink: "Política de Privacidade",
@@ -562,9 +611,65 @@ a:hover { color: var(--gold); }
 .lo-tag-text strong { font-size: 12px; color: var(--cream); font-weight: 600; }
 .lo-tag-text span { font-size: 10px; color: var(--muted); }
 
+/* Partner realtor strip — appears only when ?r=<slug> is in the URL */
+.partner-strip {
+  background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.partner-label {
+  font-size: 10px; color: var(--muted);
+  letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+}
+.partner-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 14px 6px 6px;
+  background: var(--dark3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.partner-card img, .partner-card .partner-initials {
+  width: 32px; height: 32px;
+  border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--gold2);
+}
+.partner-card .partner-initials {
+  background: linear-gradient(135deg, var(--blue3), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 12px;
+  border-color: var(--gold2);
+}
+.partner-card-text { display: flex; flex-direction: column; line-height: 1.15; }
+.partner-card-text strong { font-size: 13px; color: var(--cream); font-weight: 700; }
+.partner-card-text span { font-size: 11px; color: var(--muted); }
+.partner-card-text span .pipe { color: var(--border); margin: 0 5px; }
+
+/* Anti-tying disclosure box — shown when a realtor is active */
+.anti-tying {
+  max-width: 720px;
+  margin: 16px auto -8px;
+  padding: 12px 16px;
+  background: var(--dark2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.anti-tying strong { color: var(--cream); display: block; margin-bottom: 4px; font-size: 12px; }
+
 @media (max-width: 640px) {
   .lo-tag { display: none; }
   .topbar { padding: 12px 16px; }
+  .partner-strip { padding: 10px 14px; gap: 10px; }
+  .partner-label { display: none; }
+  .partner-card { padding: 5px 12px 5px 5px; }
 }
 
 /* HERO */
@@ -988,6 +1093,29 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
     </div>
   </div>
 
+  <!-- Partner realtor strip (populated by JS when ?r=<slug> matches a config entry) -->
+  <div id="partnerStrip" class="partner-strip" hidden>
+    <span class="partner-label" data-i18n="partnerBadgeLabel"></span>
+    <div class="partner-card">
+      <span id="partnerInitials" class="partner-initials" hidden></span>
+      <img id="partnerPhoto" alt="" hidden />
+      <div class="partner-card-text">
+        <strong id="partnerName"></strong>
+        <span>
+          <span id="partnerBrokerage"></span>
+          <span class="pipe">·</span>
+          <span data-i18n="partnerLicenseLabel"></span> <span id="partnerLicense"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Anti-tying disclosure (RESPA §8(c)(2) / §1024.20 anti-tying) — only shown when realtor active -->
+  <div id="antiTyingBox" class="anti-tying" hidden>
+    <strong data-i18n="antiTyingTitle"></strong>
+    <span id="antiTyingText"></span>
+  </div>
+
   <section class="hero">
     <h1><span data-i18n="pageTitle">Find the Home You Can Afford</span></h1>
     <p data-i18n="pageSub"></p>
@@ -1305,8 +1433,60 @@ const state = {
   zip: "33433", taxRate: 0.015, hoiRate: 0.008, hoa: 0,
   immigration: null, employment: null, tenure: "2_5",
   propOwn: null, bankruptcy: null, timeline: null,
-  firstName: "", lastName: "", email: "", phone: "", callTime: "Morning"
+  firstName: "", lastName: "", email: "", phone: "", callTime: "Morning",
+  // Realtor partner from ?r= URL param. null when none / invalid.
+  realtor: null,
+  realtorSlug: null,
 };
+
+// ----------------------------------------------------------------------------
+// Realtor partner detection — reads ?r=<slug> from URL, looks up in CONFIG.realtors,
+// renders the partner strip + anti-tying disclosure, and arms submission.
+// ----------------------------------------------------------------------------
+function detectRealtor() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const slug = (params.get('r') || '').trim().toLowerCase();
+    if (!slug) return;
+    const r = CONFIG.realtors && CONFIG.realtors[slug];
+    if (!r || r.paused) return;
+    state.realtorSlug = slug;
+    state.realtor = r;
+  } catch (e) { /* fail silent, solo flow */ }
+}
+
+function renderRealtorUi() {
+  const strip = document.getElementById('partnerStrip');
+  const anti  = document.getElementById('antiTyingBox');
+  if (!state.realtor) {
+    if (strip) strip.hidden = true;
+    if (anti)  anti.hidden  = true;
+    return;
+  }
+  const r = state.realtor;
+  // Photo OR initials
+  const photoEl = document.getElementById('partnerPhoto');
+  const initEl  = document.getElementById('partnerInitials');
+  if (r.photo) {
+    photoEl.src = r.photo;
+    photoEl.alt = r.name + ' headshot';
+    photoEl.hidden = false;
+    initEl.hidden = true;
+  } else {
+    const initials = (r.name || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+    initEl.textContent = initials;
+    initEl.hidden = false;
+    photoEl.hidden = true;
+  }
+  document.getElementById('partnerName').textContent      = r.name;
+  document.getElementById('partnerBrokerage').textContent = r.brokerage || '';
+  document.getElementById('partnerLicense').textContent   = r.license   || '—';
+  // Inject realtor name+brokerage into anti-tying notice
+  document.getElementById('antiTyingText').textContent =
+    t('antiTyingNotice').replace(/\{realtor\}/g, r.name).replace(/\{brokerage\}/g, r.brokerage || '');
+  strip.hidden = false;
+  anti.hidden  = false;
+}
 
 function ficoBracket(score) {
   if (score >= 780) return "780+";
@@ -1614,17 +1794,38 @@ async function submitForm() {
     "Buying Timeline": state.timeline,
     "Estimated APR": r.rate ? `${((r.rate + 0.0025)*100).toFixed(3)}%` : "—",
     "TCPA Consent": state.consent ? "Yes — granted at " + state.consentTimestamp : "No",
-    "Consent Text Version": "v1.0 (May 2026)",
+    "Consent Text Version": "v1.1 (May 2026 + realtor addendum)",
+    // Realtor co-marketing attribution (empty when solo flow)
+    "Realtor Slug": state.realtorSlug || "",
+    "Realtor Name": state.realtor ? state.realtor.name : "",
+    "Realtor Brokerage": state.realtor ? (state.realtor.brokerage || "") : "",
+    "Realtor License": state.realtor ? (state.realtor.license || "") : "",
+    "Realtor Email": state.realtor ? (state.realtor.email || "") : "",
   };
+  // Tag the email subject so realtor leads are instantly recognizable in the inbox
+  if (state.realtor) {
+    payload._subject = `New lead via ${state.realtor.name} (${state.realtorSlug}): ${state.firstName} ${state.lastName}`;
+  }
   document.getElementById('nextBtn').disabled = true;
   document.getElementById('nextBtn').textContent = t('submitting');
   try {
-    await fetch(CONFIG.formspreeEndpoint, {
+    // POST to the Netlify Function, which fans out to Rod's Formspree + the matched realtor.
+    // Function falls back to direct Formspree if it errors, so solo flow is never broken.
+    await fetch(CONFIG.leadRouterEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
     });
-  } catch (e) { console.error('Submit failed:', e); }
+  } catch (e) {
+    console.error('Lead router failed, falling back to Formspree direct:', e);
+    try {
+      await fetch(CONFIG.formspreeEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e2) { console.error('Direct fallback also failed:', e2); }
+  }
   showStep('success');
   document.getElementById('nextBtn').disabled = false;
 }
@@ -1660,9 +1861,26 @@ function applyLang() {
       document.getElementById('nextBtn').textContent = (pqStep === state.prequalSteps) ? t('submitBtn') : t('next');
     }
   }
+  // Re-apply realtor-dependent text (anti-tying notice, consent addendum)
+  renderRealtorUi();
+  applyConsentAddendum();
+}
+
+// When a realtor partner is active, append a lead-sharing addendum to the TCPA consent text.
+// The data-i18n attribute auto-applies the base text on language toggle; we re-append after.
+function applyConsentAddendum() {
+  const consentEl = document.querySelector('.consent-text-block[data-i18n="consentText"]');
+  if (!consentEl) return;
+  if (!state.realtor) return; // base data-i18n text is already set; nothing to append
+  const addendum = t('consentRealtorAddendum')
+    .replace(/\{realtor\}/g, state.realtor.name)
+    .replace(/\{brokerage\}/g, state.realtor.brokerage || '');
+  consentEl.textContent = t('consentText') + addendum;
 }
 
 function init() {
+  detectRealtor();   // read ?r=<slug> and set state.realtor before first render
+
   document.getElementById('topHeadshot').src = CONFIG.loHeadshot;
   document.getElementById('topHeadshot').alt = CONFIG.loName;
   document.getElementById('footerHeadshot').src = CONFIG.loHeadshot;

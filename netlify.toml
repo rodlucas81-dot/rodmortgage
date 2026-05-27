@@ -1,0 +1,9 @@
+# Netlify build + function config for rodmortgage.net
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
