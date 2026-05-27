@@ -39,26 +39,37 @@ export default async (req: Request) => {
   }
 
   // Fan out in parallel: Formspree (always) + realtor email (when applicable).
-  const tasks: Promise<unknown>[] = [];
-  tasks.push(forwardToFormspree(payload));
+  const tasks: { name: string; promise: Promise<unknown> }[] = [];
+  tasks.push({ name: "formspree", promise: forwardToFormspree(payload) });
 
   const realtorEmail = String(payload["Realtor Email"] || "").trim();
+  let realtorRoutingState: "sent" | "skipped_no_key" | "skipped_no_email" = "skipped_no_email";
   if (realtorEmail) {
-    tasks.push(sendToRealtor(realtorEmail, payload));
+    const apiKey = (globalThis as any).Netlify?.env?.get?.("RESEND_API_KEY")
+      || process.env.RESEND_API_KEY;
+    if (apiKey) {
+      realtorRoutingState = "sent";
+      tasks.push({ name: "resend_realtor", promise: sendToRealtor(realtorEmail, payload, apiKey) });
+    } else {
+      realtorRoutingState = "skipped_no_key";
+    }
   }
 
-  // settled, not all — we want partial success to still return ok
-  const results = await Promise.allSettled(tasks);
-  const errors = results
-    .filter((r) => r.status === "rejected")
-    .map((r) => (r as PromiseRejectedResult).reason?.message || "unknown");
+  const results = await Promise.allSettled(tasks.map((t) => t.promise));
+  const detail = results.map((r, i) => ({
+    task: tasks[i].name,
+    status: r.status,
+    error: r.status === "rejected" ? (r as PromiseRejectedResult).reason?.message || "unknown" : undefined,
+  }));
+  const errors = detail.filter((d) => d.status === "rejected");
 
   return new Response(
     JSON.stringify({
-      ok: true,
-      delivered: results.length - errors.length,
-      attempted: results.length,
-      errors,
+      ok: errors.length < tasks.length, // ok unless EVERYTHING failed
+      delivered: tasks.length - errors.length,
+      attempted: tasks.length,
+      realtorRoutingState,
+      detail,
     }),
     { status: 200, headers: { "Content-Type": "application/json" } },
   );
@@ -83,15 +94,8 @@ async function forwardToFormspree(payload: Record<string, unknown>) {
 async function sendToRealtor(
   toEmail: string,
   payload: Record<string, unknown>,
+  apiKey: string,
 ) {
-  const apiKey = (globalThis as any).Netlify?.env?.get?.("RESEND_API_KEY")
-    || process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    // Resend not configured yet — skip silently. Rod gets the lead via Formspree
-    // and can manually forward to the realtor until Resend env vars are set.
-    return;
-  }
-
   const from = (globalThis as any).Netlify?.env?.get?.("RESEND_FROM")
     || process.env.RESEND_FROM
     || "Rodrigo DeOliveira <leads@rodmortgage.net>";
