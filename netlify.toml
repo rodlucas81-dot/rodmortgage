@@ -14,8 +14,13 @@
 # which is what carries the partner strip, the RESPA anti-tying disclosure and
 # the realtor routing. A 200 rewrite serves that page while leaving the URL
 # (and the ?r= param the page reads) untouched.
+#
+# force = true is required: Netlify serves an existing static file (/index.html)
+# in preference to a non-forced rewrite, so without it this rule never fires and
+# partner links silently land on the mini application.
 [[redirects]]
   from = "/"
   query = {r = ":slug"}
-  to = "/afford/?r=:slug"
+  to = "/afford/index.html"
   status = 200
+  force = true
