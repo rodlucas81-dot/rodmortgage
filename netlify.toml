@@ -7,3 +7,15 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+# The mini application is now the homepage. The affordability check moved to
+# /afford/, but every realtor partner link already handed out is of the form
+# rodmortgage.net/?r=<slug> — those must keep reaching the affordability flow,
+# which is what carries the partner strip, the RESPA anti-tying disclosure and
+# the realtor routing. A 200 rewrite serves that page while leaving the URL
+# (and the ?r= param the page reads) untouched.
+[[redirects]]
+  from = "/"
+  query = {r = ":slug"}
+  to = "/afford/?r=:slug"
+  status = 200
