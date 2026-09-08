@@ -16,6 +16,19 @@
 <script src="https://cdn.userway.org/widget.js" data-account="IUuYGCGogX"></script>
 
 <script>
+// Realtor partner links are rodmortgage.net/?r=<slug> and belong to the
+// affordability flow at /afford/, which is what carries the partner strip, the
+// RESPA anti-tying disclosure and the realtor routing. A forced Netlify rewrite
+// handles this at the edge; this runs first as the guard for when it doesn't,
+// because a partner link landing here silently drops the attribution and the
+// disclosure. Runs before anything renders, so there's no flash of this page.
+(function routeRealtorLinks() {
+  try {
+    const slug = new URLSearchParams(location.search).get("r");
+    if (slug) location.replace("/afford/" + location.search);
+  } catch (e) { /* no URLSearchParams — the edge rewrite still covers this */ }
+})();
+
 const CONFIG = {
   loName: "Rodrigo DeOliveira",
   loTitle: "Mortgage Specialist",
