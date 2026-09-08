@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Mini Aplicação de Financiamento Imobiliário — Rodrigo DeOliveira</title>
-<meta name="description" content="Mini aplicação de financiamento imobiliário (pré-qualificação) em português. Responda ~20 perguntas rápidas e receba os programas que servem para o seu caso. Não pedimos SSN e não consultamos seu crédito. Rodrigo DeOliveira, Ideal Lending LLC." />
+<meta name="description" content="Mini aplicação de financiamento imobiliário (pré-qualificação) em português. Responda algumas perguntas rápidas e receba os programas que servem para o seu caso. Não pedimos SSN e não consultamos seu crédito. Rodrigo DeOliveira, Ideal Lending LLC." />
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0f18'/%3E%3Ctext x='50' y='66' text-anchor='middle' font-size='52' font-weight='700' fill='%23f0c85a' font-family='serif'%3ER%3C/text%3E%3C/svg%3E" />
 
@@ -66,10 +66,10 @@ const i18n = {
     /* HERO */
     badge: "MINI APLICAÇÃO · PRÉ-QUALIFICAÇÃO",
     heroTitle: "Mini Aplicação de <span class='gold'>Financiamento</span>",
-    heroSub: "Cerca de 20 perguntas rápidas sobre o imóvel, sua renda e seu perfil. Eu analiso e te mando quais programas de financiamento servem para o seu caso, quanto você provavelmente consegue, e o que falta para fechar.",
+    heroSub: "Algumas perguntas rápidas sobre o imóvel, sua renda e seu perfil. Eu analiso e te mando quais programas de financiamento servem para o seu caso, quanto você provavelmente consegue, e o que falta para fechar.",
     notAppNote: "Isto é uma pré-qualificação informativa. <strong>Não é</strong> a aplicação formal de empréstimo (Uniform Residential Loan Application / Form 1003) nem compromisso de crédito. Não pedimos seu SSN nem data de nascimento aqui, e não consultamos seu crédito.",
     trustTime: "5 Minutos",
-    trustTimeSub: "~20 perguntas",
+    trustTimeSub: "Perguntas rápidas",
     trustNoPull: "Sem Consulta",
     trustNoPullSub: "Seu score não é tocado",
     trustNoSSN: "Sem SSN",
@@ -79,7 +79,7 @@ const i18n = {
 
     /* NAV / CHROME */
     sectionLabel: "Seção {0} de {1} · {2}",
-    stepOf: "Pergunta {0} de {1}",
+    progressLabel: "Seu progresso",
     back: "← Voltar",
     next: "Próximo →",
     submitBtn: "Enviar Minha Aplicação",
@@ -435,10 +435,10 @@ const i18n = {
     /* HERO */
     badge: "MINI APPLICATION · PRE-QUALIFICATION",
     heroTitle: "Mini <span class='gold'>Mortgage</span> Application",
-    heroSub: "About 20 quick questions about the property, your income and your profile. I review it and send you which loan programs fit your case, roughly how much you can get, and what's missing to close.",
+    heroSub: "A few quick questions about the property, your income and your profile. I review it and send you which loan programs fit your case, roughly how much you can get, and what's missing to close.",
     notAppNote: "This is an informational pre-qualification. It is <strong>not</strong> the formal loan application (Uniform Residential Loan Application / Form 1003) and not a commitment to lend. We do not ask for your SSN or date of birth here, and we do not pull your credit.",
     trustTime: "5 Minutes",
-    trustTimeSub: "~20 questions",
+    trustTimeSub: "Quick questions",
     trustNoPull: "No Credit Pull",
     trustNoPullSub: "Your score is untouched",
     trustNoSSN: "No SSN",
@@ -448,7 +448,7 @@ const i18n = {
 
     /* NAV / CHROME */
     sectionLabel: "Section {0} of {1} · {2}",
-    stepOf: "Question {0} of {1}",
+    progressLabel: "Your progress",
     back: "← Back",
     next: "Next →",
     submitBtn: "Submit My Application",
@@ -909,11 +909,21 @@ a:hover { color: var(--gold); }
   background: var(--dark2); border: 1px solid var(--border); border-radius: 18px;
   padding: 24px 22px; margin-top: 8px;
 }
-.progress { height: 6px; background: var(--dark3); border-radius: 999px; overflow: hidden; margin-bottom: 14px; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue3)); transition: width .3s ease; border-radius: 999px; }
+/* With the question count gone, this bar is the only sense of "how far in am
+   I" — so it's given real presence rather than a hairline. */
+.progress {
+  height: 10px; background: var(--dark3); border-radius: 999px;
+  overflow: hidden; margin-bottom: 12px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--blue), var(--blue3));
+  transition: width .45s cubic-bezier(.4, 0, .2, 1); border-radius: 999px;
+  box-shadow: 0 0 12px rgba(59,127,245,0.55);
+}
 
 .meta-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-.step-meta { color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.step-meta { color: var(--blue3); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
 .section-chip {
   background: rgba(37,99,235,0.14); border: 1px solid rgba(59,127,245,0.35);
   color: #cfe0ff; font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
@@ -1696,10 +1706,13 @@ function renderForm() {
 
   return `
     <section class="card">
-      <div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+        aria-valuenow="${Math.round(pct)}" aria-label="${escapeHtml(t("progressLabel"))}">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
       <div class="meta-row">
-        <span class="step-meta">${t("stepOf", idx + 1, steps.length)}</span>
         <span class="section-chip">${t("sectionLabel", sec.index, sec.total, sec.name)}</span>
+        <span class="step-meta">${Math.round(pct)}%</span>
       </div>
       <h2 class="q-title">${t(step.title)}</h2>
       ${step.help ? `<p class="q-help">${t(step.help)}</p>` : ""}
