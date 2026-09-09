@@ -38,15 +38,46 @@ export default async (req: Request) => {
     });
   }
 
-  // Fan out in parallel: Formspree (always) + realtor email (when applicable).
-  const tasks: { name: string; promise: Promise<unknown> }[] = [];
-  tasks.push({ name: "formspree", promise: forwardToFormspree(payload) });
+  const apiKey = (globalThis as any).Netlify?.env?.get?.("RESEND_API_KEY")
+    || process.env.RESEND_API_KEY;
 
+  const detail: { task: string; status: string; error?: string }[] = [];
+
+  // ---- Rod's copy -----------------------------------------------------------
+  // Resend is the primary channel. Formspree used to be, but because this
+  // function posts server-side there is no browser Referer/Origin and the IP is
+  // a datacenter, so Formspree's filter classified real leads as spam and never
+  // emailed them — two were lost that way. Formspree is now only a safety net
+  // for when Resend fails, so a lead can still never disappear silently.
+  let primaryChannel: "resend" | "formspree" | "none" = "none";
+
+  if (apiKey) {
+    try {
+      await notifyRod(payload, apiKey);
+      primaryChannel = "resend";
+      detail.push({ task: "resend_rod", status: "fulfilled" });
+    } catch (e) {
+      detail.push({ task: "resend_rod", status: "rejected", error: (e as Error)?.message || "unknown" });
+    }
+  } else {
+    detail.push({ task: "resend_rod", status: "skipped_no_key" });
+  }
+
+  if (primaryChannel !== "resend") {
+    try {
+      await forwardToFormspree(payload);
+      primaryChannel = "formspree";
+      detail.push({ task: "formspree_fallback", status: "fulfilled" });
+    } catch (e) {
+      detail.push({ task: "formspree_fallback", status: "rejected", error: (e as Error)?.message || "unknown" });
+    }
+  }
+
+  // ---- Partner realtor's copy ----------------------------------------------
   const realtorEmail = String(payload["Realtor Email"] || "").trim();
   let realtorRoutingState: "sent" | "skipped_no_key" | "skipped_no_email" = "skipped_no_email";
+  const tasks: { name: string; promise: Promise<unknown> }[] = [];
   if (realtorEmail) {
-    const apiKey = (globalThis as any).Netlify?.env?.get?.("RESEND_API_KEY")
-      || process.env.RESEND_API_KEY;
     if (apiKey) {
       realtorRoutingState = "sent";
       tasks.push({ name: "resend_realtor", promise: sendToRealtor(realtorEmail, payload, apiKey) });
@@ -56,24 +87,105 @@ export default async (req: Request) => {
   }
 
   const results = await Promise.allSettled(tasks.map((t) => t.promise));
-  const detail = results.map((r, i) => ({
+  results.forEach((r, i) => detail.push({
     task: tasks[i].name,
     status: r.status,
     error: r.status === "rejected" ? (r as PromiseRejectedResult).reason?.message || "unknown" : undefined,
   }));
-  const errors = detail.filter((d) => d.status === "rejected");
+  // "ok" now means the one thing that matters: Rod's copy went somewhere.
+  // A realtor send failing is worth reporting but isn't a lost lead.
+  const rodDelivered = primaryChannel !== "none";
 
   return new Response(
     JSON.stringify({
-      ok: errors.length < tasks.length, // ok unless EVERYTHING failed
-      delivered: tasks.length - errors.length,
-      attempted: tasks.length,
+      ok: rodDelivered,
+      primaryChannel,
       realtorRoutingState,
       detail,
     }),
     { status: 200, headers: { "Content-Type": "application/json" } },
   );
 };
+
+// ----------------------------------------------------------------------------
+// Rod's own copy of every lead, sent directly rather than via a form service.
+// ROD_EMAIL accepts a comma-separated list if more than one inbox should get it.
+async function notifyRod(payload: Record<string, unknown>, apiKey: string) {
+  const from = (globalThis as any).Netlify?.env?.get?.("RESEND_FROM")
+    || process.env.RESEND_FROM
+    || "Rodrigo DeOliveira <leads@rodmortgage.net>";
+
+  const to = String(
+    (globalThis as any).Netlify?.env?.get?.("ROD_EMAIL")
+      || process.env.ROD_EMAIL
+      || "rodrigo@ideallending.net",
+  ).split(",").map((s) => s.trim()).filter(Boolean);
+
+  const name = String(payload["Name"] || payload.name || "New lead").trim();
+  const email = String(payload["Email"] || payload.email || "").trim();
+  const phone = String(payload["Phone"] || payload.phone || "").trim();
+  const subject = String(payload["_subject"] || `New lead: ${name}`);
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from,
+      to,
+      subject,
+      html: buildRodEmailHtml(name, email, phone, payload),
+      // Replying to the notification replies to the borrower.
+      reply_to: email || undefined,
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`resend_rod_${res.status}: ${body.slice(0, 200)}`);
+  }
+}
+
+function buildRodEmailHtml(
+  name: string,
+  email: string,
+  phone: string,
+  p: Record<string, unknown>,
+): string {
+  const digits = phone.replace(/\D/g, "");
+  const wa = digits.length === 10 ? `1${digits}` : digits;
+
+  // The mini application ships a ready-made plain-text summary that already
+  // opens with the underwriting flags. When it's there it IS the email body;
+  // otherwise (affordability page) fall back to listing the fields.
+  const summary = String(p["Lead Summary"] || p.leadSummary || "").trim();
+  const body = summary
+    ? `<pre style="margin:0;padding:16px;background:#0b0f18;color:#e8edf8;border-radius:10px;
+         font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+         white-space:pre-wrap;word-break:break-word;">${escapeHtml(summary)}</pre>`
+    : `<table style="width:100%;border-collapse:collapse;">${
+        Object.entries(p)
+          .filter(([k, v]) => !k.startsWith("_") && v !== "" && v !== null && v !== undefined)
+          .map(([k, v]) =>
+            `<tr><td style="padding:5px 14px 5px 0;color:#6b7280;font-size:13px;vertical-align:top;">${escapeHtml(k)}</td>` +
+            `<td style="padding:5px 0;color:#0f172a;font-size:13px;font-weight:600;">${escapeHtml(String(v))}</td></tr>`)
+          .join("")
+      }</table>`;
+
+  return `<!doctype html><html><body style="margin:0;padding:0;background:#f6f8fb;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<div style="max-width:640px;margin:24px auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+  <div style="padding:18px 24px;background:linear-gradient(135deg,#0b0f18,#181f2e);color:#fff;">
+    <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#f0c85a;font-weight:700;">New Lead</div>
+    <div style="font-size:20px;font-weight:700;margin-top:4px;">${escapeHtml(name)}</div>
+  </div>
+  <div style="padding:14px 24px;border-bottom:1px solid #e5e7eb;font-size:14px;">
+    ${phone ? `<a href="tel:+${escapeHtml(wa)}" style="display:inline-block;margin:4px 8px 4px 0;padding:9px 14px;background:#1a4fd6;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px;">Call ${escapeHtml(phone)}</a>
+    <a href="https://wa.me/${escapeHtml(wa)}" style="display:inline-block;margin:4px 8px 4px 0;padding:9px 14px;background:#25D366;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px;">WhatsApp</a>` : ""}
+    ${email ? `<a href="mailto:${escapeHtml(email)}" style="display:inline-block;margin:4px 0;padding:9px 14px;background:#374151;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px;">${escapeHtml(email)}</a>` : ""}
+  </div>
+  <div style="padding:18px 24px;">${body}</div>
+</div>
+</body></html>`;
+}
 
 // ----------------------------------------------------------------------------
 async function forwardToFormspree(payload: Record<string, unknown>) {
