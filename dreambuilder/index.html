@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DreamBuilder — Compre sua casa com 3,5% de entrada | Rodrigo DeOliveira</title>
+<meta name="description" content="Programa DreamBuilder: compre sua casa com 3,5% de entrada, mesmo com ITIN. Responda 2 minutos de perguntas e veja se você se qualifica. Bilíngue PT/EN. Rodrigo DeOliveira, Ideal Lending LLC." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2314285A'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='54' font-weight='700' fill='%23D4AF37' font-family='sans-serif'%3ER%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<script>
+/* =========================================================================
+   DREAMBUILDER PRE-QUALIFICATION LANDING PAGE
+   Single self-contained file — HTML + CSS + vanilla JS. No build step.
+   No localStorage/sessionStorage: all quiz state lives in the `state` object.
+   =========================================================================
+
+   ┌─────────────────────────────────────────────────────────────────────┐
+   │  TODO — RODRIGO: configure these three constants.                     │
+   │  They ship with your real working values (pulled from /credit), so    │
+   │  the page works out of the box. Swap LEAD_ENDPOINT if you want        │
+   │  DreamBuilder leads to land in a separate Formspree inbox.            │
+   └─────────────────────────────────────────────────────────────────────┘ */
+
+// TODO: Lead capture endpoint. Default is your existing Formspree form.
+//       Create a NEW Formspree form for DreamBuilder if you want these leads
+//       separated from the credit-page leads, then paste its URL here.
+const LEAD_ENDPOINT = "https://formspree.io/f/mqewrlyl";
+
+// TODO: Google Calendar Appointment Schedule — inline iframe embed URL
+//       (the "gv=true" version). Replace if you make a DreamBuilder-specific
+//       appointment type. For prefilled name/email + automation, you can swap
+//       this whole block for a Cal.com or Calendly embed instead.
+const CALENDAR_EMBED_URL = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ1jCHtZHW219HOtCUi2_87Nb5mvECiNMl5EREa0xxc-PWtZcyOi2GNIhiBC1f4NSFv7NjVZvkeS?gv=true";
+
+// TODO: Public booking link (fallback button if the iframe doesn't load).
+const CALENDAR_BOOKING_URL = "https://calendar.app.google/M685UpALDBEUYxpJA";
+
+/* ---- Static brand / contact config (safe to edit) ---------------------- */
+const CONFIG = {
+  loName: "Rodrigo DeOliveira",
+  nmls: "NMLS #1435896",
+  company: "Ideal Lending LLC",
+  companyNmls: "NMLS #2471779",
+  loEmail: "rodrigo@ideallending.net",
+  loHeadshot: "https://www.ideallending.net/wp-content/uploads/rodrigo-2024-350.png",
+  instagramUrl: "https://www.instagram.com/rodmortgage",
+  privacyPolicyUrl: "https://rodmortgage.net/privacy_policy",
+};
+
+/* =========================================================================
+   i18n — every visible string, keyed by language. Toggling re-renders all.
+   ========================================================================= */
+const UI = {
+  pt: {
+    langSwitch: "EN",
+    // Hero
+    heroBadge: "PROGRAMA DREAMBUILDER",
+    heroTitle: 'Compre sua casa com <span class="gold">3,5% de entrada</span> — mesmo com ITIN.',
+    heroSub: "Responda 2 minutos de perguntas e veja se você se qualifica pro DreamBuilder.",
+    heroCta: "Ver se eu me qualifico",
+    // How it works
+    howTitle: "Como funciona",
+    howSteps: [
+      "Você escolhe a casa.",
+      "Uma entidade habilitada compra pra você e você se muda como futuro dono.",
+      "Você constrói equity e, quando se qualifica, refinancia pro seu nome."
+    ],
+    // Stepper chrome
+    stepOf: "Pergunta {0} de {1}",
+    back: "← Voltar",
+    next: "Próximo →",
+    seeResult: "Ver meu resultado →",
+    fieldErr: "Por favor responda esta pergunta.",
+    emailErr: "Por favor insira um e-mail válido.",
+    phoneErr: "Por favor insira um telefone válido.",
+    nameErr: "Por favor insira seu nome.",
+    submitting: "Enviando…",
+    // Result
+    resultBadgeA: "✅ Forte candidato",
+    resultBadgeB: "⚠️ Vamos avaliar",
+    resultBadgeC: "🧭 Outro caminho",
+    resultA: "Seu perfil tem tudo a ver com o DreamBuilder! Bora agendar uma conversa rápida pra montar seu cenário.",
+    resultB: "Dá pra trabalhar o seu caso — tem alguns pontos a ajustar. Vamos conversar e traçar um plano.",
+    resultC: "O DreamBuilder pode não ser o ideal agora, mas quase sempre existe um caminho. Me chama que a gente vê suas opções.",
+    resultDisclaimer: "Pré-qualificação não é aprovação nem compromisso de empréstimo; sujeito a análise.",
+    bookHeader: "Agendar conversa",
+    bookFallback: "Se o calendário não carregar:",
+    bookFallbackLink: "Agendar no Google Calendar →",
+    emailMe: "Mandar e-mail",
+    dmMe: "DM @rodmortgage no Instagram",
+    startOver: "Recomeçar",
+    leadSavedNote: "Recebi suas respostas — já estão comigo. Agende abaixo pra acelerar.",
+    // Footer
+    footerDisclosure: "Equal Housing Lender · Isto não é um compromisso de empréstimo.",
+    footerPrivacy: "Política de Privacidade",
+  },
+  en: {
+    langSwitch: "PT",
+    heroBadge: "DREAMBUILDER PROGRAM",
+    heroTitle: 'Buy your home with <span class="gold">3.5% down</span> — even with an ITIN.',
+    heroSub: "Take a 2-minute quiz to see if you qualify for DreamBuilder.",
+    heroCta: "See if I qualify",
+    howTitle: "How it works",
+    howSteps: [
+      "You choose the home.",
+      "A qualified entity buys it for you and you move in as the future owner.",
+      "You build equity and, once you qualify, refinance into your own name."
+    ],
+    stepOf: "Question {0} of {1}",
+    back: "← Back",
+    next: "Next →",
+    seeResult: "See my result →",
+    fieldErr: "Please answer this question.",
+    emailErr: "Please enter a valid email.",
+    phoneErr: "Please enter a valid phone number.",
+    nameErr: "Please enter your name.",
+    submitting: "Sending…",
+    resultBadgeA: "✅ Strong fit",
+    resultBadgeB: "⚠️ Let's review",
+    resultBadgeC: "🧭 Other path",
+    resultA: "You're a great fit for DreamBuilder! Let's book a quick call to map out your scenario.",
+    resultB: "We can work with your case — a couple of things to fine-tune. Let's talk and build a plan.",
+    resultC: "DreamBuilder may not be the best fit right now, but there's usually a path. Let's look at your options.",
+    resultDisclaimer: "Pre-qualification is not approval or a commitment to lend; subject to review.",
+    bookHeader: "Book a call",
+    bookFallback: "If the calendar doesn't load:",
+    bookFallbackLink: "Book on Google Calendar →",
+    emailMe: "Email Rodrigo",
+    dmMe: "DM @rodmortgage on Instagram",
+    startOver: "Start over",
+    leadSavedNote: "I've got your answers — they're with me already. Book below to move faster.",
+    footerDisclosure: "Equal Housing Lender · This is not a commitment to lend.",
+    footerPrivacy: "Privacy Policy",
+  }
+};
+
+/* =========================================================================
+   QUIZ DATA — single source of truth. Each option carries a stable `value`
+   and a scoring `tag` (logic-only, never shown): strong ✅ / review ⚠️ / gate ⛔.
+   Labels are localized per option. Steps render one per screen.
+
+   This is effectively the { pt:[...], en:[...] } structure the brief asks for,
+   merged into one array so tags can never drift out of sync between languages.
+   ========================================================================= */
+const QUIZ = [
+  { key: "goal", type: "single",
+    pt: "O que você quer fazer?", en: "What do you want to do?",
+    options: [
+      { value: "buy_live", tag: "strong", pt: "Comprar uma casa pra morar", en: "Buy a home to live in" },
+      { value: "invest",   tag: "gate",   pt: "Comprar pra investir ou alugar", en: "Buy to invest or rent" },
+      { value: "refi",     tag: "gate",   pt: "Refinanciar", en: "Refinance" },
+    ]
+  },
+  { key: "state", type: "single",
+    pt: "Em qual estado você quer comprar?", en: "Which state will you buy in?",
+    options: [
+      { value: "FL", tag: "strong", pt: "FL", en: "FL" },
+      { value: "GA", tag: "strong", pt: "GA", en: "GA" },
+      { value: "TX", tag: "strong", pt: "TX", en: "TX" },
+      { value: "TN", tag: "strong", pt: "TN", en: "TN" },
+      { value: "MA", tag: "strong", pt: "MA", en: "MA" },
+      { value: "CT", tag: "strong", pt: "CT", en: "CT" },
+      { value: "CO", tag: "strong", pt: "CO", en: "CO" },
+      { value: "other", tag: "gate", pt: "Outro estado", en: "Another state" },
+    ]
+  },
+  { key: "status", type: "single",
+    pt: "Qual a sua situação hoje?", en: "What's your status today?",
+    options: [
+      { value: "ssn",  tag: "strong", pt: "Cidadão ou Green Card (com SSN)", en: "US citizen or Green Card (with SSN)" },
+      { value: "itin", tag: "strong", pt: "Tenho ITIN (sem SSN)", en: "I have an ITIN (no SSN)" },
+      { value: "daca", tag: "strong", pt: "DACA", en: "DACA" },
+      { value: "other", tag: "review", pt: "Outro / não tenho certeza", en: "Other / not sure" },
+    ]
+  },
+  { key: "credit", type: "single",
+    pt: "Como está o seu score de crédito?", en: "How's your credit score?",
+    options: [
+      { value: "580plus", tag: "strong", pt: "580 ou mais", en: "580+" },
+      { value: "500_579", tag: "review", pt: "500–579", en: "500–579" },
+      { value: "none",    tag: "review", pt: "Não tenho score / não sei", en: "No score / not sure" },
+    ]
+  },
+  { key: "down", type: "single",
+    pt: "Você tem (ou consegue) ~3,5% de entrada? Pode ser dinheiro de presente.",
+    en: "Do you have (or can you get) ~3.5% down? Gift funds allowed.",
+    options: [
+      { value: "yes",  tag: "strong", pt: "Sim, tenho", en: "Yes" },
+      { value: "gift", tag: "strong", pt: "Consigo com ajuda/gift", en: "With gift help" },
+      { value: "not_yet", tag: "review", pt: "Ainda não / não sei", en: "Not yet / not sure" },
+    ]
+  },
+  { key: "rent", type: "single",
+    pt: "Você paga aluguel e consegue comprovar 12 meses pagando em dia?",
+    en: "Do you pay rent and can you prove 12 months on-time?",
+    options: [
+      { value: "yes_doc", tag: "strong", pt: "Sim, e consigo comprovar", en: "Yes, can document" },
+      { value: "informal", tag: "review", pt: "Pago, mas é informal", en: "I pay, but it's informal" },
+      { value: "family", tag: "review", pt: "Moro com família (não pago)", en: "Live with family (no rent)" },
+    ]
+  },
+  { key: "income_docs", type: "single",
+    pt: "Como você comprova sua renda?", en: "How do you document income?",
+    options: [
+      { value: "w2",   tag: "strong", pt: "W-2 / holerite", en: "W-2 / pay stub" },
+      { value: "bank", tag: "strong", pt: "Autônomo — extrato bancário", en: "Self-employed — bank statements" },
+      { value: "1099", tag: "strong", pt: "1099 / contractor", en: "1099 / contractor" },
+      { value: "hard", tag: "review", pt: "É difícil comprovar", en: "Hard to document" },
+    ]
+  },
+  { key: "monthly_income", type: "single",
+    pt: "Renda mensal aproximada da família?", en: "Approx monthly household income?",
+    options: [ // no tag — stored for context only
+      { value: "lt3k",  pt: "Até $3.000", en: "Up to $3,000" },
+      { value: "3_5k",  pt: "$3.000–$5.000", en: "$3,000–$5,000" },
+      { value: "5_8k",  pt: "$5.000–$8.000", en: "$5,000–$8,000" },
+      { value: "8kplus", pt: "$8.000+", en: "$8,000+" },
+    ]
+  },
+  { key: "price", type: "single",
+    pt: "Faixa de preço da casa?", en: "Home price range?",
+    options: [ // no tag
+      { value: "lt250", pt: "Até $250k", en: "Up to $250k" },
+      { value: "250_400", pt: "$250k–$400k", en: "$250k–$400k" },
+      { value: "400_550", pt: "$400k–$550k", en: "$400k–$550k" },
+      { value: "550plus", pt: "$550k+", en: "$550k+" },
+    ]
+  },
+  { key: "derog", type: "single",
+    pt: "Nos últimos 2 anos: falência, foreclosure ou short sale?",
+    en: "In the last 2 years: bankruptcy, foreclosure or short sale?",
+    options: [
+      { value: "no",       tag: "strong", pt: "Não", en: "No" },
+      { value: "resolved", tag: "review", pt: "Sim, já resolvido", en: "Yes, resolved" },
+      { value: "recent",   tag: "gate",   pt: "Sim, recente ou em aberto", en: "Yes, recent or open" },
+    ]
+  },
+  { key: "timeline", type: "single",
+    pt: "Quando quer comprar?", en: "When do you want to buy?",
+    options: [ // no tag — priority only
+      { value: "0_3",  pt: "0–3 meses", en: "0–3 months" },
+      { value: "3_6",  pt: "3–6 meses", en: "3–6 months" },
+      { value: "6_12", pt: "6–12 meses", en: "6–12 months" },
+      { value: "research", pt: "Só pesquisando", en: "Just researching" },
+    ]
+  },
+  { key: "contact", type: "form",
+    pt: "Quase lá! Pra onde mando seu resultado?",
+    en: "Almost there! Where should I send your result?",
+    fields: [
+      { name: "name",  type: "text",  required: true,  pt: "Nome", en: "Name", autocomplete: "name" },
+      { name: "phone", type: "tel",   required: true,  pt: "WhatsApp / telefone", en: "WhatsApp / phone", autocomplete: "tel" },
+      { name: "email", type: "email", required: true,  pt: "E-mail", en: "Email", autocomplete: "email" },
+      { name: "pref_lang", type: "radio", required: true, pt: "Idioma preferido", en: "Preferred language",
+        options: [ { value: "PT", pt: "Português", en: "Portuguese" }, { value: "EN", pt: "Inglês", en: "English" } ] },
+    ]
+  },
+];
+
+/* =========================================================================
+   APP STATE — in-memory only (no storage APIs).
+   ========================================================================= */
+const state = {
+  lang: "pt",        // default PT, remembered in memory for the session
+  step: 0,           // 0 = hero/landing; 1..N = quiz steps; "result"
+  view: "landing",   // 'landing' | 'quiz' | 'result'
+  answers: {},       // { goal: "buy_live", ... }
+  contact: {},       // { name, phone, email, pref_lang }
+  tier: null,        // 'A' | 'B' | 'C'
+};
+</script>
+
+<style>
+:root {
+  --navy: #14285A;
+  --navy-dark: #0C193C;
+  --gold: #D4AF37;
+  --gold-soft: #e6c860;
+  --cream: #FAF6EB;
+  --white: #ffffff;
+  --gray: #5A5F6E;
+  --line: rgba(20,40,90,0.12);
+  --line-dark: rgba(255,255,255,0.14);
+  --shadow: 0 10px 30px rgba(12,25,60,0.12);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--cream);
+  color: var(--navy-dark);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { line-height: 1.2; font-weight: 700; }
+a { color: var(--navy); }
+
+.gold { color: var(--gold); }
+
+/* ---- Skip link (a11y) ---- */
+.skip-link {
+  position: absolute; left: -999px; top: 0; z-index: 200;
+  background: var(--gold); color: var(--navy-dark); padding: 10px 16px;
+  border-radius: 0 0 10px 0; font-weight: 700;
+}
+.skip-link:focus { left: 0; }
+
+/* ---- Top bar ---- */
+.topbar {
+  background: var(--navy);
+  color: var(--white);
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 18px;
+}
+.brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.brand img {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid var(--gold); object-fit: cover; background: var(--navy-dark);
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.brand-text strong { font-size: 13px; font-weight: 600; }
+.brand-text span { font-size: 11px; color: var(--gold-soft); }
+.lang-btn {
+  flex: none;
+  background: transparent; color: var(--white);
+  border: 1px solid var(--line-dark);
+  padding: 7px 15px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.lang-btn:hover, .lang-btn:focus-visible { border-color: var(--gold); color: var(--gold-soft); }
+
+/* ---- Sections / rhythm ---- */
+section { padding: 48px 20px; }
+.section-navy { background: var(--navy); color: var(--white); }
+.section-cream { background: var(--cream); color: var(--navy-dark); }
+.inner { max-width: 660px; margin: 0 auto; }
+
+/* ---- Hero ---- */
+.hero { text-align: center; }
+.badge {
+  display: inline-block; background: var(--gold); color: var(--navy-dark);
+  font-weight: 700; font-size: 11px; letter-spacing: 0.1em;
+  padding: 6px 14px; border-radius: 999px; margin-bottom: 18px;
+}
+.hero h1 { font-size: clamp(28px, 6.5vw, 42px); margin-bottom: 16px; }
+.hero .sub { font-size: clamp(16px, 2.4vw, 19px); color: var(--cream); opacity: 0.92; margin-bottom: 28px; }
+
+/* ---- Buttons ---- */
+.btn-primary {
+  display: inline-block; width: 100%; max-width: 420px;
+  background: var(--gold); color: var(--navy-dark);
+  font-weight: 700; font-size: 16px; font-family: inherit;
+  padding: 16px 22px; border: 0; border-radius: 14px; cursor: pointer;
+  box-shadow: 0 8px 22px rgba(212,175,55,0.35);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(212,175,55,0.45); }
+.btn-primary:focus-visible { outline: 3px solid var(--white); outline-offset: 2px; }
+.btn-primary:disabled { background: rgba(20,40,90,0.18); color: rgba(20,40,90,0.5); box-shadow: none; cursor: not-allowed; transform: none; }
+
+.btn-secondary {
+  background: transparent; color: var(--navy);
+  border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 13px 18px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.btn-secondary:hover, .btn-secondary:focus-visible { border-color: var(--gold); color: var(--navy-dark); }
+
+/* ---- How it works ---- */
+.how h2 { text-align: center; font-size: clamp(22px, 4vw, 30px); margin-bottom: 28px; }
+.how-grid { display: grid; gap: 16px; }
+.how-card {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--line-dark);
+  border-radius: 16px; padding: 22px 20px; display: flex; gap: 16px; align-items: flex-start;
+}
+.how-num {
+  flex: none; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--gold); color: var(--navy-dark);
+  display: grid; place-items: center; font-weight: 700; font-size: 17px;
+}
+.how-card p { font-size: 15px; color: var(--cream); }
+
+/* ---- Quiz card ---- */
+.quiz-wrap { max-width: 620px; margin: 0 auto; }
+.card {
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 20px; padding: 26px 22px; box-shadow: var(--shadow);
+}
+.progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.progress-meta span { font-size: 12px; font-weight: 600; color: var(--gray); }
+.progress-track { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 22px; }
+.progress-fill { height: 100%; background: var(--gold); border-radius: 999px; transition: width .3s ease; width: 0; }
+
+.q-title { font-size: clamp(19px, 3.2vw, 24px); color: var(--navy-dark); margin-bottom: 18px; }
+
+fieldset { border: 0; }
+legend { position: absolute; left: -9999px; } /* visually hidden; q-title is the visible label */
+
+/* Option cards (radio) */
+.options { display: grid; gap: 10px; }
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  border: 1.5px solid var(--line); border-radius: 12px;
+  padding: 14px 16px; cursor: pointer; background: var(--white);
+  transition: border-color .12s ease, background .12s ease;
+}
+.opt:hover { border-color: var(--gold); }
+.opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+.opt .mark {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--line); display: grid; place-items: center;
+}
+.opt .mark::after { content: ""; width: 11px; height: 11px; border-radius: 50%; background: transparent; }
+.opt .lbl { font-size: 15px; font-weight: 500; color: var(--navy-dark); }
+.opt.selected { border-color: var(--gold); background: #fff9e9; }
+.opt.selected .mark { border-color: var(--gold); }
+.opt.selected .mark::after { background: var(--gold); }
+.opt input:focus-visible + .mark { outline: 3px solid var(--navy); outline-offset: 2px; }
+
+/* Compact options for short labels (states) */
+.options.grid2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 380px) { .options.grid2 { grid-template-columns: 1fr; } }
+
+/* Form fields */
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 600; color: var(--gray); margin-bottom: 6px; }
+.field input[type=text], .field input[type=email], .field input[type=tel] {
+  width: 100%; padding: 13px 14px; font-size: 15px; font-family: inherit;
+  border: 1.5px solid var(--line); border-radius: 11px; color: var(--navy-dark); background: var(--white);
+}
+.field input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,0.2); }
+.radio-row { display: flex; gap: 10px; }
+.radio-row .opt { flex: 1; justify-content: center; }
+
+/* Errors */
+.err { color: #b3261e; font-size: 13px; font-weight: 600; margin-top: 12px; min-height: 18px; }
+
+/* Nav buttons */
+.nav-row { display: flex; gap: 10px; margin-top: 22px; }
+.nav-row .btn-secondary { flex: none; }
+.nav-row .btn-primary { flex: 1; }
+
+/* ---- Result ---- */
+.result-card { text-align: center; }
+.result-badge {
+  display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  padding: 7px 16px; border-radius: 999px; margin-bottom: 16px;
+}
+.badge-A { background: #e6f6ec; color: #1d7a44; }
+.badge-B { background: #fff4dd; color: #9a6b00; }
+.badge-C { background: #eef1f7; color: var(--navy); }
+.result-msg { font-size: clamp(17px, 2.6vw, 20px); color: var(--navy-dark); margin-bottom: 18px; }
+.lead-note { font-size: 13px; color: var(--gray); margin-bottom: 22px; }
+.micro-disclaimer { font-size: 12px; color: var(--gray); margin-top: 14px; line-height: 1.5; }
+
+/* Scheduling */
+.book-header { font-size: 18px; font-weight: 700; color: var(--navy-dark); margin: 26px 0 14px; }
+.cal-frame {
+  width: 100%; height: 620px; border: 1px solid var(--line); border-radius: 14px; background: var(--white);
+}
+.book-fallback { font-size: 13px; color: var(--gray); margin-top: 12px; }
+.alt-actions { display: grid; gap: 10px; margin-top: 18px; }
+
+/* ---- Footer ---- */
+footer { background: var(--navy-dark); color: var(--cream); padding: 28px 20px; text-align: center; }
+footer .f-inner { max-width: 660px; margin: 0 auto; }
+footer .names { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+footer .disc { font-size: 12px; color: rgba(250,246,235,0.75); line-height: 1.6; }
+footer a { color: var(--gold-soft); }
+footer .f-links { margin-top: 12px; font-size: 12px; }
+
+/* Hide helper */
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link" id="skipLink">Pular para o conteúdo</a>
+
+<!-- ============================ TOP BAR ============================ -->
+<header class="topbar">
+  <div class="brand">
+    <img id="brandImg" src="" alt="Rodrigo DeOliveira" />
+    <div class="brand-text">
+      <strong>Rodrigo DeOliveira</strong>
+      <span>NMLS #1435896 · Ideal Lending</span>
+    </div>
+  </div>
+  <button class="lang-btn" id="langBtn" type="button" aria-label="Switch language">EN</button>
+</header>
+
+<main id="main">
+  <!-- ============================ HERO ============================ -->
+  <section class="section-navy hero" id="heroSection">
+    <div class="inner">
+      <span class="badge" id="heroBadge"></span>
+      <h1 id="heroTitle"></h1>
+      <p class="sub" id="heroSub"></p>
+      <button class="btn-primary" id="heroCta" type="button"></button>
+    </div>
+  </section>
+
+  <!-- ======================= HOW IT WORKS ========================= -->
+  <section class="section-navy how" id="howSection" style="padding-top:0;">
+    <div class="inner">
+      <h2 id="howTitle"></h2>
+      <div class="how-grid" id="howGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============================ QUIZ =========================== -->
+  <section class="section-cream" id="quizSection">
+    <div class="quiz-wrap">
+      <div class="card" id="quizCard" aria-live="polite">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== RESULT ========================== -->
+  <section class="section-cream" id="resultSection" hidden>
+    <div class="quiz-wrap">
+      <div class="card result-card" id="resultCard" aria-live="polite">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer>
+  <div class="f-inner">
+    <p class="names">Rodrigo DeOliveira · NMLS #1435896 &nbsp;|&nbsp; Ideal Lending LLC · NMLS #2471779</p>
+    <p class="disc" id="footerDisc"></p>
+    <p class="f-links"><a id="footerPrivacy" href="" target="_blank" rel="noopener"></a></p>
+  </div>
+</footer>
+
+<script>
+/* =========================================================================
+   HELPERS
+   ========================================================================= */
+function t(key) { return UI[state.lang][key]; }
+function L(obj) { return obj[state.lang]; } // localized field of a data object
+function el(id) { return document.getElementById(id); }
+function fmt(str, ...args) { return str.replace(/\{(\d+)\}/g, (_, i) => args[i]); }
+
+/* =========================================================================
+   SCORING — pure function over answers. gate ⛔ > review ⚠️ > strong ✅.
+   Options without a tag (income, price, timeline) don't affect the tier.
+   ========================================================================= */
+function computeTier(answers) {
+  let hasGate = false, hasReview = false;
+  for (const q of QUIZ) {
+    if (q.type !== "single") continue;
+    const val = answers[q.key];
+    if (!val) continue;
+    const opt = q.options.find(o => o.value === val);
+    if (!opt || !opt.tag) continue;
+    if (opt.tag === "gate") hasGate = true;
+    else if (opt.tag === "review") hasReview = true;
+  }
+  if (hasGate) return "C";
+  if (hasReview) return "B";
+  return "A";
+}
+
+/* =========================================================================
+   STATIC CHROME RENDER (hero, how-it-works, footer, top bar)
+   ========================================================================= */
+function renderChrome() {
+  document.documentElement.lang = state.lang;
+  el("brandImg").src = CONFIG.loHeadshot;
+  el("langBtn").textContent = t("langSwitch");
+  el("langBtn").setAttribute("aria-label", state.lang === "pt" ? "Switch to English" : "Mudar para Português");
+  el("skipLink").textContent = state.lang === "pt" ? "Pular para o conteúdo" : "Skip to content";
+
+  el("heroBadge").textContent = t("heroBadge");
+  el("heroTitle").innerHTML = t("heroTitle");
+  el("heroSub").textContent = t("heroSub");
+  el("heroCta").textContent = t("heroCta");
+
+  el("howTitle").textContent = t("howTitle");
+  el("howGrid").innerHTML = t("howSteps").map((s, i) =>
+    `<div class="how-card"><div class="how-num">${i + 1}</div><p>${s}</p></div>`
+  ).join("");
+
+  el("footerDisc").textContent = t("footerDisclosure");
+  const priv = el("footerPrivacy");
+  priv.textContent = t("footerPrivacy");
+  priv.href = CONFIG.privacyPolicyUrl;
+}
+
+/* =========================================================================
+   QUIZ RENDER
+   ========================================================================= */
+function renderStep() {
+  const idx = state.step;              // 1-based into QUIZ
+  const q = QUIZ[idx - 1];
+  const total = QUIZ.length;
+  const pct = Math.round((idx / total) * 100);
+  const card = el("quizCard");
+  const isLast = idx === total;
+
+  let body;
+  if (q.type === "single") {
+    body = renderSingle(q);
+  } else if (q.type === "form") {
+    body = renderForm(q);
+  }
+
+  const nextLabel = isLast ? t("seeResult") : t("next");
+
+  card.innerHTML = `
+    <div class="progress-meta">
+      <span>${fmt(t("stepOf"), idx, total)}</span>
+      <span>${pct}%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    ${body}
+    <div class="err" id="stepErr" role="alert" aria-live="assertive"></div>
+    <div class="nav-row">
+      <button class="btn-secondary" id="backBtn" type="button" ${idx === 1 ? "disabled" : ""}>${t("back")}</button>
+      <button class="btn-primary" id="nextBtn" type="button">${nextLabel}</button>
+    </div>
+  `;
+
+  wireStep(q, isLast);
+
+  // Move keyboard focus to the question for screen-reader users.
+  const focusTarget = card.querySelector(".q-title");
+  if (focusTarget) { focusTarget.setAttribute("tabindex", "-1"); focusTarget.focus({ preventScroll: true }); }
+}
+
+function renderSingle(q) {
+  const useGrid = q.key === "state";
+  const opts = q.options.map(o => {
+    const selected = state.answers[q.key] === o.value ? "selected" : "";
+    const checked = state.answers[q.key] === o.value ? "checked" : "";
+    return `
+      <label class="opt ${selected}" data-value="${o.value}">
+        <input type="radio" name="${q.key}" value="${o.value}" ${checked} />
+        <span class="mark" aria-hidden="true"></span>
+        <span class="lbl">${L(o)}</span>
+      </label>`;
+  }).join("");
+  return `
+    <fieldset>
+      <legend>${L(q)}</legend>
+      <h2 class="q-title">${L(q)}</h2>
+      <div class="options ${useGrid ? "grid2" : ""}">${opts}</div>
+    </fieldset>`;
+}
+
+function renderForm(q) {
+  const c = state.contact;
+  const fields = q.fields.map(f => {
+    if (f.type === "radio") {
+      const opts = f.options.map(o => {
+        const sel = (c[f.name] || state.lang.toUpperCase()) === o.value ? "selected" : "";
+        const chk = (c[f.name] || state.lang.toUpperCase()) === o.value ? "checked" : "";
+        return `<label class="opt ${sel}" data-value="${o.value}">
+                  <input type="radio" name="${f.name}" value="${o.value}" ${chk} />
+                  <span class="mark" aria-hidden="true"></span>
+                  <span class="lbl">${L(o)}</span>
+                </label>`;
+      }).join("");
+      return `<div class="field"><label>${L(f)}</label><div class="radio-row">${opts}</div></div>`;
+    }
+    const val = c[f.name] ? c[f.name].replace(/"/g, "&quot;") : "";
+    return `<div class="field">
+      <label for="f_${f.name}">${L(f)}${f.required ? " *" : ""}</label>
+      <input id="f_${f.name}" name="${f.name}" type="${f.type}" value="${val}"
+             autocomplete="${f.autocomplete || "off"}" ${f.required ? "required" : ""} />
+    </div>`;
+  }).join("");
+  return `<h2 class="q-title">${L(q)}</h2>${fields}`;
+}
+
+/* =========================================================================
+   STEP WIRING (selection, validation, navigation)
+   ========================================================================= */
+function wireStep(q, isLast) {
+  const card = el("quizCard");
+
+  // Radio selection (works for single-choice steps and the form's lang radio)
+  card.querySelectorAll(".opt").forEach(opt => {
+    opt.addEventListener("click", () => {
+      const group = opt.querySelector("input").name;
+      card.querySelectorAll(`.opt input[name="${group}"]`).forEach(i => {
+        i.closest(".opt").classList.remove("selected");
+      });
+      opt.classList.add("selected");
+      opt.querySelector("input").checked = true;
+      clearErr();
+    });
+  });
+
+  el("backBtn").addEventListener("click", goBack);
+  el("nextBtn").addEventListener("click", () => goNext(q, isLast));
+
+  // Enter advances on text inputs
+  card.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"]').forEach(inp => {
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); goNext(q, isLast); } });
+  });
+}
+
+function clearErr() { const e = el("stepErr"); if (e) e.textContent = ""; }
+function showErr(msg) {
+  const e = el("stepErr");
+  if (e) { e.textContent = msg; }
+}
+
+function goBack() {
+  if (state.step > 1) { state.step--; renderStep(); scrollQuizIntoView(); }
+}
+
+function goNext(q, isLast) {
+  if (q.type === "single") {
+    const checked = el("quizCard").querySelector(`input[name="${q.key}"]:checked`);
+    if (!checked) { showErr(t("fieldErr")); return; }
+    state.answers[q.key] = checked.value;
+  } else if (q.type === "form") {
+    if (!validateForm(q)) return;
+  }
+
+  if (isLast) {
+    submitAndShowResult();
+  } else {
+    state.step++;
+    renderStep();
+    scrollQuizIntoView();
+  }
+}
+
+function validateForm(q) {
+  const card = el("quizCard");
+  const data = {};
+  for (const f of q.fields) {
+    if (f.type === "radio") {
+      const checked = card.querySelector(`input[name="${f.name}"]:checked`);
+      if (!checked && f.required) { showErr(t("fieldErr")); return false; }
+      if (checked) data[f.name] = checked.value;
+      continue;
+    }
+    const inp = el("f_" + f.name);
+    const val = (inp.value || "").trim();
+    if (f.required && !val) {
+      showErr(f.name === "name" ? t("nameErr") : t("fieldErr"));
+      inp.focus();
+      return false;
+    }
+    if (f.name === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      showErr(t("emailErr")); inp.focus(); return false;
+    }
+    if (f.name === "phone" && val.replace(/\D/g, "").length < 7) {
+      showErr(t("phoneErr")); inp.focus(); return false;
+    }
+    data[f.name] = val;
+  }
+  state.contact = data;
+  return true;
+}
+
+function scrollQuizIntoView() {
+  const target = state.view === "result" ? el("resultSection") : el("quizSection");
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* =========================================================================
+   LEAD CAPTURE — fires BEFORE the calendar. Never lose the lead.
+   On success OR failure we still show the result + booking step.
+   ========================================================================= */
+function buildLeadPayload() {
+  const payload = {
+    _subject: "DreamBuilder lead — " + (state.contact.name || "(no name)"),
+    name: state.contact.name || "",
+    phone: state.contact.phone || "",
+    email: state.contact.email || "",
+    preferred_language: state.contact.pref_lang || state.lang.toUpperCase(),
+    page_language: state.lang.toUpperCase(),
+    tier: state.tier,
+    program: "DreamBuilder",
+  };
+  // Include every quiz answer with a human-readable label (English, for the inbox).
+  for (const q of QUIZ) {
+    if (q.type !== "single") continue;
+    const val = state.answers[q.key];
+    if (!val) continue;
+    const opt = q.options.find(o => o.value === val);
+    payload["q_" + q.key] = opt ? opt.en : val;
+    if (opt && opt.tag) payload["tag_" + q.key] = opt.tag;
+  }
+  return payload;
+}
+
+async function submitAndShowResult() {
+  state.tier = computeTier(state.answers);
+
+  // Lock the button and show a sending state.
+  const nextBtn = el("nextBtn");
+  if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = t("submitting"); }
+
+  const payload = buildLeadPayload();
+
+  // POST the lead FIRST. Graceful failure: we proceed to the result either way
+  // so a misconfigured endpoint never costs Rodrigo the lead in front of him.
+  try {
+    if (LEAD_ENDPOINT && LEAD_ENDPOINT.startsWith("http")) {
+      await fetch(LEAD_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } else {
+      console.warn("[DreamBuilder] LEAD_ENDPOINT not configured — lead not sent:", payload);
+    }
+  } catch (err) {
+    // Swallow: the result + booking must still appear.
+    console.warn("[DreamBuilder] Lead POST failed (showing result anyway):", err);
+  }
+
+  showResult();
+}
+
+/* =========================================================================
+   RESULT + SCHEDULING RENDER
+   ========================================================================= */
+function showResult() {
+  state.view = "result";
+  el("quizSection").hidden = true;
+  el("resultSection").hidden = false;
+  renderResult();
+  scrollQuizIntoView();
+}
+
+function renderResult() {
+  const tier = state.tier;
+  const badgeKey = tier === "A" ? "resultBadgeA" : tier === "B" ? "resultBadgeB" : "resultBadgeC";
+  const msgKey = tier === "A" ? "resultA" : tier === "B" ? "resultB" : "resultC";
+
+  el("resultCard").innerHTML = `
+    <span class="result-badge badge-${tier}">${t(badgeKey)}</span>
+    <p class="result-msg">${t(msgKey)}</p>
+    <p class="lead-note">${t("leadSavedNote")}</p>
+
+    <!-- ================================================================
+         TODO: Google Calendar Appointment Schedule embed.
+         The iframe below uses CALENDAR_EMBED_URL (set at top of script).
+         For prefilled name/email + automation, swap this iframe for a
+         Cal.com or Calendly embed.
+         ================================================================ -->
+    <h3 class="book-header">${t("bookHeader")}</h3>
+    <iframe class="cal-frame" src="${CALENDAR_EMBED_URL}"
+            title="${t("bookHeader")}" loading="lazy"></iframe>
+    <p class="book-fallback">${t("bookFallback")}
+      <a href="${CALENDAR_BOOKING_URL}" target="_blank" rel="noopener">${t("bookFallbackLink")}</a>
+    </p>
+
+    <div class="alt-actions">
+      <a class="btn-secondary" href="mailto:${CONFIG.loEmail}">${t("emailMe")}</a>
+      <a class="btn-secondary" href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">${t("dmMe")}</a>
+      <button class="btn-secondary" id="startOverBtn" type="button">${t("startOver")}</button>
+    </div>
+
+    <p class="micro-disclaimer">${t("resultDisclaimer")}</p>
+  `;
+
+  el("startOverBtn").addEventListener("click", startOver);
+}
+
+function startOver() {
+  state.step = 1;
+  state.view = "quiz";
+  state.answers = {};
+  state.contact = {};
+  state.tier = null;
+  el("resultSection").hidden = true;
+  el("quizSection").hidden = false;
+  renderStep();
+  el("heroSection").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* =========================================================================
+   LANGUAGE TOGGLE — re-renders ALL visible copy live, preserving state.
+   ========================================================================= */
+function toggleLang() {
+  state.lang = state.lang === "pt" ? "en" : "pt";
+  renderChrome();
+  if (state.view === "result") renderResult();
+  else renderStep();
+}
+
+/* =========================================================================
+   INIT
+   ========================================================================= */
+function init() {
+  renderChrome();
+  state.step = 1;
+  state.view = "quiz";
+  renderStep();
+
+  el("langBtn").addEventListener("click", toggleLang);
+  el("heroCta").addEventListener("click", () => {
+    el("quizSection").scrollIntoView({ behavior: "smooth", block: "start" });
+    const ft = el("quizCard").querySelector(".q-title");
+    if (ft) ft.focus({ preventScroll: true });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
