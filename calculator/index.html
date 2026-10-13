@@ -18,9 +18,9 @@
 <script>
 const CONFIG = {
   loName: "Rodrigo DeOliveira",
-  loTitle: "Mortgage Loan Officer",
+  loTitle: "Lic. Mortgage Loan Originator",
   loEmail: "rodrigo@ideallending.net",
-  nmls: "NMLS #1435896",
+  nmls: "NMLS ID 1435896",
   company: "Ideal Lending LLC",
   companyNmls: "NMLS #2471779",
   companyStateLicense: "FL Lic. MLD2414",
@@ -95,13 +95,13 @@ const i18n = {
     footerOfficer: "Loan Originator",
     footerCompany: "Mortgage Lender",
     footerLicensesLabel: "State Licenses",
-    footerStateLicenseLine: "Florida Office Lic. MLD2414 · Massachusetts Mortgage Loan Originator License #1435896 · Licensed in CT, FL, MA",
+    footerStateLicenseLine: "Florida Office Lic. MLD2414 · MA Mortgage Lender & Broker Lic. MC2471779 · CT Mortgage Lender Lic. ML-2471779 · Massachusetts Mortgage Loan Originator License #1435896 · Licensed in CT, FL, MA",
     footerAddressLabel: "Office",
     footerNmlsLink: "Verify on NMLS Consumer Access",
     footerPrivacyLink: "Privacy Policy",
     footerAccessibilityLink: "Accessibility Statement",
     footerEho: "Equal Housing Lender · Equal Opportunity Employer",
-    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA) or any government agency or government-sponsored entity and this offer is not being made by an agency of the government. Ideal Lending LLC is a Licensed Mortgage Lender Servicer, FL MLD2414; Ideal Lending LLC only lends in CO, CT, FL, GA, MA, NJ, TN, TX. Reverse mortgages are not available in the state of MA. Refer to www.nmlsconsumeraccess.org and input NMLS 2471779 to see where Ideal Lending LLC is licensed. Equal Opportunity Employer; Equal Opportunity Lender. This is not an offer for extension of credit or commitment to lend. All loans must satisfy underwriting guidelines. Not all applicants qualify. Information and pricing are subject to change at any time and without notice. Certain restrictions may apply.",
+    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA) or any government agency or government-sponsored entity and this offer is not being made by an agency of the government. Ideal Lending LLC is a Licensed Mortgage Lender Servicer, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC only lends in CO, CT, FL, GA, MA, NJ, TN, TX. Reverse mortgages are not available in the state of MA. Refer to www.nmlsconsumeraccess.org and input NMLS 2471779 to see where Ideal Lending LLC is licensed. Equal Opportunity Employer; Equal Opportunity Lender. This is not an offer for extension of credit or commitment to lend. All loans must satisfy underwriting guidelines. Not all applicants qualify. Information and pricing are subject to change at any time and without notice. Certain restrictions may apply.",
     footerCopyright: "© Ideal Lending LLC. All rights reserved.",
   },
   pt: {
@@ -164,13 +164,13 @@ const i18n = {
     footerOfficer: "Originador de Empréstimo",
     footerCompany: "Credor Hipotecário",
     footerLicensesLabel: "Licenças Estaduais",
-    footerStateLicenseLine: "Florida Office Lic. MLD2414 · Massachusetts Mortgage Loan Originator License #1435896 · Licenciado em CT, FL, MA",
+    footerStateLicenseLine: "Florida Office Lic. MLD2414 · MA Mortgage Lender & Broker Lic. MC2471779 · CT Mortgage Lender Lic. ML-2471779 · Massachusetts Mortgage Loan Originator License #1435896 · Licenciado em CT, FL, MA",
     footerAddressLabel: "Escritório",
     footerNmlsLink: "Verificar no NMLS Consumer Access",
     footerPrivacyLink: "Política de Privacidade",
     footerAccessibilityLink: "Declaração de Acessibilidade",
     footerEho: "Equal Housing Lender · Equal Opportunity Employer",
-    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 não é afiliada nem está agindo em nome ou sob a direção da Federal Housing Administration (FHA) ou de qualquer agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Ideal Lending LLC é um Licensed Mortgage Lender Servicer, FL MLD2414; Ideal Lending LLC empresta apenas em CO, CT, FL, GA, MA, NJ, TN, TX. Hipotecas reversas não estão disponíveis no estado de MA. Consulte www.nmlsconsumeraccess.org e insira NMLS 2471779 para ver onde a Ideal Lending LLC está licenciada. Equal Opportunity Employer; Equal Opportunity Lender. Isto não é uma oferta de extensão de crédito ou compromisso de empréstimo. Todos os empréstimos devem atender às diretrizes de subscrição. Nem todos os candidatos se qualificam. Informações e preços estão sujeitos a alterações a qualquer momento e sem aviso prévio. Certas restrições podem se aplicar.",
+    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 não é afiliada nem está agindo em nome ou sob a direção da Federal Housing Administration (FHA) ou de qualquer agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Ideal Lending LLC é um Licensed Mortgage Lender Servicer, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC empresta apenas em CO, CT, FL, GA, MA, NJ, TN, TX. Hipotecas reversas não estão disponíveis no estado de MA. Consulte www.nmlsconsumeraccess.org e insira NMLS 2471779 para ver onde a Ideal Lending LLC está licenciada. Equal Opportunity Employer; Equal Opportunity Lender. Isto não é uma oferta de extensão de crédito ou compromisso de empréstimo. Todos os empréstimos devem atender às diretrizes de subscrição. Nem todos os candidatos se qualificam. Informações e preços estão sujeitos a alterações a qualquer momento e sem aviso prévio. Certas restrições podem se aplicar.",
     footerCopyright: "© Ideal Lending LLC. Todos os direitos reservados.",
   }
 };
@@ -871,7 +871,7 @@ function renderFooter() {
         <div class="foot-block">
           <div class="label">${t("footerOfficer")}</div>
           <div class="name">${CONFIG.loName}</div>
-          <div class="meta">${CONFIG.loTitle} · ${CONFIG.nmls}</div>
+          <div class="meta">${CONFIG.loTitle} | ${CONFIG.nmls}</div>
           <div class="meta"><a href="mailto:${CONFIG.loEmail}">${CONFIG.loEmail}</a> · <a href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">@rodmortgage</a></div>
         </div>
         <div class="foot-block">
@@ -908,7 +908,7 @@ function applyLang() {
   document.documentElement.lang = state.lang;
   document.getElementById("brand-img").src = CONFIG.loHeadshot;
   document.getElementById("brand-name").textContent = CONFIG.loName;
-  document.getElementById("brand-title").textContent = CONFIG.loTitle + " · " + CONFIG.nmls;
+  document.getElementById("brand-title").textContent = CONFIG.loTitle + " | " + CONFIG.nmls;
   document.getElementById("lang-btn").textContent = t("langSwitch");
 
   // Simple textContent fills

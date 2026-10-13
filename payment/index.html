@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How Much Home Fits My Payment? — Rodrigo DeOliveira Mortgage</title>
+<meta name="description" content="Start from the monthly payment you want — taxes, insurance, HOA and mortgage insurance included — and see the home price it buys, with today's market rates. Florida, Massachusetts and Connecticut." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230b0f18'/%3E%3Ctext x='50' y='66' text-anchor='middle' font-size='52' font-weight='700' fill='%23f0c85a' font-family='serif'%3E$%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<!-- UserWay accessibility widget — matches ideallending.net -->
+<script src="https://cdn.userway.org/widget.js" data-account="IUuYGCGogX"></script>
+
+<!-- ========================================================================
+     CONFIG — edit values here to update defaults, pricing and branding
+     ======================================================================== -->
+<script>
+const CONFIG = {
+  loName: "Rodrigo DeOliveira",
+  loTitle: "Lic. Mortgage Loan Originator",
+  loEmail: "rodrigo@ideallending.net",
+  whatsappNumber: "15616131935",
+  nmls: "NMLS ID 1435896",
+  company: "Ideal Lending LLC",
+  companyNmls: "NMLS #2471779",
+  companyStateLicense: "FL Lic. MLD2414",
+  companyAddress: "5589 Okeechobee Blvd STE 101, West Palm Beach, FL 33417",
+  loHeadshot: "https://www.ideallending.net/wp-content/uploads/rodrigo-2024-350.png",
+  instagramUrl: "https://www.instagram.com/rodmortgage",
+  privacyPolicyUrl: "https://rodmortgage.net/privacy_policy",
+  accessibilityStatementUrl: "https://www.ideallending.net/accessibility/",
+  nmlsConsumerAccessUrl: "https://www.nmlsconsumeraccess.org/",
+  calendarShareUrl: "https://calendar.app.google/M685UpALDBEUYxpJA",
+  applyUrl: "/",
+
+  // Live rates come from /netlify/functions/rates.mts (Optimal Blue daily
+  // index). If that call fails, these are used and labeled as estimates.
+  ratesEndpoint: "/.netlify/functions/rates",
+  fallbackRates: { conv: 0.0740, fha: 0.0718, va: 0.0713, jumbo: 0.0744 },
+
+  termMonths: 360,
+
+  // Used only when the buyer doesn't know the real numbers.
+  taxRateByState: { FL: 0.015, MA: 0.015, CT: 0.015 },
+  hoiRate: 0.008,            // homeowners insurance, % of price per year
+  condoHo6Monthly: 150,      // condo (HO-6) policy, flat per month
+
+  // 2026 limits (FHFA / HUD, one-unit)
+  conformingLimit: 832750,
+  highCostCeiling: 1249125,
+  fhaFloor: 541287,
+  fhaMipLoanBreak: 726200,
+
+  // Adjustments added to the market index. The index is an average across all
+  // borrowers, so strong credit prices below it and weak credit above it.
+  convFicoAdj: {
+    "760+": -0.0025, "740-759": -0.00125, "720-739": 0, "700-719": 0.00125,
+    "680-699": 0.0025, "660-679": 0.005, "640-659": 0.0075, "620-639": 0.01,
+  },
+  govFicoAdj: { "640+": 0, "620-639": 0.0025, "580-619": 0.005, "<580": 0.0075 },
+  occupancyAdj: { primary: 0, second: 0.00375, invest: 0.0075 },
+  nonQm: {
+    // spread over the conforming index, and the usual minimum down payment
+    bank:  { spread: 0.0125, minDown: 0.10 },
+    dscr:  { spread: 0.0150, minDown: 0.20 },
+    itin:  { spread: 0.0175, minDown: 0.15 },
+    fn:    { spread: 0.0200, minDown: 0.30 },
+    other: { spread: 0.0125, minDown: 0.10 },
+  },
+
+  // Conventional BPMI, annual % of loan — same table as /afford/
+  miFactors: {
+    "760+":     { 80: 0, 85: 0.0011, 90: 0.0015, 95: 0.0021, 97: 0.0031 },
+    "740-759":  { 80: 0, 85: 0.0014, 90: 0.0020, 95: 0.0030, 97: 0.0045 },
+    "720-739":  { 80: 0, 85: 0.0019, 90: 0.0026, 95: 0.0040, 97: 0.0060 },
+    "700-719":  { 80: 0, 85: 0.0028, 90: 0.0038, 95: 0.0055, 97: 0.0085 },
+    "680-699":  { 80: 0, 85: 0.0032, 90: 0.0044, 95: 0.0065, 97: 0.0089 },
+    "660-679":  { 80: 0, 85: 0.0050, 90: 0.0068, 95: 0.0095, 97: 0.0130 },
+    "640-659":  { 80: 0, 85: 0.0065, 90: 0.0085, 95: 0.0120, 97: 0.0175 },
+    "620-639":  { 80: 0, 85: 0.0080, 90: 0.0105, 95: 0.0150, 97: 0.0210 },
+  },
+  fhaUfmip: 0.0175,
+  vaFundingFee: { under5: 0.0215, under10: 0.015, tenPlus: 0.0125 },
+
+  // Reg Z §1026.24(c) — a displayed rate must be accompanied by an APR, and
+  // the APR must be a real one. computeApr() runs the actuarial method of
+  // Appendix J over the full payment stream (P&I + mortgage insurance for as
+  // long as it lasts), treating these as prepaid finance charges along with
+  // any financed FHA upfront premium or VA funding fee. Keep them in line with
+  // the fees you actually charge — the assumptions are printed on the page.
+  // The $270 credit report fee is deliberately left out: a bona fide credit
+  // report fee on a dwelling-secured loan is not a finance charge
+  // (§1026.4(c)(7)), so counting it would overstate the APR.
+  lenderFees: { application: 1195, processing: 595 },
+  prepaidInterestDays: 15,         // interest from closing to month-end; varies with the closing date
+  discountPoints: 0,               // % of loan; 0 = no points assumed
+
+  // Date the fallback rates above were last true. Shown when the live index
+  // can't be loaded, so an old number is never presented as today's.
+  fallbackAsOf: "2026-10-09",
+
+  // Programs Ideal Lending actually offers. Advertising a loan you can't
+  // make is bait advertising (FL §494.0025, MA 940 CMR 8.04) — set any you
+  // don't offer to false and the page stops showing it.
+  offered: { conv: true, jumbo: true, fha: true, va: true, bank: true, dscr: true, itin: true, fn: false, other: false },
+
+  // Massachusetts 940 CMR 8.04: every ad must show the lender's name, the
+  // word "lender" and its MA license number. Fill in before going live.
+  companyMaLicense: "MC2471779",
+
+  dtiForIncome: 0.45,
+};
+
+// ========================================================================
+//  i18n — bilingual strings (English / Portuguese). {0} {1} are filled in.
+// ========================================================================
+const i18n = {
+  en: {
+    langSwitch: "Português",
+    badge: "PAYMENT-FIRST CALCULATOR",
+    heroTitle: "How much home fits <span class='gold'>my payment?</span>",
+    heroSub: "Most calculators start with a price. This one starts with the monthly payment you're comfortable with — taxes, insurance, HOA and mortgage insurance included — and works backward to the home price.",
+    notAppNote: "Estimate only — not a mortgage application or a commitment to lend. No personal information is asked and your credit is not pulled.",
+    startBtn: "Start →",
+    back: "← Back",
+    next: "Next →",
+    seeResult: "See my number →",
+    stepOf: "Step {0} of {1}",
+
+    qPayment: "What monthly payment feels comfortable?",
+    qPaymentHelp: "Everything included: mortgage, property taxes, insurance and HOA. This is the one number you'd write on the check each month.",
+    perMonth: "/mo",
+
+    qDown: "How much do you have for the down payment?",
+    qDownHelp: "Don't count closing costs here — just what goes toward the price.",
+    downPct: "Percent",
+    downAmt: "Dollar amount",
+    downOther: "Other",
+
+    qProperty: "Tell me about the home",
+    lblState: "State",
+    lblType: "Type of home",
+    typeHouse: "House",
+    typeTown: "Townhouse",
+    typeCondo: "Condo",
+    lblOcc: "You'll use it as",
+    occPrimary: "My home",
+    occSecond: "Second home",
+    occInvest: "Investment / rental",
+
+    qHoa: "Is there an HOA fee?",
+    qHoaCondo: "What's the condo's HOA fee?",
+    qHoaHelp: "Homeowners association dues. If you're looking at a community and don't know yet, put your best guess.",
+    qHoaCondoHelp: "Condos almost always have one, and it often runs $300–$800 a month. It's the cost people forget most.",
+    yes: "Yes",
+    no: "No",
+    notSure: "Not sure",
+    lblHoaAmt: "HOA per month",
+
+    qCosts: "Taxes & insurance",
+    qCostsHelp: "If you know them, great. If not, I'll use typical numbers for the area.",
+    lblTaxKnown: "Do you know the property taxes?",
+    lblTaxAmt: "Property taxes per year",
+    taxDefault: "I'll use {0} of the price per year — a typical figure {1}.",
+    stateIn: { FL: "in Florida", MA: "in Massachusetts", CT: "in Connecticut" },
+    lblInsKnown: "Do you know the homeowners insurance?",
+    lblInsAmt: "Homeowners insurance per year",
+    insDefault: "I'll use {0} of the price per year.",
+    insCondoDefault: "For a condo, the HOA covers the building. Your own policy (HO-6) is usually about {0}/month — I'll use that.",
+
+    qYou: "A little about you",
+    qYouHelp: "This picks the loan program — FHA, conventional, VA or non-QM — which changes the rate and the mortgage insurance.",
+    lblVet: "Have you served in the U.S. military?",
+    vetNo: "No",
+    vetYes: "Yes",
+    vetDisab: "Yes — I receive VA disability",
+    lblRes: "Residency",
+    resCitizen: "U.S. citizen",
+    resPr: "Green card",
+    resVisa: "Work visa / EAD",
+    resItin: "ITIN (no SSN)",
+    resFn: "Live outside the U.S.",
+    lblIncome: "How do you prove income?",
+    incW2: "W-2 / pay stubs",
+    incSelf: "Self-employed — tax returns",
+    incBank: "Self-employed — bank statements",
+    incDscr: "The rent the property will earn",
+    lblFico: "Credit score (your best guess)",
+    ficoUnknown: "Don't know",
+
+    resultBadge: "YOUR NUMBER",
+    resultLead: "With a payment of {0}/month, you could look at homes up to about",
+    priceNote: "An estimate from the assumptions below — not a pre-approval.",
+    programLabel: "Likely fit: {0}",
+    noProgram: "I couldn't match these answers to a program I can show here — but there may still be a way. Send me a message and I'll look at it personally.",
+    otherPrograms: "Compare programs",
+    adjustPayment: "Adjust the payment",
+    breakdown: "Where the {0} goes",
+    rowPi: "Principal & interest",
+    rowMi: "Mortgage insurance",
+    rowMiFha: "FHA mortgage insurance",
+    rowTax: "Property taxes",
+    rowIns: "Homeowners insurance",
+    rowHoa: "HOA",
+    rowTotal: "Total",
+    estTag: "est.",
+    facts: "The loan",
+    factDown: "Down payment",
+    factLoan: "Loan amount",
+    factLoanFha: "Loan amount (incl. {0} FHA upfront premium)",
+    factLoanVa: "Loan amount (incl. {0} VA funding fee)",
+    factInterest: "Interest rate",
+    factApr: "Annual Percentage Rate (APR)",
+    factTerm: "Term",
+    years30: "30-year fixed",
+    repayLevel: "Repayment: {0} monthly payments of {1} for principal and interest.",
+    repayMiOff: "Repayment: {0} monthly payments of {1} (principal, interest and mortgage insurance), then {2} payments of {3} after mortgage insurance ends.",
+    repayFha11: "Repayment: {0} monthly payments. The first year's payment is {1} (principal, interest and FHA MIP). MIP is recalculated each year, so it steps down, and it ends after 11 years — leaving {2} for principal and interest.",
+    repayFhaLife: "Repayment: {0} monthly payments. The first year's payment is {1} (principal, interest and FHA MIP). MIP is recalculated each year, so it steps down slowly for the life of the loan. Principal and interest alone are {2}.",
+    repayPlus: "Estimated taxes, insurance and HOA are added on top, and can change.",
+    srcLive: "the Optimal Blue market index of {0}",
+    srcFallback: "a market estimate from {0} (today's index didn't load)",
+    ficoAssumed: "680–699 (assumed)",
+    assumptions: "How this was figured: {0}, 30-year fixed, {1} price, {2} down, {3} loan, credit score {4}, {5}. The rate is {6}, adjusted for your answers — rates change daily and may not be available at application, lock or closing. The APR includes a {8} application fee, a {9} processing fee, {10} days of prepaid interest, {7} discount points, and any financed FHA premium or VA funding fee. Taxes, insurance and HOA are estimates; your actual payment may be higher. This is not a loan offer, pre-qualification or commitment to lend. All loans are subject to credit approval, property eligibility and underwriting.",
+    assumpVa: "The VA funding fee assumes first-time use.",
+    incomeNeeded: "Income you'd likely need: about <strong>{0}/month</strong> before taxes — assuming no other monthly debts (car, cards, loans).",
+    rentNeeded: "For a DSCR loan the property qualifies, not you: the rent should cover about <strong>{0}/month</strong>.",
+    editAnswers: "← Change my answers",
+
+    pConv: "Conventional",
+    pJumbo: "Jumbo",
+    pFha: "FHA",
+    pVa: "VA",
+    pBank: "Bank Statement",
+    pDscr: "DSCR (investor)",
+    pItin: "ITIN",
+    pFn: "Foreign National",
+    pNonqm: "Non-QM",
+
+    whyVa: "VA has no monthly mortgage insurance and allows 0% down — usually the strongest option for veterans.",
+    whyVaDisab: "VA disability waives the funding fee, too.",
+    whyConv: "Conventional comes out ahead for you — mortgage insurance drops off as you build equity.",
+    whyFha: "FHA comes out ahead for you — its rate and mortgage insurance are kinder to your credit score than conventional.",
+    whyNonqmRes: "Because of residency status, this goes to a non-QM program — FHA is limited to citizens and green card holders.",
+    whyNonqmInc: "Because income is proven differently than W-2s or tax returns, this goes to a non-QM program.",
+    whyNonqmFico: "With this credit score, a non-QM program is the likely path.",
+
+    wDown: "This program usually needs at least {0} down. With less, the number above may not be reachable.",
+    wJumboNotOffered: "Loans this size are jumbo loans. Message me and I'll tell you what's available.",
+    wJumbo: "This loan is above the {0} conforming limit, so it's priced as jumbo. Jumbo loans usually need a 700+ score and at least 10% down. (Some high-cost counties allow more before jumbo.)",
+    wFhaLimit: "FHA limits depend on the county — from {0} to {1} in 2026. I'll confirm the limit for yours.",
+    wFhaCeiling: "This is above the highest FHA limit ({0}). FHA can't reach this price.",
+    wFhaLowFico: "With a score under 580, FHA needs at least 10% down.",
+    wFhaCondo: "FHA only works if the condo building is on HUD's FHA-approved list. I'll check the building before you make an offer.",
+    wFicoUnknown: "Credit score unknown — I used 680–699. Knowing yours will sharpen this a lot.",
+    wNoRoom: "The HOA and fixed costs already take up the whole payment. Try a higher payment or lower HOA.",
+
+    ctaTitle: "Want me to check this with your real numbers?",
+    ctaSub: "This uses averages. I'll run your actual scenario — real rate, real taxes, the right program — and tell you exactly what you can buy. 15 minutes, no obligation.",
+    ctaWhats: "Send this to me on WhatsApp",
+    ctaApply: "Start my pre-qualification",
+    ctaBook: "Book a 15-min call",
+    waMsg: "Hi Rodrigo! I used your payment calculator. Payment I want: {0}/month · Down payment: {1} · {2}, {3} · It showed homes up to about {4} with {5}. Can you check my real numbers?",
+
+    footerOfficer: "Loan Originator",
+    footerCompany: "Mortgage Lender",
+    footerLicensesLabel: "State Licenses",
+    footerStateLicenseLine: "Florida Office Lic. MLD2414 · MA Mortgage Lender & Broker Lic. MC2471779 · CT Mortgage Lender Lic. ML-2471779 · Massachusetts Mortgage Loan Originator License #1435896 · Licensed in CT, FL, MA",
+    footerAddressLabel: "Office",
+    footerNmlsLink: "Verify on NMLS Consumer Access",
+    footerPrivacyLink: "Privacy Policy",
+    footerAccessibilityLink: "Accessibility Statement",
+    footerEho: "Equal Housing Lender · Equal Opportunity Employer",
+    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA), the U.S. Department of Veterans Affairs (VA) or any government agency or government-sponsored entity and this offer is not being made by an agency of the government. Ideal Lending LLC is a Licensed Mortgage Lender Servicer, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC only lends in CO, CT, FL, GA, MA, NJ, TN, TX. Refer to www.nmlsconsumeraccess.org and input NMLS 2471779 to see where Ideal Lending LLC is licensed. Equal Opportunity Employer; Equal Opportunity Lender. This is not an offer for extension of credit or commitment to lend. All loans must satisfy underwriting guidelines. Not all applicants qualify. Rates shown are market estimates, not a quote; the APR is an estimate. Information and pricing are subject to change at any time and without notice. Certain restrictions may apply.",
+    footerCopyright: "© Ideal Lending LLC. All rights reserved.",
+  },
+  pt: {
+    langSwitch: "English",
+    badge: "CALCULADORA PELO PAGAMENTO",
+    heroTitle: "Quanto de casa cabe <span class='gold'>no meu pagamento?</span>",
+    heroSub: "A maioria das calculadoras começa pelo preço. Esta começa pelo pagamento mensal que você quer — com impostos, seguro, HOA e seguro hipotecário incluídos — e calcula de trás pra frente o preço da casa.",
+    notAppNote: "Apenas estimativa — não é uma aplicação de hipoteca nem compromisso de empréstimo. Não pedimos dados pessoais e não consultamos seu crédito.",
+    startBtn: "Começar →",
+    back: "← Voltar",
+    next: "Próximo →",
+    seeResult: "Ver meu número →",
+    stepOf: "Etapa {0} de {1}",
+
+    qPayment: "Qual pagamento mensal é confortável pra você?",
+    qPaymentHelp: "Tudo incluído: financiamento, imposto da propriedade, seguro e HOA. É o valor único que você pagaria todo mês.",
+    perMonth: "/mês",
+
+    qDown: "Quanto você tem para a entrada?",
+    qDownHelp: "Não conte os custos de fechamento aqui — só o que vai para o preço.",
+    downPct: "Porcentagem",
+    downAmt: "Valor em dólar",
+    downOther: "Outro",
+
+    qProperty: "Me conte sobre o imóvel",
+    lblState: "Estado",
+    lblType: "Tipo de imóvel",
+    typeHouse: "Casa",
+    typeTown: "Townhouse",
+    typeCondo: "Condomínio (condo)",
+    lblOcc: "Você vai usar como",
+    occPrimary: "Minha moradia",
+    occSecond: "Segunda casa",
+    occInvest: "Investimento / aluguel",
+
+    qHoa: "Tem taxa de HOA (associação)?",
+    qHoaCondo: "Qual é a taxa de HOA do condomínio?",
+    qHoaHelp: "É a taxa da associação de moradores. Se você está olhando uma comunidade e ainda não sabe, coloque um palpite.",
+    qHoaCondoHelp: "Condomínios quase sempre têm, e costuma ficar entre $300 e $800 por mês. É o custo que as pessoas mais esquecem.",
+    yes: "Sim",
+    no: "Não",
+    notSure: "Não sei",
+    lblHoaAmt: "HOA por mês",
+
+    qCosts: "Impostos e seguro",
+    qCostsHelp: "Se você souber, ótimo. Se não, eu uso valores típicos da região.",
+    lblTaxKnown: "Você sabe o valor do imposto da propriedade?",
+    lblTaxAmt: "Imposto da propriedade por ano",
+    taxDefault: "Vou usar {0} do preço por ano — um valor típico {1}.",
+    stateIn: { FL: "na Flórida", MA: "em Massachusetts", CT: "em Connecticut" },
+    lblInsKnown: "Você sabe o valor do seguro residencial?",
+    lblInsAmt: "Seguro residencial por ano",
+    insDefault: "Vou usar {0} do preço por ano.",
+    insCondoDefault: "No condomínio, o HOA cobre o prédio. Seu seguro próprio (HO-6) costuma ficar em torno de {0}/mês — vou usar isso.",
+
+    qYou: "Um pouco sobre você",
+    qYouHelp: "Isso escolhe o programa — FHA, convencional, VA ou non-QM — que muda a taxa e o seguro hipotecário.",
+    lblVet: "Você serviu nas Forças Armadas dos EUA?",
+    vetNo: "Não",
+    vetYes: "Sim",
+    vetDisab: "Sim — recebo VA disability",
+    lblRes: "Status de residência",
+    resCitizen: "Cidadão americano",
+    resPr: "Green card",
+    resVisa: "Visto de trabalho / EAD",
+    resItin: "ITIN (sem SSN)",
+    resFn: "Moro fora dos EUA",
+    lblIncome: "Como você comprova renda?",
+    incW2: "W-2 / holerites",
+    incSelf: "Autônomo — declaração de imposto",
+    incBank: "Autônomo — extratos bancários",
+    incDscr: "Pelo aluguel que o imóvel vai gerar",
+    lblFico: "Score de crédito (seu melhor palpite)",
+    ficoUnknown: "Não sei",
+
+    resultBadge: "SEU NÚMERO",
+    resultLead: "Com um pagamento de {0}/mês, você pode procurar casas de até cerca de",
+    priceNote: "Uma estimativa com as premissas abaixo — não é pré-aprovação.",
+    programLabel: "Opção provável: {0}",
+    noProgram: "Não consegui encaixar essas respostas em um programa que eu possa mostrar aqui — mas ainda pode haver um caminho. Me mande uma mensagem que eu olho pessoalmente.",
+    otherPrograms: "Comparar programas",
+    adjustPayment: "Ajuste o pagamento",
+    breakdown: "Para onde vão os {0}",
+    rowPi: "Principal e juros",
+    rowMi: "Seguro hipotecário",
+    rowMiFha: "Seguro hipotecário FHA",
+    rowTax: "Imposto da propriedade",
+    rowIns: "Seguro residencial",
+    rowHoa: "HOA",
+    rowTotal: "Total",
+    estTag: "est.",
+    facts: "O empréstimo",
+    factDown: "Entrada",
+    factLoan: "Valor do empréstimo",
+    factLoanFha: "Valor do empréstimo (inclui {0} de prêmio inicial FHA)",
+    factLoanVa: "Valor do empréstimo (inclui {0} de VA funding fee)",
+    factInterest: "Taxa de juros",
+    factApr: "APR (Taxa Percentual Anual)",
+    factTerm: "Prazo",
+    years30: "30 anos, taxa fixa",
+    repayLevel: "Pagamento: {0} parcelas mensais de {1} de principal e juros.",
+    repayMiOff: "Pagamento: {0} parcelas mensais de {1} (principal, juros e seguro hipotecário), depois {2} parcelas de {3} quando o seguro hipotecário termina.",
+    repayFha11: "Pagamento: {0} parcelas mensais. A parcela do primeiro ano é {1} (principal, juros e MIP do FHA). O MIP é recalculado todo ano, então vai diminuindo, e termina depois de 11 anos — ficando {2} de principal e juros.",
+    repayFhaLife: "Pagamento: {0} parcelas mensais. A parcela do primeiro ano é {1} (principal, juros e MIP do FHA). O MIP é recalculado todo ano, então diminui aos poucos durante todo o empréstimo. Só principal e juros: {2}.",
+    repayPlus: "Impostos, seguro e HOA estimados são somados por cima, e podem mudar.",
+    srcLive: "o índice de mercado Optimal Blue de {0}",
+    srcFallback: "uma estimativa de mercado de {0} (o índice de hoje não carregou)",
+    ficoAssumed: "680–699 (presumido)",
+    assumptions: "Como foi calculado: {0}, 30 anos fixo, preço de {1}, entrada de {2}, empréstimo de {3}, score {4}, {5}. A taxa é {6}, ajustada às suas respostas — taxas mudam diariamente e podem não estar disponíveis na aplicação, no travamento (lock) ou no fechamento. O APR inclui taxa de aplicação de {8}, taxa de processamento de {9}, {10} dias de juros pré-pagos, {7} pontos de desconto e qualquer prêmio FHA ou VA funding fee financiado. Impostos, seguro e HOA são estimativas; seu pagamento real pode ser maior. Isto não é oferta de empréstimo, pré-qualificação nem compromisso de crédito. Todos os empréstimos estão sujeitos a aprovação de crédito, elegibilidade do imóvel e subscrição.",
+    assumpVa: "A VA funding fee considera o primeiro uso do benefício.",
+    incomeNeeded: "Renda que você provavelmente precisaria: cerca de <strong>{0}/mês</strong> bruto — sem outras dívidas mensais (carro, cartões, empréstimos).",
+    rentNeeded: "No DSCR quem qualifica é o imóvel, não você: o aluguel deve cobrir cerca de <strong>{0}/mês</strong>.",
+    editAnswers: "← Mudar minhas respostas",
+
+    pConv: "Convencional",
+    pJumbo: "Jumbo",
+    pFha: "FHA",
+    pVa: "VA",
+    pBank: "Bank Statement",
+    pDscr: "DSCR (investidor)",
+    pItin: "ITIN",
+    pFn: "Estrangeiro (Foreign National)",
+    pNonqm: "Non-QM",
+
+    whyVa: "O VA não tem seguro hipotecário mensal e permite 0% de entrada — normalmente a melhor opção para veteranos.",
+    whyVaDisab: "Com VA disability, a funding fee também é isenta.",
+    whyConv: "O convencional sai na frente pra você — o seguro hipotecário sai quando você constrói patrimônio.",
+    whyFha: "O FHA sai na frente pra você — a taxa e o seguro são mais favoráveis ao seu score do que no convencional.",
+    whyNonqmRes: "Pelo status de residência, o caminho é um programa non-QM — o FHA é só para cidadãos e portadores de green card.",
+    whyNonqmInc: "Como a renda é comprovada de outra forma (não W-2 nem declaração), o caminho é um programa non-QM.",
+    whyNonqmFico: "Com esse score, um programa non-QM é o caminho mais provável.",
+
+    wDown: "Este programa normalmente pede pelo menos {0} de entrada. Com menos, o número acima pode não ser alcançável.",
+    wJumboNotOffered: "Empréstimos desse tamanho são jumbo. Me mande uma mensagem que eu te digo o que está disponível.",
+    wJumbo: "Este empréstimo passa do limite conforming de {0}, então é precificado como jumbo. Jumbo normalmente pede score 700+ e pelo menos 10% de entrada. (Alguns condados de alto custo permitem mais antes do jumbo.)",
+    wFhaLimit: "O limite do FHA depende do condado — de {0} a {1} em 2026. Eu confirmo o limite do seu.",
+    wFhaCeiling: "Isso passa do maior limite do FHA ({0}). O FHA não alcança esse preço.",
+    wFhaLowFico: "Com score abaixo de 580, o FHA pede pelo menos 10% de entrada.",
+    wFhaCondo: "O FHA só funciona se o prédio do condomínio estiver na lista de aprovados do HUD. Eu confiro o prédio antes de você fazer a oferta.",
+    wFicoUnknown: "Score desconhecido — usei 680–699. Saber o seu deixa isso bem mais preciso.",
+    wNoRoom: "O HOA e os custos fixos já ocupam o pagamento inteiro. Tente um pagamento maior ou HOA menor.",
+
+    ctaTitle: "Quer que eu confira com os seus números reais?",
+    ctaSub: "Isto usa médias. Eu rodo o seu cenário de verdade — taxa real, imposto real, o programa certo — e te digo exatamente o que você consegue comprar. 15 minutos, sem compromisso.",
+    ctaWhats: "Me mande isso no WhatsApp",
+    ctaApply: "Começar minha pré-qualificação",
+    ctaBook: "Agendar 15 min",
+    waMsg: "Oi Rodrigo! Usei sua calculadora de pagamento. Pagamento que quero: {0}/mês · Entrada: {1} · {2}, {3} · Mostrou casas de até cerca de {4} com {5}. Pode conferir meus números reais?",
+
+    footerOfficer: "Originador de Empréstimo",
+    footerCompany: "Credor Hipotecário",
+    footerLicensesLabel: "Licenças Estaduais",
+    footerStateLicenseLine: "Florida Office Lic. MLD2414 · MA Mortgage Lender & Broker Lic. MC2471779 · CT Mortgage Lender Lic. ML-2471779 · Massachusetts Mortgage Loan Originator License #1435896 · Licenciado em CT, FL, MA",
+    footerAddressLabel: "Escritório",
+    footerNmlsLink: "Verificar no NMLS Consumer Access",
+    footerPrivacyLink: "Política de Privacidade",
+    footerAccessibilityLink: "Declaração de Acessibilidade",
+    footerEho: "Equal Housing Lender · Equal Opportunity Employer",
+    footerLegalBlock: "Ideal Lending LLC, NMLS 2471779 não é afiliada nem está agindo em nome ou sob a direção da Federal Housing Administration (FHA), do U.S. Department of Veterans Affairs (VA) ou de qualquer agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Ideal Lending LLC é um Licensed Mortgage Lender Servicer, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC empresta apenas em CO, CT, FL, GA, MA, NJ, TN, TX. Consulte www.nmlsconsumeraccess.org e insira NMLS 2471779 para ver onde a Ideal Lending LLC está licenciada. Equal Opportunity Employer; Equal Opportunity Lender. Isto não é uma oferta de extensão de crédito ou compromisso de empréstimo. Todos os empréstimos devem atender às diretrizes de subscrição. Nem todos os candidatos se qualificam. As taxas mostradas são estimativas de mercado, não uma cotação; o APR é estimado. Informações e preços estão sujeitos a alterações a qualquer momento e sem aviso prévio. Certas restrições podem se aplicar.",
+    footerCopyright: "© Ideal Lending LLC. Todos os direitos reservados.",
+  },
+};
+</script>
+
+<style>
+:root {
+  --gold: #d4a843;
+  --gold2: #f0c85a;
+  --dark: #0b0f18;
+  --dark2: #101520;
+  --dark3: #181f2e;
+  --dark4: #1f2738;
+  --cream: #e8edf8;
+  --muted: #8a9ab8;
+  --border: rgba(255,255,255,0.08);
+  --green: #4ade80;
+  --amber: #fbbf24;
+  --amber2: rgba(251,191,36,0.08);
+  /* Blue leads, matching the homepage and /afford; gold stays for accents. */
+  --blue: #1a4fd6;
+  --blue2: #2563eb;
+  --blue3: #3b7ff5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--dark);
+  color: var(--cream);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: 'Lora', Georgia, serif; font-weight: 700; line-height: 1.2; }
+a { color: var(--gold2); text-decoration: none; }
+a:hover { color: var(--gold); }
+.gold { color: var(--gold2); }
+
+.topbar {
+  background: var(--dark2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+}
+.brand { display: flex; align-items: center; gap: 12px; color: inherit; }
+.brand img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; background: var(--dark3); }
+.brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+.brand-text strong { color: var(--cream); font-size: 13px; font-weight: 700; }
+.brand-text span { color: var(--muted); font-size: 11px; }
+.lang-btn {
+  background: transparent; color: var(--cream); border: 1px solid var(--border);
+  padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.lang-btn:hover { border-color: var(--gold); color: var(--gold2); }
+
+.wrap { max-width: 640px; margin: 0 auto; padding: 28px 16px 60px; }
+
+/* HERO */
+.hero { text-align: center; padding: 12px 0 8px; }
+.badge {
+  display: inline-block; background: linear-gradient(135deg, var(--blue), var(--blue2));
+  color: #fff; font-weight: 800; font-size: 11px; letter-spacing: 0.08em;
+  padding: 6px 12px; border-radius: 999px; margin-bottom: 14px;
+}
+.hero h1 { font-size: clamp(28px, 6vw, 40px); margin-bottom: 14px; }
+.hero p.sub { color: var(--muted); font-size: 15px; margin-bottom: 20px; }
+.disclosure-pill {
+  background: var(--dark2); border: 1px solid var(--border);
+  border-left: 3px solid var(--gold); border-radius: 8px;
+  padding: 9px 14px; font-size: 11px; color: var(--muted); line-height: 1.5; text-align: left;
+  margin-bottom: 24px;
+}
+
+/* STEPS */
+.progress { height: 4px; background: var(--dark3); border-radius: 999px; overflow: hidden; margin-bottom: 8px; }
+.progress > div { height: 100%; background: linear-gradient(90deg, var(--blue2), var(--blue3)); transition: width .3s; }
+.step-count { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .04em; margin-bottom: 18px; }
+.q { font-size: clamp(22px, 5vw, 28px); margin-bottom: 8px; }
+.q-help { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+.card {
+  background: var(--dark2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px;
+}
+.card + .card { margin-top: 12px; }
+
+.field { margin-bottom: 18px; }
+.field:last-child { margin-bottom: 0; }
+.field > label, .field > .label {
+  display: block; color: var(--cream); font-size: 13px; font-weight: 600; margin-bottom: 8px;
+}
+.money {
+  position: relative;
+}
+.money .prefix {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); font-size: 16px; pointer-events: none;
+}
+.money .suffix {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); font-size: 13px; pointer-events: none;
+}
+.money input {
+  width: 100%; background: var(--dark3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 13px 54px 13px 28px; color: var(--cream); font-size: 17px; font-weight: 600;
+  font-family: inherit; outline: none; font-variant-numeric: tabular-nums;
+}
+.money input:focus { border-color: var(--blue3); }
+.money.big input { font-size: 30px; padding: 14px 70px 14px 34px; font-family: 'Lora', Georgia, serif; }
+.money.big .prefix { font-size: 26px; }
+.money.pct input { padding-left: 14px; }
+
+input[type="range"] { width: 100%; margin-top: 16px; accent-color: var(--blue3); height: 28px; }
+.range-ends { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill {
+  background: var(--dark3); border: 1px solid var(--border); border-radius: 999px;
+  padding: 10px 16px; color: var(--cream); font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: inherit; min-height: 44px;
+}
+.pill:hover { border-color: var(--blue3); }
+.pill.selected { border-color: var(--blue3); background: rgba(59,127,245,0.16); color: #cfe0ff; }
+.pills.stack { flex-direction: column; }
+.pills.stack .pill { border-radius: 12px; text-align: left; }
+
+.seg { display: inline-flex; gap: 4px; background: var(--dark3); border-radius: 999px; padding: 3px; margin-bottom: 14px; }
+.seg button {
+  background: transparent; color: var(--muted); border: 0;
+  padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
+.seg button.active { background: var(--blue2); color: #fff; }
+
+.default-note { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+.sub-field { margin-top: 12px; }
+
+.nav { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px; }
+.btn-primary {
+  display: inline-block; background: linear-gradient(135deg, var(--blue), var(--blue2));
+  color: #fff; font-weight: 800; font-size: 15px;
+  padding: 14px 24px; border-radius: 12px; border: 0;
+  cursor: pointer; font-family: inherit; text-align: center;
+  box-shadow: 0 6px 20px rgba(26,79,214,0.35);
+}
+.btn-primary:hover { color: #fff; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-ghost {
+  background: transparent; color: var(--muted); border: 0; font-family: inherit;
+  font-size: 14px; font-weight: 600; cursor: pointer; padding: 10px 4px;
+}
+.btn-ghost:hover { color: var(--cream); }
+.btn-secondary {
+  display: inline-block; background: transparent; color: var(--cream);
+  border: 1px solid var(--border); padding: 13px 18px; border-radius: 12px;
+  font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; text-align: center;
+}
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold2); }
+.btn-wa {
+  display: inline-block; background: #25D366; color: #06240f;
+  font-weight: 800; font-size: 15px; padding: 14px 22px; border-radius: 12px; text-align: center;
+}
+.btn-wa:hover { color: #06240f; filter: brightness(1.05); }
+
+/* RESULT */
+.result-hero { text-align: center; padding: 6px 0 20px; }
+.result-lead { color: var(--muted); font-size: 15px; margin: 6px 0 6px; }
+.result-price {
+  font-family: 'Lora', Georgia, serif; font-size: clamp(44px, 12vw, 64px); font-weight: 700;
+  color: var(--gold2); line-height: 1.05; font-variant-numeric: tabular-nums;
+}
+.prog-chip {
+  display: inline-block; margin-top: 12px; font-size: 12px; font-weight: 700;
+  color: var(--cream); background: var(--dark3); border: 1px solid var(--border);
+  padding: 6px 12px; border-radius: 999px;
+}
+.why { color: var(--muted); font-size: 13px; margin-top: 10px; }
+
+.card h3 {
+  font-family: 'Montserrat', sans-serif; font-size: 12px; color: var(--gold);
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
+}
+.tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.tab {
+  flex: 1 0 auto; min-width: 104px; background: var(--dark3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 12px; cursor: pointer; text-align: left; font-family: inherit; color: var(--cream);
+}
+.tab .tn { font-size: 12px; font-weight: 700; color: var(--muted); }
+.tab .tp { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.tab.selected { border-color: var(--blue3); background: rgba(59,127,245,0.14); }
+.tab.selected .tn { color: #cfe0ff; }
+
+.rows { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.rows td { padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.rows td:last-child { text-align: right; font-weight: 600; white-space: nowrap; padding-left: 12px; }
+.rows tr:last-child td { border-bottom: 0; }
+.rows tr.total td { font-weight: 800; color: var(--gold2); font-size: 15px; border-top: 1px solid var(--gold); }
+.rows .est { font-size: 10px; color: var(--muted); font-weight: 600; margin-left: 6px; text-transform: uppercase; }
+.bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; margin-bottom: 12px; background: var(--dark3); }
+.bar span { display: block; height: 100%; }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+
+.warn {
+  background: var(--amber2); border: 1px solid rgba(251,191,36,0.25); border-left: 3px solid var(--amber);
+  border-radius: 10px; padding: 10px 12px; font-size: 13px; color: var(--cream); margin-top: 10px;
+}
+.info { font-size: 13px; color: var(--cream); margin-top: 12px; line-height: 1.55; }
+.fine { font-size: 12px; color: #a9b6cf; margin-top: 14px; line-height: 1.6; border-top: 1px solid var(--border); padding-top: 12px; }
+.price-note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+.cta-block {
+  margin-top: 20px;
+  background: linear-gradient(135deg, var(--dark2), var(--dark3));
+  border: 1px solid var(--border); border-radius: 16px; padding: 24px 18px; text-align: center;
+}
+.cta-block h2 { font-size: 21px; margin-bottom: 10px; }
+.cta-block p { color: var(--muted); font-size: 14px; margin: 0 auto 18px; line-height: 1.55; }
+.cta-col { display: flex; flex-direction: column; gap: 10px; max-width: 360px; margin: 0 auto; }
+
+/* FOOTER */
+footer {
+  margin-top: 36px; padding: 28px 16px 40px;
+  border-top: 1px solid var(--border); background: var(--dark2);
+  color: var(--muted); font-size: 12px; line-height: 1.6;
+}
+.foot-wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.foot-identity { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.foot-block { background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; padding: 13px 16px; }
+.foot-block .label, .foot-licenses .label { font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+.foot-block .name { color: var(--cream); font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+.foot-block .meta { font-size: 11px; color: var(--muted); }
+.foot-licenses { background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; padding: 13px 16px; font-size: 11px; }
+.foot-eho { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--dark3); border: 1px solid var(--border); border-radius: 12px; }
+.foot-eho svg { width: 36px; height: 36px; flex: 0 0 36px; }
+.foot-eho strong { color: var(--cream); font-size: 12px; }
+.foot-legal { font-size: 11px; line-height: 1.65; padding: 0 4px; }
+.foot-links { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; padding: 0 4px; }
+.foot-links a { font-weight: 600; }
+.foot-copyright { font-size: 11px; text-align: center; padding-top: 8px; border-top: 1px solid var(--border); }
+@media (max-width: 540px) { .foot-identity { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="/">
+    <img id="brand-img" alt="Rodrigo DeOliveira headshot" src="" onerror="this.style.display='none'" />
+    <div class="brand-text">
+      <strong id="brand-name"></strong>
+      <span id="brand-title"></span>
+    </div>
+  </a>
+  <button class="lang-btn" id="lang-btn" type="button"></button>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<footer id="site-footer"></footer>
+
+<script>
+// ============================================================================
+// STATE
+// ============================================================================
+const STEPS = ["payment", "down", "property", "hoa", "costs", "you"];
+
+const S = {
+  lang: (navigator.language || "en").toLowerCase().startsWith("pt") ? "pt" : "en",
+  screen: "hero",          // "hero" | step name | "result"
+  payment: 3000,
+  downMode: "pct",         // "pct" | "amt"
+  downPct: 5,
+  downAmt: 30000,
+  st: "FL",
+  propType: "house",       // house | town | condo
+  occ: "primary",          // primary | second | invest
+  hoaHas: null,            // "yes" | "no" | null
+  hoa: 0,
+  taxKnown: "no",
+  taxAnnual: 0,
+  insKnown: "no",
+  insAnnual: 0,
+  vet: "no",               // no | yes | disab
+  res: "citizen",          // citizen | pr | visa | itin | fn
+  income: "w2",            // w2 | self | bank | dscr
+  fico: "720-739",
+  pick: null,              // program the user tapped on the result screen
+};
+
+const RATES = { ...CONFIG.fallbackRates, asOf: null, live: false };
+
+function t(key, ...args) {
+  let s = i18n[S.lang][key] ?? i18n.en[key] ?? key;
+  args.forEach((a, i) => { s = s.replace("{" + i + "}", a); });
+  return s;
+}
+
+// ============================================================================
+// FORMAT
+// ============================================================================
+const locale = () => (S.lang === "pt" ? "pt-BR" : "en-US");
+// Dollar amounts stay in USD with US separators in both languages — the
+// numbers are American prices, and "US$ 450.000" reads oddly next to "$3,000".
+function usd(n) {
+  return "$" + Math.round(n).toLocaleString("en-US");
+}
+function pct(n, digits = 2) {
+  return (n * 100).toFixed(digits).replace(/\.?0+$/, "") + "%";
+}
+function pctFixed(n, digits = 3) {
+  return (n * 100).toFixed(digits) + "%";
+}
+function parseNum(s) {
+  const n = parseFloat(String(s).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? n : 0;
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// ============================================================================
+// PROGRAMS
+// ============================================================================
+function ficoLow(band) {
+  if (band === "unknown") return 680;
+  if (band === "<580") return 500;
+  return parseInt(band, 10);
+}
+function convBand(band) {
+  // map any answer onto the conventional pricing table's bands
+  const f = ficoLow(band);
+  if (f >= 760) return "760+";
+  if (f >= 740) return "740-759";
+  if (f >= 720) return "720-739";
+  if (f >= 700) return "700-719";
+  if (f >= 680) return "680-699";
+  if (f >= 660) return "660-679";
+  if (f >= 640) return "640-659";
+  return "620-639";
+}
+function govBand(band) {
+  const f = ficoLow(band);
+  if (f >= 640) return "640+";
+  if (f >= 620) return "620-639";
+  if (f >= 580) return "580-619";
+  return "<580";
+}
+function nonQmKind() {
+  if (S.res === "fn") return "fn";
+  if (S.res === "itin") return "itin";
+  if (S.income === "dscr") return "dscr";
+  if (S.income === "bank") return "bank";
+  return "other";
+}
+
+// Which programs this profile can use at all. Down payment and loan size are
+// checked later, as warnings, because they depend on the computed price.
+function availablePrograms() {
+  const fico = ficoLow(S.fico);
+  const agencyRes = ["citizen", "pr", "visa"].includes(S.res);
+  const govRes = ["citizen", "pr"].includes(S.res);
+  const fullDoc = ["w2", "self"].includes(S.income);
+  const list = [];
+
+  const off = CONFIG.offered;
+  if (off.va && S.vet !== "no" && S.occ === "primary" && govRes && fullDoc && fico >= 580) list.push("va");
+  if (off.conv && agencyRes && fullDoc && fico >= 620) list.push("conv");
+  if (off.fha && S.occ === "primary" && govRes && fullDoc && fico >= 500) list.push("fha");
+  if (!list.length && off[nonQmKind()]) list.push("nonqm");
+  return list;
+}
+
+function programName(id, r) {
+  if (id === "conv") return r && r.jumbo ? t("pJumbo") : t("pConv");
+  if (id === "fha") return t("pFha");
+  if (id === "va") return t("pVa");
+  return t({ bank: "pBank", dscr: "pDscr", itin: "pItin", fn: "pFn", other: "pNonqm" }[nonQmKind()]);
+}
+
+function ltvBucket(ltv) {
+  if (ltv <= 0.80) return 80;
+  if (ltv <= 0.85) return 85;
+  if (ltv <= 0.90) return 90;
+  if (ltv <= 0.95) return 95;
+  return 97;
+}
+
+// Rate, mortgage insurance and upfront fee for a program at a given loan
+// size and LTV. Called repeatedly by the solver as the price converges.
+function pricing(id, baseLoan, ltv) {
+  const occ = CONFIG.occupancyAdj[S.occ] || 0;
+  if (id === "conv") {
+    const jumbo = baseLoan > CONFIG.conformingLimit;
+    const band = convBand(S.fico);
+    const rate = (jumbo ? RATES.jumbo + Math.max(0, CONFIG.convFicoAdj[band]) : RATES.conv + CONFIG.convFicoAdj[band]) + occ;
+    // Jumbo loans normally require 20% down and carry no MI; under 20% it's
+    // the same BPMI table as a reasonable stand-in.
+    const mi = CONFIG.miFactors[band][ltvBucket(ltv)];
+    return { rate, mi, upfront: 0, jumbo };
+  }
+  if (id === "fha") {
+    const rate = RATES.fha + CONFIG.govFicoAdj[govBand(S.fico)];
+    const hi = baseLoan > CONFIG.fhaMipLoanBreak;
+    const mi = ltv > 0.95 ? (hi ? 0.0075 : 0.0055) : (hi ? 0.0070 : 0.0050);
+    return { rate, mi, upfront: CONFIG.fhaUfmip };
+  }
+  if (id === "va") {
+    const rate = RATES.va + CONFIG.govFicoAdj[govBand(S.fico)];
+    const down = 1 - ltv;
+    const ff = CONFIG.vaFundingFee;
+    const upfront = S.vet === "disab" ? 0 : down >= 0.10 ? ff.tenPlus : down >= 0.05 ? ff.under10 : ff.under5;
+    return { rate, mi: 0, upfront };
+  }
+  // non-QM: spread over the conforming index, a bit more for weaker credit
+  const k = CONFIG.nonQm[nonQmKind()];
+  const rate = RATES.conv + k.spread + (ficoLow(S.fico) < 680 ? 0.005 : 0) + occ;
+  return { rate, mi: 0, upfront: 0 };
+}
+
+function minDown(id, r) {
+  if (id === "va") return 0;
+  if (id === "fha") return ficoLow(S.fico) < 580 ? 0.10 : 0.035;
+  if (id === "conv") {
+    if (r && r.jumbo) return 0.10;
+    return S.occ === "invest" ? 0.15 : S.occ === "second" ? 0.10 : 0.03;
+  }
+  return Math.max(CONFIG.nonQm[nonQmKind()].minDown, S.occ === "invest" ? 0.20 : 0);
+}
+
+// ============================================================================
+// SOLVER
+// ----------------------------------------------------------------------------
+// The payment is linear in the price once the rate, MI factor and upfront fee
+// are fixed:
+//
+//   payment = B·(1+u)·(f + m/12) + P·(tax% + ins%)/12 + fixed
+//
+// where B is the base loan (P·(1−d), or P − D for a dollar down payment), f the
+// monthly P&I factor, m the annual MI rate, u the financed upfront fee, and
+// "fixed" anything that doesn't scale with price (HOA, known taxes, condo
+// HO-6). So P solves in closed form. The rate/MI/fee depend on LTV and loan
+// size, so it re-prices and re-solves a few times until it settles.
+// ============================================================================
+function piFactor(rate) {
+  const i = rate / 12, n = CONFIG.termMonths;
+  return i / (1 - Math.pow(1 + i, -n));
+}
+
+function solve(id, payment) {
+  const taxPct = S.taxKnown === "yes" ? 0 : CONFIG.taxRateByState[S.st];
+  const condo = S.propType === "condo";
+  const insPct = S.insKnown === "yes" || condo ? 0 : CONFIG.hoiRate;
+  const hoa = S.hoaHas === "yes" ? S.hoa : 0;
+  const taxFixed = S.taxKnown === "yes" ? S.taxAnnual / 12 : 0;
+  const insFixed = S.insKnown === "yes" ? S.insAnnual / 12 : condo ? CONFIG.condoHo6Monthly : 0;
+  const fixed = hoa + taxFixed + insFixed;
+  const room = payment - fixed;
+  if (room <= 0) return { noRoom: true };
+
+  const c = (taxPct + insPct) / 12;
+  let P = 300000, pr, k;
+  for (let iter = 0; iter < 12; iter++) {
+    const down = S.downMode === "pct" ? P * S.downPct / 100 : Math.min(S.downAmt, P);
+    const B = Math.max(0, P - down);
+    pr = pricing(id, B, P > 0 ? B / P : 0);
+    k = (1 + pr.upfront) * (piFactor(pr.rate) + pr.mi / 12);
+    const next = S.downMode === "pct"
+      ? room / ((1 - S.downPct / 100) * k + c)
+      : (room + S.downAmt * k) / (k + c);
+    if (Math.abs(next - P) < 1) { P = next; break; }
+    P = next;
+  }
+
+  // A dollar down payment bigger than the price it buys means no loan at all.
+  const down = S.downMode === "pct" ? P * S.downPct / 100 : Math.min(S.downAmt, P);
+  const base = Math.max(0, P - down);
+  const loan = base * (1 + pr.upfront);
+  const pi = loan * piFactor(pr.rate);
+  const mi = loan * pr.mi / 12;   // FHA MIP is charged on the balance, which includes the financed UFMIP
+  const tax = taxFixed + P * taxPct / 12;
+  const ins = insFixed + P * insPct / 12;
+
+  const r = {
+    id, price: P, down, downFrac: P > 0 ? down / P : 0, base, loan, pi, mi, tax, ins, hoa,
+    total: pi + mi + tax + ins + hoa,
+    rate: pr.rate, miRate: pr.mi, upfront: pr.upfront, jumbo: !!pr.jumbo,
+  };
+  r.stream = paymentStream(r);
+  r.apr = computeApr(r);
+  return r;
+}
+
+// ============================================================================
+// APR + REPAYMENT TERMS  (Reg Z §1026.22 / Appendix J, §1026.24(d))
+// ----------------------------------------------------------------------------
+// Builds the actual payment stream — P&I plus mortgage insurance for exactly
+// as long as it lasts — then finds the rate at which those payments discount
+// back to the amount financed.
+//
+// Mortgage insurance duration:
+//   Conventional BPMI  ends automatically when the scheduled balance reaches
+//                      78% of the original value (Homeowners Protection Act).
+//   FHA annual MIP     11 years if the base LTV is 90% or less, otherwise for
+//                      the life of the loan; re-figured each year on the
+//                      balance, so it steps down annually.
+//   VA / non-QM        none.
+// ============================================================================
+function paymentStream(r) {
+  const n = CONFIG.termMonths, i = r.rate / 12;
+  const fhaMonths = r.id === "fha" ? (r.base / r.price > 0.90 ? n : 132) : 0;
+  let bal = r.loan, yearMi = r.mi;
+  const out = [];
+  for (let k = 0; k < n; k++) {
+    let mi = 0;
+    if (r.id === "fha" && k < fhaMonths) {
+      if (k % 12 === 0) yearMi = bal * r.miRate / 12;
+      mi = yearMi;
+    } else if (r.id === "conv" && r.mi > 0 && bal > 0.78 * r.price) {
+      mi = r.mi;
+    }
+    out.push(r.pi + mi);
+    bal -= r.pi - bal * i;
+  }
+  return out;
+}
+
+function lenderFeeTotal() {
+  return Object.values(CONFIG.lenderFees).reduce((a, b) => a + b, 0);
+}
+function prepaidInterest(r) {
+  return r.loan * r.rate / 365 * CONFIG.prepaidInterestDays;
+}
+
+function computeApr(r) {
+  if (r.loan <= 0) return r.rate;
+  // Financed UFMIP / funding fee are finance charges, so they come out of the
+  // amount financed along with the prepaid charges and any points.
+  const amountFinanced = r.base - lenderFeeTotal() - prepaidInterest(r) - r.loan * CONFIG.discountPoints / 100;
+  const pv = i => r.stream.reduce((s, p, k) => s + p / Math.pow(1 + i, k + 1), 0);
+  let lo = 0, hi = 0.05;
+  for (let it = 0; it < 60; it++) {
+    const mid = (lo + hi) / 2;
+    if (pv(mid) > amountFinanced) lo = mid; else hi = mid;
+  }
+  return ((lo + hi) / 2) * 12;
+}
+
+// Plain-language repayment terms: the payment amounts and how many of each.
+function repaymentText(r) {
+  const n = CONFIG.termMonths;
+  const s = r.stream;
+  if (r.id === "fha" && r.mi > 0) {
+    const life = r.base / r.price > 0.90;
+    return t(life ? "repayFhaLife" : "repayFha11", n, usd(s[0]), usd(r.pi));
+  }
+  const firstOff = s.findIndex(p => Math.abs(p - s[0]) > 0.5);
+  if (firstOff < 0) return t("repayLevel", n, usd(s[0]));
+  return t("repayMiOff", firstOff, usd(s[0]), n - firstOff, usd(s[firstOff]));
+}
+
+function warningsFor(r) {
+  const w = [];
+  const need = minDown(r.id, r);
+  const lowFicoFha = r.id === "fha" && ficoLow(S.fico) < 580;
+  if (r.downFrac + 0.0005 < need) w.push(lowFicoFha ? t("wFhaLowFico") : t("wDown", pct(need, 1)));
+  if (r.id === "conv" && r.jumbo) w.push(t("wJumbo", usd(CONFIG.conformingLimit)));
+  if (r.id === "fha") {
+    if (r.base > CONFIG.highCostCeiling) w.push(t("wFhaCeiling", usd(CONFIG.highCostCeiling)));
+    else if (r.base > CONFIG.fhaFloor) w.push(t("wFhaLimit", usd(CONFIG.fhaFloor), usd(CONFIG.highCostCeiling)));
+    if (S.propType === "condo") w.push(t("wFhaCondo"));
+  }
+  return w;
+}
+
+// Recommend: VA when eligible; otherwise whichever reachable program buys more
+// house. A program whose minimum down payment isn't met only wins if nothing
+// else is reachable.
+function recommend(results) {
+  const ok = results.filter(r => r.downFrac + 0.0005 >= minDown(r.id, r) && !(r.id === "fha" && r.base > CONFIG.highCostCeiling));
+  const pool = ok.length ? ok : results;
+  const va = pool.find(r => r.id === "va");
+  if (va) return va;
+  return pool.reduce((a, b) => (b.price > a.price ? b : a));
+}
+
+function whyText(r) {
+  if (r.id === "va") return t("whyVa") + (S.vet === "disab" ? " " + t("whyVaDisab") : "");
+  if (r.id === "conv") return availablePrograms().includes("fha") ? t("whyConv") : "";
+  if (r.id === "fha") return availablePrograms().includes("conv") ? t("whyFha") : "";
+  if (["itin", "fn"].includes(S.res)) return t("whyNonqmRes");
+  if (["bank", "dscr"].includes(S.income)) return t("whyNonqmInc");
+  return t("whyNonqmFico");
+}
+
+// ============================================================================
+// RENDER
+// ============================================================================
+const $app = () => document.getElementById("app");
+
+function render() {
+  if (S.screen === "hero") $app().innerHTML = renderHero();
+  else if (S.screen === "result") $app().innerHTML = renderResultShell();
+  else $app().innerHTML = renderStep(S.screen);
+  wire();
+  if (S.screen === "result") updateResult();
+}
+
+function renderHero() {
+  return `
+    <section class="hero">
+      <span class="badge">${t("badge")}</span>
+      <h1>${t("heroTitle")}</h1>
+      <p class="sub">${t("heroSub")}</p>
+      <div class="disclosure-pill">${t("notAppNote")}</div>
+      <button class="btn-primary" type="button" data-go="payment">${t("startBtn")}</button>
+    </section>`;
+}
+
+function pills(name, options, value, stack) {
+  return `<div class="pills${stack ? " stack" : ""}" role="radiogroup">${options.map(([v, label]) =>
+    `<button type="button" class="pill${String(v) === String(value) ? " selected" : ""}" role="radio" aria-checked="${String(v) === String(value)}" data-set="${name}" data-val="${v}">${label}</button>`
+  ).join("")}</div>`;
+}
+
+function moneyInput(id, value, suffix, big) {
+  return `<div class="money${big ? " big" : ""}"><span class="prefix">$</span>
+    <input id="${id}" inputmode="numeric" autocomplete="off" value="${value ? Math.round(value).toLocaleString("en-US") : ""}" />
+    ${suffix ? `<span class="suffix">${suffix}</span>` : ""}</div>`;
+}
+
+function stepBody(name) {
+  switch (name) {
+    case "payment":
+      return `
+        <h2 class="q">${t("qPayment")}</h2>
+        <p class="q-help">${t("qPaymentHelp")}</p>
+        <div class="card">
+          ${moneyInput("in-payment", S.payment, t("perMonth"), true)}
+          <input type="range" id="rng-payment" min="1000" max="12000" step="50" value="${S.payment}" aria-label="${esc(t("qPayment"))}" />
+          <div class="range-ends"><span>$1,000</span><span>$12,000</span></div>
+        </div>`;
+
+    case "down": {
+      const opts = [3, 3.5, 5, 10, 15, 20, 25];
+      if (S.vet !== "no") opts.unshift(0);
+      const isOther = S.downMode === "pct" && !opts.includes(S.downPct);
+      return `
+        <h2 class="q">${t("qDown")}</h2>
+        <p class="q-help">${t("qDownHelp")}</p>
+        <div class="card">
+          <div class="seg">
+            <button type="button" class="${S.downMode === "pct" ? "active" : ""}" data-set="downMode" data-val="pct">${t("downPct")}</button>
+            <button type="button" class="${S.downMode === "amt" ? "active" : ""}" data-set="downMode" data-val="amt">${t("downAmt")}</button>
+          </div>
+          ${S.downMode === "pct" ? `
+            ${pills("downPct", opts.map(p => [p, p + "%"]).concat([["other", t("downOther")]]), isOther ? "other" : S.downPct)}
+            <div class="sub-field" id="down-other" ${isOther ? "" : "hidden"}>
+              <div class="money pct"><input id="in-downpct" inputmode="decimal" value="${S.downPct}" /><span class="suffix">%</span></div>
+            </div>` : moneyInput("in-downamt", S.downAmt)}
+        </div>`;
+    }
+
+    case "property":
+      return `
+        <h2 class="q">${t("qProperty")}</h2>
+        <div class="card">
+          <div class="field"><span class="label">${t("lblState")}</span>
+            ${pills("st", [["FL", "Florida"], ["MA", "Massachusetts"], ["CT", "Connecticut"]], S.st)}</div>
+          <div class="field"><span class="label">${t("lblType")}</span>
+            ${pills("propType", [["house", t("typeHouse")], ["town", t("typeTown")], ["condo", t("typeCondo")]], S.propType)}</div>
+          <div class="field"><span class="label">${t("lblOcc")}</span>
+            ${pills("occ", [["primary", t("occPrimary")], ["second", t("occSecond")], ["invest", t("occInvest")]], S.occ)}</div>
+        </div>`;
+
+    case "hoa": {
+      const condo = S.propType === "condo";
+      return `
+        <h2 class="q">${condo ? t("qHoaCondo") : t("qHoa")}</h2>
+        <p class="q-help">${condo ? t("qHoaCondoHelp") : t("qHoaHelp")}</p>
+        <div class="card">
+          ${condo ? "" : pills("hoaHas", [["yes", t("yes")], ["no", t("no")]], S.hoaHas)}
+          <div class="${condo ? "" : "sub-field"}" ${S.hoaHas === "yes" ? "" : "hidden"} id="hoa-amt">
+            <div class="field"><label for="in-hoa">${t("lblHoaAmt")}</label>${moneyInput("in-hoa", S.hoa, t("perMonth"))}</div>
+          </div>
+        </div>`;
+    }
+
+    case "costs": {
+      const condo = S.propType === "condo";
+      return `
+        <h2 class="q">${t("qCosts")}</h2>
+        <p class="q-help">${t("qCostsHelp")}</p>
+        <div class="card">
+          <div class="field"><span class="label">${t("lblTaxKnown")}</span>
+            ${pills("taxKnown", [["yes", t("yes")], ["no", t("no")]], S.taxKnown)}
+            <div class="sub-field" ${S.taxKnown === "yes" ? "" : "hidden"} id="tax-amt">
+              <label class="label" for="in-tax">${t("lblTaxAmt")}</label>${moneyInput("in-tax", S.taxAnnual)}</div>
+            <p class="default-note" ${S.taxKnown === "yes" ? "hidden" : ""} id="tax-note">${t("taxDefault", pct(CONFIG.taxRateByState[S.st]), (i18n[S.lang].stateIn || i18n.en.stateIn)[S.st])}</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="field"><span class="label">${t("lblInsKnown")}</span>
+            ${pills("insKnown", [["yes", t("yes")], ["no", t("no")]], S.insKnown)}
+            <div class="sub-field" ${S.insKnown === "yes" ? "" : "hidden"} id="ins-amt">
+              <label class="label" for="in-ins">${t("lblInsAmt")}</label>${moneyInput("in-ins", S.insAnnual)}</div>
+            <p class="default-note" ${S.insKnown === "yes" ? "hidden" : ""} id="ins-note">${condo ? t("insCondoDefault", usd(CONFIG.condoHo6Monthly)) : t("insDefault", pct(CONFIG.hoiRate))}</p>
+          </div>
+        </div>`;
+    }
+
+    case "you": {
+      const incomes = [["w2", t("incW2")], ["self", t("incSelf")], ["bank", t("incBank")]];
+      if (S.occ === "invest") incomes.push(["dscr", t("incDscr")]);
+      return `
+        <h2 class="q">${t("qYou")}</h2>
+        <p class="q-help">${t("qYouHelp")}</p>
+        <div class="card">
+          <div class="field"><span class="label">${t("lblVet")}</span>
+            ${pills("vet", [["no", t("vetNo")], ["yes", t("vetYes")], ["disab", t("vetDisab")]], S.vet)}</div>
+          <div class="field"><span class="label">${t("lblRes")}</span>
+            ${pills("res", [["citizen", t("resCitizen")], ["pr", t("resPr")], ["visa", t("resVisa")], ["itin", t("resItin")], ["fn", t("resFn")]], S.res)}</div>
+          <div class="field"><span class="label">${t("lblIncome")}</span>
+            ${pills("income", incomes, S.income, true)}</div>
+          <div class="field"><span class="label">${t("lblFico")}</span>
+            ${pills("fico", [["760+", "760+"], ["740-759", "740–759"], ["720-739", "720–739"], ["700-719", "700–719"], ["680-699", "680–699"], ["660-679", "660–679"], ["640-659", "640–659"], ["620-639", "620–639"], ["580-619", "580–619"], ["<580", "< 580"], ["unknown", t("ficoUnknown")]], S.fico)}</div>
+        </div>`;
+    }
+  }
+}
+
+function renderStep(name) {
+  const i = STEPS.indexOf(name);
+  const last = i === STEPS.length - 1;
+  return `
+    <div class="progress"><div style="width:${((i + 1) / (STEPS.length + 1)) * 100}%"></div></div>
+    <div class="step-count">${t("stepOf", i + 1, STEPS.length)}</div>
+    ${stepBody(name)}
+    <div class="nav">
+      <button type="button" class="btn-ghost" data-go="${i === 0 ? "hero" : STEPS[i - 1]}">${t("back")}</button>
+      <button type="button" class="btn-primary" id="next-btn" data-go="${last ? "result" : STEPS[i + 1]}">${last ? t("seeResult") : t("next")}</button>
+    </div>`;
+}
+
+function renderResultShell() {
+  return `
+    <section class="result-hero">
+      <span class="badge">${t("resultBadge")}</span>
+      <div id="res-top"></div>
+    </section>
+    <div class="card">
+      <h3>${t("adjustPayment")}</h3>
+      ${moneyInput("in-payment", S.payment, t("perMonth"))}
+      <input type="range" id="rng-payment" min="1000" max="12000" step="50" value="${S.payment}" aria-label="${esc(t("adjustPayment"))}" />
+    </div>
+    <div class="card" id="res-tabs-card"><h3>${t("otherPrograms")}</h3><div class="tabs" id="res-tabs"></div></div>
+    <div class="card" id="res-breakdown"></div>
+    <div class="card" id="res-facts"></div>
+    <div class="nav"><button type="button" class="btn-ghost" data-go="${STEPS[0]}">${t("editAnswers")}</button></div>
+    <div class="cta-block">
+      <h2>${t("ctaTitle")}</h2>
+      <p>${t("ctaSub")}</p>
+      <div class="cta-col">
+        <a class="btn-wa" id="cta-wa" target="_blank" rel="noopener" href="#">${t("ctaWhats")}</a>
+        <a class="btn-primary" href="${CONFIG.applyUrl}">${t("ctaApply")}</a>
+        <a class="btn-secondary" href="${CONFIG.calendarShareUrl}" target="_blank" rel="noopener">${t("ctaBook")}</a>
+      </div>
+    </div>`;
+}
+
+// Only the numbers re-render while the slider moves, so it keeps focus.
+function updateResult() {
+  const programs = availablePrograms();
+  const results = programs.map(id => solve(id, S.payment));
+  const top = document.getElementById("res-top");
+
+  if (!results.length || results[0].noRoom) {
+    top.innerHTML = `<div class="warn">${results.length ? t("wNoRoom") : t("noProgram")}</div>`;
+    document.getElementById("cta-wa").href = "https://wa.me/" + CONFIG.whatsappNumber;
+    ["res-tabs-card", "res-breakdown", "res-facts"].forEach(id => (document.getElementById(id).hidden = true));
+    return;
+  }
+  ["res-tabs-card", "res-breakdown", "res-facts"].forEach(id => (document.getElementById(id).hidden = false));
+
+  const best = recommend(results);
+  const r = results.find(x => x.id === S.pick) || best;
+  const name = programName(r.id, r);
+
+  top.innerHTML = `
+    <p class="result-lead">${t("resultLead", usd(S.payment))}</p>
+    <div class="result-price">${usd(r.price)}</div>
+    <p class="price-note">${t("priceNote")}</p>
+    <span class="prog-chip">${r === best ? t("programLabel", name) : name}</span>
+    ${r === best && whyText(r) ? `<p class="why">${whyText(r)}</p>` : ""}`;
+
+  document.getElementById("res-tabs-card").hidden = results.length < 2;
+  document.getElementById("res-tabs").innerHTML = results.map(x => `
+    <button type="button" class="tab${x.id === r.id ? " selected" : ""}" data-pick="${x.id}">
+      <div class="tn">${programName(x.id, x)}</div><div class="tp">${usd(x.price)}</div>
+    </button>`).join("");
+
+  const parts = [
+    ["#f0c85a", t("rowPi"), r.pi, false],
+    ["#a78bfa", r.id === "fha" ? t("rowMiFha") : t("rowMi"), r.mi, false],
+    ["#60a5fa", t("rowTax"), r.tax, S.taxKnown !== "yes"],
+    ["#4ade80", t("rowIns"), r.ins, S.insKnown !== "yes"],
+    ["#f472b6", t("rowHoa"), r.hoa, false],
+  ].filter(p => p[2] > 0.5);
+  document.getElementById("res-breakdown").innerHTML = `
+    <h3>${t("breakdown", usd(S.payment))}</h3>
+    <div class="bar">${parts.map(p => `<span style="width:${(p[2] / r.total) * 100}%;background:${p[0]}"></span>`).join("")}</div>
+    <table class="rows">
+      ${parts.map(p => `<tr><td><span class="dot" style="background:${p[0]}"></span>${p[1]}${p[3] ? `<span class="est">${t("estTag")}</span>` : ""}</td><td>${usd(p[2])}</td></tr>`).join("")}
+      <tr class="total"><td>${t("rowTotal")}</td><td>${usd(r.total)}</td></tr>
+    </table>`;
+
+  const loanLabel = r.id === "fha" ? t("factLoanFha", pct(r.upfront))
+    : r.id === "va" && r.upfront > 0 ? t("factLoanVa", pct(r.upfront))
+    : t("factLoan");
+  const warns = warningsFor(r);
+  if (r.id === "conv" && r.jumbo && !CONFIG.offered.jumbo) warns.push(t("wJumboNotOffered"));
+  if (S.fico === "unknown") warns.push(t("wFicoUnknown"));
+  const income = r.id !== "nonqm" || nonQmKind() !== "dscr"
+    ? t("incomeNeeded", usd(S.payment / CONFIG.dtiForIncome))
+    : t("rentNeeded", usd(S.payment));
+
+  // Everything §1026.24(d) asks for once a payment or down payment is shown —
+  // down payment, repayment terms, APR — sits right here next to the numbers,
+  // not in the footer.
+  const source = RATES.live ? t("srcLive", fmtDate(RATES.asOf)) : t("srcFallback", fmtDate(CONFIG.fallbackAsOf));
+  const ficoTxt = S.fico === "unknown" ? t("ficoAssumed") : S.fico.replace("-", "–");
+  const occTxt = t({ primary: "occPrimary", second: "occSecond", invest: "occInvest" }[S.occ]);
+  const assumptions = t("assumptions", name, usd(r.price), usd(r.down) + " (" + pct(r.downFrac, 1) + ")", usd(r.loan),
+    ficoTxt, occTxt.toLowerCase(), source, CONFIG.discountPoints, usd(CONFIG.lenderFees.application), usd(CONFIG.lenderFees.processing), CONFIG.prepaidInterestDays)
+    + (r.id === "va" && r.upfront > 0 ? " " + t("assumpVa") : "");
+
+  document.getElementById("res-facts").innerHTML = `
+    <h3>${t("facts")}</h3>
+    <table class="rows">
+      <tr><td>${t("factDown")}</td><td>${usd(r.down)} (${pct(r.downFrac, 1)})</td></tr>
+      <tr><td>${loanLabel}</td><td>${usd(r.loan)}</td></tr>
+      <tr><td>${t("factInterest")}</td><td>${pctFixed(r.rate)}</td></tr>
+      <tr><td>${t("factApr")}</td><td>${pctFixed(r.apr)}</td></tr>
+      <tr><td>${t("factTerm")}</td><td>${t("years30")}</td></tr>
+    </table>
+    <p class="info">${repaymentText(r)} ${t("repayPlus")}</p>
+    ${warns.map(w => `<div class="warn">${w}</div>`).join("")}
+    <p class="info">${income}</p>
+    <p class="fine">${assumptions}</p>`;
+
+  const stName = { FL: "Florida", MA: "Massachusetts", CT: "Connecticut" }[S.st];
+  const typeName = t({ house: "typeHouse", town: "typeTown", condo: "typeCondo" }[S.propType]);
+  const downTxt = S.downMode === "pct" ? pct(S.downPct / 100, 1) : usd(S.downAmt);
+  const msg = t("waMsg", usd(S.payment), downTxt, stName, typeName, usd(r.price), name);
+  document.getElementById("cta-wa").href = "https://wa.me/" + CONFIG.whatsappNumber + "?text=" + encodeURIComponent(msg);
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + "T12:00:00");
+  return d.toLocaleDateString(locale(), { month: "short", day: "numeric", year: "numeric" });
+}
+
+// ============================================================================
+// EVENTS
+// ============================================================================
+function go(screen) {
+  if (screen === "result") S.pick = null;
+  S.screen = screen;
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function canAdvance() {
+  if (S.screen === "payment") return S.payment >= 300;
+  if (S.screen === "down") return S.downMode === "pct" ? S.downPct >= 0 && S.downPct < 100 : S.downAmt >= 0;
+  if (S.screen === "hoa") return S.propType === "condo" || S.hoaHas !== null;
+  return true;
+}
+function refreshNext() {
+  const b = document.getElementById("next-btn");
+  if (b) b.disabled = !canAdvance();
+}
+
+function wire() {
+  document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => go(b.dataset.go)));
+
+  document.querySelectorAll("[data-set]").forEach(b => b.addEventListener("click", () => {
+    const key = b.dataset.set, v = b.dataset.val;
+    if (key === "downPct") {
+      if (v === "other") {
+        const o = document.getElementById("down-other");
+        o.hidden = false;
+        b.parentElement.querySelectorAll(".pill").forEach(p => p.classList.toggle("selected", p === b));
+        document.getElementById("in-downpct").focus();
+        return;
+      }
+      S.downPct = parseFloat(v);
+    } else {
+      S[key] = v;
+    }
+    // A condo always has an HOA question and a flat HO-6; switching away
+    // keeps whatever HOA they typed but asks again.
+    if (key === "propType") S.hoaHas = v === "condo" ? "yes" : null;
+    if (key === "occ" && v !== "invest" && S.income === "dscr") S.income = "w2";
+    const y = window.scrollY;
+    render();
+    window.scrollTo(0, y);
+  }));
+
+  bindMoney("in-payment", v => {
+    S.payment = v;
+    const r = document.getElementById("rng-payment");
+    if (r) r.value = v;
+  });
+  const rng = document.getElementById("rng-payment");
+  if (rng) rng.addEventListener("input", () => {
+    S.payment = parseInt(rng.value, 10);
+    document.getElementById("in-payment").value = S.payment.toLocaleString("en-US");
+    if (S.screen === "result") updateResult();
+    refreshNext();
+  });
+  bindMoney("in-downamt", v => (S.downAmt = v));
+  bindMoney("in-hoa", v => (S.hoa = v));
+  bindMoney("in-tax", v => (S.taxAnnual = v));
+  bindMoney("in-ins", v => (S.insAnnual = v));
+  const dp = document.getElementById("in-downpct");
+  if (dp) dp.addEventListener("input", () => { S.downPct = Math.min(99, parseNum(dp.value)); refreshNext(); });
+
+  refreshNext();
+}
+
+function bindMoney(id, set) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener("input", () => {
+    set(parseNum(el.value));
+    if (S.screen === "result") updateResult();
+    refreshNext();
+  });
+  el.addEventListener("blur", () => {
+    const n = parseNum(el.value);
+    el.value = n ? Math.round(n).toLocaleString("en-US") : "";
+  });
+}
+
+// Program tabs are re-rendered by updateResult(), so their clicks are
+// delegated from the container instead of bound once.
+document.addEventListener("click", e => {
+  const tab = e.target.closest("#res-tabs [data-pick]");
+  if (!tab) return;
+  S.pick = tab.dataset.pick;
+  updateResult();
+});
+
+// ============================================================================
+// CHROME
+// ============================================================================
+function ehoLogoSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="36" height="36" aria-label="Equal Housing Lender">
+    <rect width="120" height="120" fill="#000"/>
+    <polygon points="60,20 18,52 102,52 60,20" fill="#fff"/>
+    <rect x="22" y="52" width="76" height="44" fill="#fff"/>
+    <rect x="42" y="64" width="36" height="6" fill="#000"/>
+    <rect x="42" y="78" width="36" height="6" fill="#000"/>
+    <rect x="0" y="96" width="120" height="24" fill="#000"/>
+    <text x="60" y="106" font-family="Arial, sans-serif" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">EQUAL HOUSING</text>
+    <text x="60" y="116" font-family="Arial, sans-serif" font-size="8" font-weight="800" fill="#fff" text-anchor="middle">LENDER</text>
+  </svg>`;
+}
+
+function renderFooter() {
+  return `
+    <div class="foot-wrap">
+      <div class="foot-identity">
+        <div class="foot-block">
+          <div class="label">${t("footerOfficer")}</div>
+          <div class="name">${CONFIG.loName}</div>
+          <div class="meta">${CONFIG.loTitle} | ${CONFIG.nmls}</div>
+          <div class="meta"><a href="mailto:${CONFIG.loEmail}">${CONFIG.loEmail}</a> · <a href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">@rodmortgage</a></div>
+        </div>
+        <div class="foot-block">
+          <div class="label">${t("footerCompany")}</div>
+          <div class="name">${CONFIG.company}</div>
+          <div class="meta">${CONFIG.companyNmls} · ${CONFIG.companyStateLicense}</div>
+          ${CONFIG.companyMaLicense ? `<div class="meta">Massachusetts Mortgage Lender &amp; Mortgage Broker License ${CONFIG.companyMaLicense}</div>` : ""}
+          <div class="meta">${t("footerAddressLabel")}: ${CONFIG.companyAddress}</div>
+        </div>
+      </div>
+      <div class="foot-licenses">
+        <div class="label">${t("footerLicensesLabel")}</div>
+        <strong>${t("footerStateLicenseLine")}</strong>
+      </div>
+      <div class="foot-eho">${ehoLogoSvg()}<strong>${t("footerEho")}</strong></div>
+      <div class="foot-links">
+        <a href="${CONFIG.privacyPolicyUrl}" target="_blank" rel="noopener">${t("footerPrivacyLink")}</a>
+        <a href="${CONFIG.accessibilityStatementUrl}" target="_blank" rel="noopener">${t("footerAccessibilityLink")}</a>
+        <a href="${CONFIG.nmlsConsumerAccessUrl}" target="_blank" rel="noopener">${t("footerNmlsLink")} (NMLS 2471779)</a>
+        <a href="${CONFIG.instagramUrl}" target="_blank" rel="noopener">Instagram @rodmortgage</a>
+      </div>
+      <p class="foot-legal">${t("footerLegalBlock")}</p>
+      <div class="foot-copyright">${t("footerCopyright")}</div>
+    </div>`;
+}
+
+function applyLang() {
+  document.documentElement.lang = S.lang === "pt" ? "pt-BR" : "en";
+  document.getElementById("brand-img").src = CONFIG.loHeadshot;
+  document.getElementById("brand-name").textContent = CONFIG.loName;
+  document.getElementById("brand-title").textContent = CONFIG.loTitle + " | " + CONFIG.nmls;
+  document.getElementById("lang-btn").textContent = t("langSwitch");
+  document.getElementById("site-footer").innerHTML = renderFooter();
+  render();
+}
+
+async function loadRates() {
+  try {
+    const res = await fetch(CONFIG.ratesEndpoint);
+    if (!res.ok) return;
+    const j = await res.json();
+    if (![j.conv, j.fha, j.va, j.jumbo].every(v => typeof v === "number" && v > 0.01 && v < 0.2)) return;
+    Object.assign(RATES, { conv: j.conv, fha: j.fha, va: j.va, jumbo: j.jumbo, asOf: j.asOf, live: true });
+    if (S.screen === "result") updateResult();
+  } catch (_) {
+    // stays on CONFIG.fallbackRates; the result screen says so
+  }
+}
+
+(function init() {
+  // ?lang=pt / ?lang=en lets a shared link force the language
+  const qp = new URLSearchParams(location.search).get("lang");
+  if (qp === "pt" || qp === "en") S.lang = qp;
+  document.getElementById("lang-btn").onclick = () => {
+    S.lang = S.lang === "en" ? "pt" : "en";
+    applyLang();
+  };
+  applyLang();
+  loadRates();
+})();
+</script>
+</body>
+</html>

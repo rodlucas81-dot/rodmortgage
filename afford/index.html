@@ -24,10 +24,10 @@ const CONFIG = {
 
   // Branding & contact
   loName: "Rodrigo DeOliveira",
-  loTitle: "Mortgage Specialist",
+  loTitle: "Lic. Mortgage Loan Originator",
   loPhone: "(561) 613-1935",
   loEmail: "rodrigo@ideallending.net",
-  nmls: "NMLS #1435896",
+  nmls: "NMLS ID 1435896",
   company: "Ideal Lending LLC",
   companyNmls: "NMLS #2471779",
   states: "CT, FL, MA",
@@ -111,11 +111,25 @@ const CONFIG = {
   fhaMipLowLtv: 0.0050,
   fhaMinDown: 0.035,
 
-  // Reg Z §1026.24(c) — when a rate is displayed it must be stated as an APR.
-  // Conservative estimated APR spread over the note rate (covers typical lender fees + points).
-  // Conventional: ~0.25%; FHA: ~0.50% (higher due to UFMIP financed into loan amount).
-  aprSpreadConv: 0.0025,
-  aprSpreadFha:  0.0050,
+  // LIVE RATES — the two tables above give the *shape* of pricing (how rate
+  // moves with FICO and LTV). Their level follows the market: on load the page
+  // fetches today's Optimal Blue index (netlify/functions/rates.mts, shared
+  // with /payment/) and shifts each table so its anchor cell equals the index.
+  // If the fetch fails, the fallback index below is used and its date shown.
+  ratesEndpoint: "/.netlify/functions/rates",
+  convAnchor: { fb: "720-739", lb: "80" },
+  fhaAnchor: "680-699",
+  fallbackIndex: { conv: 0.0740, fha: 0.0718 },
+  fallbackAsOf: "2026-10-09",
+
+  // Reg Z §1026.24(c) — a displayed rate must be accompanied by an APR, and
+  // the APR must be a real one: computeApr() runs the Appendix J actuarial
+  // method over the full payment stream, with these prepaid finance charges
+  // plus the financed FHA UFMIP. The $270 credit report fee is excluded on
+  // purpose — not a finance charge on a dwelling-secured loan (§1026.4(c)(7)).
+  lenderFees: { application: 1195, processing: 595 },
+  prepaidInterestDays: 15,
+  discountPoints: 0,
 };
 
 // ========================================================================
@@ -134,9 +148,11 @@ const i18n = {
     callRodrigo: "Call Rodrigo",
     estimateOnly: "Estimate only — not a commitment to lend",
     aprLabel: "Estimated APR",
-    aprLineLabel: "Est. APR",
-    cmpAprLabel: "Estimated APR",
-    aprNote: "*Estimated APR (Annual Percentage Rate) includes typical lender fees and points and may be higher than the interest rate displayed. Actual APR depends on your final loan terms, credit profile, and closing costs. This is an estimate only, not a commitment to lend.",
+    aprLineLabel: "APR",
+    cmpAprLabel: "Annual Percentage Rate (APR)",
+    aprNote: "*APR (Annual Percentage Rate) includes a $1,195 application fee, a $595 processing fee, 15 days of prepaid interest, no discount points, mortgage insurance for as long as it applies, and for FHA the financed 1.75% upfront premium. Rates follow a daily market index adjusted for credit score and down payment; they change daily and may not be available at application, lock or closing. Your actual rate and APR depend on your final loan terms, credit profile and closing costs. This is an estimate only, not a commitment to lend.",
+    ratesAsOf: "market rates as of {0}",
+    ratesFallbackAsOf: "market estimate from {0}",
     consentText: "By submitting, I consent to receive phone calls, text messages (SMS), and emails from Rodrigo DeOliveira and Ideal Lending LLC at the contact info I provide, including via automated technology and pre-recorded messages, regarding my mortgage inquiry. Consent is not required as a condition of service. Message and data rates may apply. Reply STOP to opt out.",
     consentRealtorAddendum: " I also consent to share my contact information with {realtor} of {brokerage} so they can follow up about my home search.",
     consentErr: "Please consent to be contacted to continue.",
@@ -295,7 +311,7 @@ const i18n = {
     legalP1: "This calculator provides estimates based on information you enter and assumptions about current market conditions. Results are not a commitment to lend, a loan approval, an offer to lend, or a guaranteed rate or term.",
     legalP2: "Actual loan terms, rates, monthly payments, and approval depend on factors not addressed by this calculator, including full income and asset documentation, credit report review, employment verification, debt-to-income analysis, property appraisal, title review, automated underwriting findings, lender overlays, and program-specific eligibility requirements. Application required.",
     legalP3: "Interest rates, loan terms, fees, and program availability are subject to change without notice. Rates and mortgage insurance factors shown are estimates and may not reflect your final rate. Your actual Annual Percentage Rate (APR) will include lender fees and points and may be higher than the interest rate displayed.",
-    legalP4: "Ideal Lending LLC, NMLS 2471779 is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA) or any government agency or government-sponsored entity and this offer is not being made by an agency of the government. Ideal Lending LLC is a Licensed Mortgage Lender Servicer, FL MLD2414; Ideal Lending LLC only lends in CO, CT, FL, GA, MA, NJ, TN, TX. Reverse mortgages are not available in the state of MA.",
+    legalP4: "Ideal Lending LLC, NMLS 2471779 is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA) or any government agency or government-sponsored entity and this offer is not being made by an agency of the government. Ideal Lending LLC is a Licensed Mortgage Lender Servicer, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC only lends in CO, CT, FL, GA, MA, NJ, TN, TX. Reverse mortgages are not available in the state of MA.",
     legalP5: "Equal Opportunity Employer; Equal Opportunity Lender. This is not an offer for extension of credit or commitment to lend. Information and pricing are subject to change at any time and without notice.",
     eho: "Equal Housing Lender",
     nmlsConsumerAccess: "NMLS Consumer Access",
@@ -312,9 +328,11 @@ const i18n = {
     callRodrigo: "Ligar para Rodrigo",
     estimateOnly: "Apenas estimativa — não é compromisso de empréstimo",
     aprLabel: "APR Estimado",
-    aprLineLabel: "APR Est.",
-    cmpAprLabel: "APR Estimado",
-    aprNote: "*APR estimado (Taxa Percentual Anual) inclui taxas típicas do credor e pontos e pode ser maior que a taxa de juros exibida. O APR real depende dos seus termos finais de empréstimo, perfil de crédito e custos de fechamento. Esta é uma estimativa apenas, não um compromisso de empréstimo.",
+    aprLineLabel: "APR",
+    cmpAprLabel: "APR (Taxa Percentual Anual)",
+    aprNote: "*O APR (Taxa Percentual Anual) inclui taxa de aplicação de $1,195, taxa de processamento de $595, 15 dias de juros pré-pagos, nenhum ponto de desconto, seguro hipotecário enquanto se aplicar e, no FHA, o prêmio inicial de 1,75% financiado. As taxas seguem um índice diário de mercado ajustado ao score e à entrada; mudam diariamente e podem não estar disponíveis na aplicação, no travamento (lock) ou no fechamento. Sua taxa e APR reais dependem dos termos finais, do perfil de crédito e dos custos de fechamento. Esta é apenas uma estimativa, não um compromisso de empréstimo.",
+    ratesAsOf: "taxas de mercado de {0}",
+    ratesFallbackAsOf: "estimativa de mercado de {0}",
     consentText: "Ao enviar, eu autorizo receber ligações, mensagens de texto (SMS) e e-mails de Rodrigo DeOliveira e Ideal Lending LLC nos contatos fornecidos, incluindo por tecnologia automatizada e mensagens pré-gravadas, sobre minha consulta hipotecária. O consentimento não é condição para o serviço. Tarifas de mensagem e dados podem ser aplicadas. Responda STOP para cancelar.",
     consentRealtorAddendum: " Também autorizo compartilhar minhas informações de contato com {realtor} da {brokerage} para que possam dar continuidade à minha busca por imóvel.",
     consentErr: "Por favor autorize o contato para continuar.",
@@ -468,7 +486,7 @@ const i18n = {
     legalP1: "Esta calculadora fornece estimativas baseadas nas informações que você inserir e em premissas sobre as condições de mercado atuais. Os resultados não constituem compromisso de empréstimo, aprovação de empréstimo, oferta de empréstimo ou taxa garantida.",
     legalP2: "Termos reais do empréstimo, taxas, pagamentos mensais e aprovação dependem de fatores não tratados por esta calculadora, incluindo documentação completa de renda e ativos, análise de crédito, verificação de emprego, análise de DTI, avaliação do imóvel, análise de título, conclusões da subscrição automatizada, sobreposições do credor e requisitos de elegibilidade específicos do programa. Aplicação obrigatória.",
     legalP3: "Taxas de juros, termos do empréstimo, taxas e disponibilidade de programas estão sujeitos a alterações sem aviso prévio. Taxas e fatores de seguro hipotecário mostrados são estimativas e podem não refletir sua taxa final. Sua Taxa Percentual Anual real (APR) incluirá taxas e pontos do credor e pode ser maior que a taxa de juros exibida.",
-    legalP4: "Ideal Lending LLC, NMLS 2471779 não é afiliada nem age em nome ou sob direção da Federal Housing Administration (FHA) ou qualquer agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Ideal Lending LLC é um Mortgage Lender Servicer Licenciado, FL MLD2414; Ideal Lending LLC empresta apenas em CO, CT, FL, GA, MA, NJ, TN, TX. Hipotecas reversas não estão disponíveis no estado de MA.",
+    legalP4: "Ideal Lending LLC, NMLS 2471779 não é afiliada nem age em nome ou sob direção da Federal Housing Administration (FHA) ou qualquer agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Ideal Lending LLC é um Mortgage Lender Servicer Licenciado, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC empresta apenas em CO, CT, FL, GA, MA, NJ, TN, TX. Hipotecas reversas não estão disponíveis no estado de MA.",
     legalP5: "Empregador de Igualdade de Oportunidades; Credor de Igualdade de Oportunidades. Isto não é uma oferta de extensão de crédito nem compromisso de empréstimo. Informações e preços estão sujeitos a alterações a qualquer momento e sem aviso prévio.",
     eho: "Equal Housing Lender",
     nmlsConsumerAccess: "NMLS Consumer Access",
@@ -1074,7 +1092,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
       <div class="brand-icon">RD</div>
       <div class="brand-text">
         <div class="brand-name">Rodrigo <span class="gold">DeOliveira</span></div>
-        <div class="brand-sub">Mortgage Specialist · NMLS #1435896</div>
+        <div class="brand-sub">Lic. Mortgage Loan Originator | NMLS ID 1435896</div>
       </div>
     </a>
     <div class="topbar-right">
@@ -1519,11 +1537,73 @@ function ltvBracket(dpPct) {
   return "97";
 }
 
+// ========================================================================
+//  MARKET RATES — shift the pricing tables to today's index (see CONFIG)
+// ========================================================================
+const MARKET = { convShift: 0, fhaShift: 0, asOf: CONFIG.fallbackAsOf, live: false };
+function setMarket(idx, asOf, live) {
+  MARKET.convShift = idx.conv - CONFIG.rates[CONFIG.convAnchor.fb][CONFIG.convAnchor.lb];
+  MARKET.fhaShift = idx.fha - CONFIG.fhaRates[CONFIG.fhaAnchor];
+  MARKET.asOf = asOf;
+  MARKET.live = live;
+}
+setMarket(CONFIG.fallbackIndex, CONFIG.fallbackAsOf, false);
+
+async function loadMarketRates() {
+  try {
+    const res = await fetch(CONFIG.ratesEndpoint);
+    if (!res.ok) return;
+    const j = await res.json();
+    if (!(j.conv > 0.01 && j.conv < 0.2 && j.fha > 0.01 && j.fha < 0.2)) return;
+    setMarket({ conv: j.conv, fha: j.fha }, j.asOf, true);
+    if (state.calcResult) renderResult();
+  } catch (_) {
+    // keeps the fallback index; the assumptions line shows its date
+  }
+}
+
+// ========================================================================
+//  APR — Reg Z Appendix J actuarial method over the real payment stream
+// ------------------------------------------------------------------------
+//  Conventional BPMI ends when the balance reaches 78% of the original value
+//  (Homeowners Protection Act). FHA annual MIP runs 11 years at ≤90% LTV,
+//  otherwise for the life of the loan, re-figured yearly on the balance.
+// ========================================================================
+function computeApr(r, isFha) {
+  const n = CONFIG.termYears * 12, i = r.rate / 12;
+  const base = isFha ? r.baseLoan : r.loan;
+  const fhaMonths = isFha ? (base / r.price > 0.90 ? n : 132) : 0;
+  const stream = [];
+  let bal = r.loan, yearMi = r.mi;
+  for (let k = 0; k < n; k++) {
+    let mi = 0;
+    if (isFha && k < fhaMonths) {
+      if (k % 12 === 0) yearMi = r.mi * bal / r.loan;
+      mi = yearMi;
+    } else if (!isFha && r.mi > 0 && bal > 0.78 * r.price) {
+      mi = r.mi;
+    }
+    stream.push(r.pi + mi);
+    bal -= r.pi - bal * i;
+  }
+  const fees = Object.values(CONFIG.lenderFees).reduce((a, b) => a + b, 0)
+    + r.loan * r.rate / 365 * CONFIG.prepaidInterestDays
+    + r.loan * CONFIG.discountPoints / 100;
+  const amountFinanced = base - fees;   // financed UFMIP is a finance charge too
+  const pv = x => stream.reduce((s, p, k) => s + p / Math.pow(1 + x, k + 1), 0);
+  let lo = 0, hi = 0.05;
+  for (let it = 0; it < 60; it++) {
+    const mid = (lo + hi) / 2;
+    if (pv(mid) > amountFinanced) lo = mid; else hi = mid;
+  }
+  return ((lo + hi) / 2) * 12;
+}
+
 function calcConv() {
   const fb = ficoBracket(state.fico);
   const lb = ltvBracket(state.dp);
   if (!fb || !lb) return null;
-  const rate = CONFIG.rates[fb][lb];
+  const rate = CONFIG.rates[fb][lb] + MARKET.convShift;
   const miRate = CONFIG.miFactors[fb][lb];
   const dpFraction = state.dp / 100;
   const r = rate / 12, n = CONFIG.termYears * 12;
@@ -1550,7 +1630,7 @@ function calcFha() {
   const dpFraction = fhaDp;
   const ltv = 1 - dpFraction;
   const mipRate = ltv > 0.95 ? CONFIG.fhaMipHighLtv : CONFIG.fhaMipLowLtv;
-  const rate = CONFIG.fhaRates[fb];
+  const rate = CONFIG.fhaRates[fb] + MARKET.fhaShift;
   const r = rate / 12, n = CONFIG.termYears * 12;
   const pmtFactor = (r * Math.pow(1+r,n)) / (Math.pow(1+r,n) - 1);
   const ufmip = CONFIG.fhaUfmip;
@@ -1613,16 +1693,15 @@ function renderResult() {
 
   const isFha = primary.type === t('fha');
   // Reg Z §1026.24(c): when a rate is displayed it must be stated as an APR.
-  // Show both the note rate AND an estimated APR (rate + conservative spread).
-  const aprSpread = isFha ? CONFIG.aprSpreadFha : CONFIG.aprSpreadConv;
-  const estApr = primary.rate + aprSpread;
+  const estApr = computeApr(primary, isFha);
   let termsText = ` FICO ${primary.fb} · ${primary.dp.toFixed(1)}% down · `
     + `${(primary.rate*100).toFixed(3)}% rate / `
     + `${(estApr*100).toFixed(3)}% ${t('aprLineLabel')}* · `;
   termsText += isFha
     ? `${(primary.miRate*100).toFixed(2)}% MIP · 1.75% UFMIP · `
     : (primary.miRate > 0 ? `${(primary.miRate*100).toFixed(2)}% MI · ` : "no MI · ");
-  termsText += `${CONFIG.termYears}-yr fixed · ${CONFIG.termYears * 12} monthly payments`;
+  termsText += `${CONFIG.termYears}-yr fixed · ${CONFIG.termYears * 12} monthly payments · `
+    + t(MARKET.live ? 'ratesAsOf' : 'ratesFallbackAsOf', fmtAsOf(MARKET.asOf));
   termsEl.textContent = termsText;
 
   renderComparison(result.conv, result.fha, result.recommendation);
@@ -1637,9 +1716,8 @@ function renderComparison(conv, fha, rec) {
   const renderCol = (r, isFha) => {
     if (!r || r.error) return `<div style="color:var(--muted); font-style:italic; font-size:12px;">${t('notAvailable')}</div>`;
     const dpDisplay = `${r.dp.toFixed(1)}%`;
-    // Reg Z §1026.24(c): estimated APR shown alongside any displayed rate.
-    const aprSpread = isFha ? CONFIG.aprSpreadFha : CONFIG.aprSpreadConv;
-    const estApr = r.rate + aprSpread;
+    // Reg Z §1026.24(c): APR shown alongside any displayed rate.
+    const estApr = computeApr(r, isFha);
     let miLines = isFha
       ? `<div class="crow"><span>${t('cmpMI')}</span><span>${fmt(r.mi)}</span></div>` +
         `<div class="crow"><span>${t('cmpUfmip')}</span><span>${fmt(r.ufmip)}</span></div>`
@@ -1947,6 +2025,11 @@ function init() {
 
   applyLang();
   showStep(1);
+  loadMarketRates();
+}
+
+function fmtAsOf(iso) {
+  return new Date(iso + "T12:00:00").toLocaleDateString(lang === 'pt' ? 'pt-BR' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 document.addEventListener('DOMContentLoaded', init);
