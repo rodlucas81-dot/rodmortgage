@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DreamBuilder — Compre sua casa com 3,5% de entrada | Rodrigo L. Deoliveira</title>
-<meta name="description" content="Programa DreamBuilder: compre sua casa com 3,5% de entrada, mesmo com ITIN. Responda 2 minutos de perguntas e veja se você se qualifica. Bilíngue PT/EN. Rodrigo L. Deoliveira, Rize Mortgage." />
+<title>Programa EEP — Sua casa com 3,5% de entrada | Rodrigo L. Deoliveira</title>
+<meta name="description" content="Programa EEP (Earned Equity Program): uma entidade habitacional aprovada pelo FHA compra a casa que você escolheu e você se muda como futuro dono. Entrada a partir de 3,5%. Para quem tem renda mas esbarra no financiamento tradicional. Bilíngue PT/EN. Rodrigo L. Deoliveira, Rize Mortgage." />
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2314285A'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='54' font-weight='700' fill='%23D4AF37' font-family='sans-serif'%3ER%3C/text%3E%3C/svg%3E" />
 
@@ -12,9 +12,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
+<!-- Rize Mortgage in-house ADA widget — ADA/WCAG 2.1 conformance assist -->
+<script src="https://ambitious-cliff-0d2c37f10.1.azurestaticapps.net/rize-ada-widget.js" data-position="bottom-left" defer></script>
+
 <script>
 /* =========================================================================
-   DREAMBUILDER PRE-QUALIFICATION LANDING PAGE
+   EEP (EARNED EQUITY PROGRAM) PRE-QUALIFICATION LANDING PAGE
    Single self-contained file — HTML + CSS + vanilla JS. No build step.
    No localStorage/sessionStorage: all quiz state lives in the `state` object.
    =========================================================================
@@ -23,16 +26,16 @@
    │  TODO — RODRIGO: configure these three constants.                     │
    │  They ship with your real working values (pulled from /credit), so    │
    │  the page works out of the box. Swap LEAD_ENDPOINT if you want        │
-   │  DreamBuilder leads to land in a separate Formspree inbox.            │
+   │  EEP leads to land in a separate Formspree inbox.            │
    └─────────────────────────────────────────────────────────────────────┘ */
 
 // TODO: Lead capture endpoint. Default is your existing Formspree form.
-//       Create a NEW Formspree form for DreamBuilder if you want these leads
+//       Create a NEW Formspree form for EEP if you want these leads
 //       separated from the credit-page leads, then paste its URL here.
 const LEAD_ENDPOINT = "https://formspree.io/f/mqewrlyl";
 
 // TODO: Google Calendar Appointment Schedule — inline iframe embed URL
-//       (the "gv=true" version). Replace if you make a DreamBuilder-specific
+//       (the "gv=true" version). Replace if you make an EEP-specific
 //       appointment type. For prefilled name/email + automation, you can swap
 //       this whole block for a Cal.com or Calendly embed instead.
 const CALENDAR_EMBED_URL = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ1jCHtZHW219HOtCUi2_87Nb5mvECiNMl5EREa0xxc-PWtZcyOi2GNIhiBC1f4NSFv7NjVZvkeS?gv=true";
@@ -59,16 +62,26 @@ const UI = {
   pt: {
     langSwitch: "EN",
     // Hero
-    heroBadge: "PROGRAMA DREAMBUILDER",
-    heroTitle: 'Compre sua casa com <span class="gold">3,5% de entrada</span> — mesmo com ITIN.',
-    heroSub: "Responda 2 minutos de perguntas e veja se você se qualifica pro DreamBuilder.",
+    heroBadge: "PROGRAMA EEP",
+    heroTitle: 'A casa pode ser sua <span class="gold">antes do que você imagina</span>.',
+    heroSub: "Um programa para quem tem renda, mas esbarra no financiamento tradicional. Entrada a partir de 3,5%.",
     heroCta: "Ver se eu me qualifico",
-    // How it works
-    howTitle: "Como funciona",
+    // Reframe (new section — critical "not rent-to-own" clarifier from the briefing)
+    reframeTitle: "Isso não é aluguel. Não é rent to own.",
+    reframeBody: "Você escolhe a casa. Uma entidade habitacional aprovada pelo FHA compra ela para você. Você se muda e vai pagando até a escritura passar para o seu nome.",
+    reframeBullets: [
+      "A valorização da casa é 100% sua desde o primeiro dia.",
+      "O valor que falta pagar diminui a cada parcela.",
+      "Não existe divisão de valorização com ninguém."
+    ],
+    // How it works (5 steps per briefing section 3)
+    howTitle: "Como funciona, passo a passo",
     howSteps: [
-      "Você escolhe a casa.",
-      "Uma entidade habilitada compra pra você e você se muda como futuro dono.",
-      "Você constrói equity e, quando se qualifica, refinancia pro seu nome."
+      "Você escolhe a casa — qualquer imóvel à venda que se encaixe nas regras do programa.",
+      "A entidade compra usando um financiamento FHA e fica com a escritura por enquanto.",
+      "Você assina o contrato, é registrado em cartório, e se muda. Mora como dono: pode pintar, reformar, plantar.",
+      "Você paga uma parcela por mês. Parte dela abate o que você ainda deve.",
+      "Quando fizer sentido, a escritura passa para o seu nome."
     ],
     // Stepper chrome
     stepOf: "Pergunta {0} de {1}",
@@ -84,9 +97,9 @@ const UI = {
     resultBadgeA: "✅ Forte candidato",
     resultBadgeB: "⚠️ Vamos avaliar",
     resultBadgeC: "🧭 Outro caminho",
-    resultA: "Seu perfil tem tudo a ver com o DreamBuilder! Bora agendar uma conversa rápida pra montar seu cenário.",
+    resultA: "Seu perfil tem tudo a ver com o EEP. Bora agendar uma conversa rápida pra montar seu cenário.",
     resultB: "Dá pra trabalhar o seu caso — tem alguns pontos a ajustar. Vamos conversar e traçar um plano.",
-    resultC: "O DreamBuilder pode não ser o ideal agora, mas quase sempre existe um caminho. Me chama que a gente vê suas opções.",
+    resultC: "O EEP pode não ser o ideal agora, mas quase sempre existe um caminho. Me chama que a gente vê suas opções.",
     resultDisclaimer: "Pré-qualificação não é aprovação nem compromisso de empréstimo; sujeito a análise.",
     bookHeader: "Agendar conversa",
     bookFallback: "Se o calendário não carregar:",
@@ -96,20 +109,29 @@ const UI = {
     startOver: "Recomeçar",
     leadSavedNote: "Recebi suas respostas — já estão comigo. Agende abaixo pra acelerar.",
     // Footer
-    footerDisclosure: "Equal Housing Lender · Isto não é um compromisso de empréstimo.",
+    footerDisclosure: "Material informativo. Não constitui aprovação de crédito, compromisso de empréstimo, oferta de financiamento nem aconselhamento jurídico, tributário ou de imigração. Valores apresentados são exemplos para fins de planejamento e não representam cotação; os números do seu caso saem nas estimativas oficiais. Imóveis podem desvalorizar e não há garantia de valorização nem de que qualquer caminho de saída estará disponível em um prazo determinado. O programa é operado por uma entidade habitacional aprovada pelo FHA em parceria com o investidor do programa, possui regras e taxas próprias, e toda transação está sujeita à análise e aprovação de crédito, renda, ativos e do imóvel segundo as regras vigentes na data da solicitação. Nem todas as solicitações são aprovadas. Elegibilidade quanto à situação migratória segue as regras do FHA e do programa, que podem mudar. Para orientação migratória consulte um advogado de imigração; para planejamento tributário, seu contador. Standard Mortgage Capital LLC dba Rize Mortgage — NMLS #1604663. Equal Housing Lender · Igualdade de oportunidade de moradia.",
     footerPrivacy: "Política de Privacidade",
   },
   en: {
     langSwitch: "PT",
-    heroBadge: "DREAMBUILDER PROGRAM",
-    heroTitle: 'Buy your home with <span class="gold">3.5% down</span> — even with an ITIN.',
-    heroSub: "Take a 2-minute quiz to see if you qualify for DreamBuilder.",
+    heroBadge: "EEP PROGRAM",
+    heroTitle: 'Your home — <span class="gold">sooner than you think</span>.',
+    heroSub: "A program for people who have the income but don't fit traditional mortgage underwriting. From 3.5% down.",
     heroCta: "See if I qualify",
-    howTitle: "How it works",
+    reframeTitle: "This is not rent. This is not rent-to-own.",
+    reframeBody: "You pick the home. An FHA-approved housing entity buys it for you. You move in and pay down the balance until the deed transfers into your name.",
+    reframeBullets: [
+      "100% of the home's appreciation is yours from day one.",
+      "The balance you owe goes down with every payment.",
+      "No appreciation share-split with anyone."
+    ],
+    howTitle: "How it works, step by step",
     howSteps: [
-      "You choose the home.",
-      "A qualified entity buys it for you and you move in as the future owner.",
-      "You build equity and, once you qualify, refinance into your own name."
+      "You pick the home — any home for sale that fits the program's rules.",
+      "The entity buys it with an FHA loan and holds the deed for now.",
+      "You sign the contract, it's recorded, and you move in. You live as an owner: paint, renovate, plant.",
+      "You pay one monthly amount. Part of each payment reduces what you owe.",
+      "When the timing works for you, the deed transfers into your name."
     ],
     stepOf: "Question {0} of {1}",
     back: "← Back",
@@ -123,9 +145,9 @@ const UI = {
     resultBadgeA: "✅ Strong fit",
     resultBadgeB: "⚠️ Let's review",
     resultBadgeC: "🧭 Other path",
-    resultA: "You're a great fit for DreamBuilder! Let's book a quick call to map out your scenario.",
+    resultA: "You're a great fit for the EEP program. Let's book a quick call to map out your scenario.",
     resultB: "We can work with your case — a couple of things to fine-tune. Let's talk and build a plan.",
-    resultC: "DreamBuilder may not be the best fit right now, but there's usually a path. Let's look at your options.",
+    resultC: "The EEP program may not be the best fit right now, but there's usually a path. Let's look at your options.",
     resultDisclaimer: "Pre-qualification is not approval or a commitment to lend; subject to review.",
     bookHeader: "Book a call",
     bookFallback: "If the calendar doesn't load:",
@@ -134,7 +156,7 @@ const UI = {
     dmMe: "DM @rodmortgage on Instagram",
     startOver: "Start over",
     leadSavedNote: "I've got your answers — they're with me already. Book below to move faster.",
-    footerDisclosure: "Equal Housing Lender · This is not a commitment to lend.",
+    footerDisclosure: "Informational material. Not a credit approval, a commitment to lend, an offer of financing, or legal, tax, or immigration advice. Figures shown are planning examples and not a quote; your actual numbers come from the official estimates. Properties can depreciate and there is no guarantee of appreciation or that any exit path will be available within a specific timeframe. The program is operated by an FHA-approved housing entity in partnership with the program investor; it has its own rules and fees. Every transaction is subject to credit, income, asset, and property review and approval under the rules in effect on the application date. Not all applicants qualify. Immigration-status eligibility follows FHA and program rules, which may change. Consult an immigration attorney for immigration guidance and your accountant for tax planning. Standard Mortgage Capital LLC dba Rize Mortgage — NMLS #1604663. Equal Housing Lender.",
     footerPrivacy: "Privacy Policy",
   }
 };
@@ -373,6 +395,31 @@ section { padding: 48px 20px; }
 }
 .btn-secondary:hover, .btn-secondary:focus-visible { border-color: var(--gold); color: var(--navy-dark); }
 
+/* ---- Reframe (it's not rent-to-own) ---- */
+.reframe .inner { max-width: 760px; }
+.reframe h2 {
+  font-size: clamp(22px, 4vw, 30px);
+  color: var(--navy-dark); margin-bottom: 14px; text-align: center;
+}
+.reframe-body {
+  font-size: 17px; line-height: 1.55; color: var(--navy-dark);
+  text-align: center; margin: 0 auto 18px; max-width: 640px;
+}
+.reframe-bullets {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: 10px; max-width: 580px; margin-left: auto; margin-right: auto;
+}
+.reframe-bullets li {
+  padding: 12px 16px 12px 42px;
+  background: #fff; border: 1px solid var(--line); border-left: 4px solid var(--gold);
+  border-radius: 10px; font-size: 15px; color: var(--navy-dark); line-height: 1.45;
+  position: relative;
+}
+.reframe-bullets li::before {
+  content: "✓"; position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  color: var(--gold); font-weight: 700; font-size: 16px;
+}
+
 /* ---- How it works ---- */
 .how h2 { text-align: center; font-size: clamp(22px, 4vw, 30px); margin-bottom: 28px; }
 .how-grid { display: grid; gap: 16px; }
@@ -506,6 +553,15 @@ footer .f-links { margin-top: 12px; font-size: 12px; }
     </div>
   </section>
 
+  <!-- =================== REFRAME (not rent-to-own) ================ -->
+  <section class="section-cream reframe" id="reframeSection">
+    <div class="inner">
+      <h2 id="reframeTitle"></h2>
+      <p class="reframe-body" id="reframeBody"></p>
+      <ul class="reframe-bullets" id="reframeBullets"></ul>
+    </div>
+  </section>
+
   <!-- ======================= HOW IT WORKS ========================= -->
   <section class="section-navy how" id="howSection" style="padding-top:0;">
     <div class="inner">
@@ -585,6 +641,10 @@ function renderChrome() {
   el("heroTitle").innerHTML = t("heroTitle");
   el("heroSub").textContent = t("heroSub");
   el("heroCta").textContent = t("heroCta");
+
+  el("reframeTitle").textContent = t("reframeTitle");
+  el("reframeBody").textContent = t("reframeBody");
+  el("reframeBullets").innerHTML = t("reframeBullets").map(b => `<li>${b}</li>`).join("");
 
   el("howTitle").textContent = t("howTitle");
   el("howGrid").innerHTML = t("howSteps").map((s, i) =>
@@ -779,14 +839,14 @@ function scrollQuizIntoView() {
    ========================================================================= */
 function buildLeadPayload() {
   const payload = {
-    _subject: "DreamBuilder lead — " + (state.contact.name || "(no name)"),
+    _subject: "EEP lead — " + (state.contact.name || "(no name)"),
     name: state.contact.name || "",
     phone: state.contact.phone || "",
     email: state.contact.email || "",
     preferred_language: state.contact.pref_lang || state.lang.toUpperCase(),
     page_language: state.lang.toUpperCase(),
     tier: state.tier,
-    program: "DreamBuilder",
+    program: "EEP (Earned Equity Program)",
   };
   // Include every quiz answer with a human-readable label (English, for the inbox).
   for (const q of QUIZ) {
@@ -819,11 +879,11 @@ async function submitAndShowResult() {
         body: JSON.stringify(payload),
       });
     } else {
-      console.warn("[DreamBuilder] LEAD_ENDPOINT not configured — lead not sent:", payload);
+      console.warn("[EEP] LEAD_ENDPOINT not configured — lead not sent:", payload);
     }
   } catch (err) {
     // Swallow: the result + booking must still appear.
-    console.warn("[DreamBuilder] Lead POST failed (showing result anyway):", err);
+    console.warn("[EEP] Lead POST failed (showing result anyway):", err);
   }
 
   showResult();
