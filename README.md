@@ -55,7 +55,7 @@ Forms POST to `/.netlify/functions/lead-router`, which:
 Env vars (set via Netlify Project configuration > Environment variables):
 - `RESEND_API_KEY` — required for realtor auto-email
 - `RESEND_FROM` — optional, defaults to `Rodrigo L. Deoliveira (Rize Mortgage) <leads@rodmortgage.net>`
-- `ROD_EMAIL` — optional, defaults to `rodrigo@rizemtg.com`
+- `ROD_EMAIL` — optional, defaults to `rodrigo@finstars.us`
 
 ## Editing
 

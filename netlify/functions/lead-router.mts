@@ -18,7 +18,7 @@
 //                         Defaults to "leads@rodmortgage.net" once domain is
 //                         verified in Resend.
 //   ROD_EMAIL             Optional. Rod's email for the Bcc copy when Resend
-//                         is active. Defaults to "rodrigo@rizemtg.com".
+//                         is active. Defaults to "rodrigo@finstars.us".
 // ============================================================================
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mqewrlyl";
@@ -118,7 +118,7 @@ async function notifyRod(payload: Record<string, unknown>, apiKey: string) {
   const to = String(
     (globalThis as any).Netlify?.env?.get?.("ROD_EMAIL")
       || process.env.ROD_EMAIL
-      || "rodrigo@rizemtg.com",
+      || "rodrigo@finstars.us",
   ).split(",").map((s) => s.trim()).filter(Boolean);
 
   const name = String(payload["Name"] || payload.name || "New lead").trim();
@@ -214,7 +214,7 @@ async function sendToRealtor(
 
   const rodEmail = (globalThis as any).Netlify?.env?.get?.("ROD_EMAIL")
     || process.env.ROD_EMAIL
-    || "rodrigo@rizemtg.com";
+    || "rodrigo@finstars.us";
 
   const realtorName = String(payload["Realtor Name"] || "your client");
   const buyerName = `${payload.firstName || ""} ${payload.lastName || ""}`.trim()
