@@ -18,7 +18,7 @@
 //                         Defaults to "leads@rodmortgage.net" once domain is
 //                         verified in Resend.
 //   ROD_EMAIL             Optional. Rod's email for the Bcc copy when Resend
-//                         is active. Defaults to "rodrigo@ideallending.net".
+//                         is active. Defaults to "rodrigo@rizemtg.com".
 // ============================================================================
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mqewrlyl";
@@ -113,12 +113,12 @@ export default async (req: Request) => {
 async function notifyRod(payload: Record<string, unknown>, apiKey: string) {
   const from = (globalThis as any).Netlify?.env?.get?.("RESEND_FROM")
     || process.env.RESEND_FROM
-    || "Rodrigo DeOliveira <leads@rodmortgage.net>";
+    || "Rodrigo L. Deoliveira (Rize Mortgage) <leads@rodmortgage.net>";
 
   const to = String(
     (globalThis as any).Netlify?.env?.get?.("ROD_EMAIL")
       || process.env.ROD_EMAIL
-      || "rodrigo@ideallending.net",
+      || "rodrigo@rizemtg.com",
   ).split(",").map((s) => s.trim()).filter(Boolean);
 
   const name = String(payload["Name"] || payload.name || "New lead").trim();
@@ -210,11 +210,11 @@ async function sendToRealtor(
 ) {
   const from = (globalThis as any).Netlify?.env?.get?.("RESEND_FROM")
     || process.env.RESEND_FROM
-    || "Rodrigo DeOliveira <leads@rodmortgage.net>";
+    || "Rodrigo L. Deoliveira (Rize Mortgage) <leads@rodmortgage.net>";
 
   const rodEmail = (globalThis as any).Netlify?.env?.get?.("ROD_EMAIL")
     || process.env.ROD_EMAIL
-    || "rodrigo@ideallending.net";
+    || "rodrigo@rizemtg.com";
 
   const realtorName = String(payload["Realtor Name"] || "your client");
   const buyerName = `${payload.firstName || ""} ${payload.lastName || ""}`.trim()
@@ -294,9 +294,9 @@ function buildEmailHtml(
     </table>
   </div>
   <div style="padding:14px 24px;background:#f6f8fb;font-size:11px;color:#6b7280;line-height:1.5;border-top:1px solid #e5e7eb;">
-    This lead was submitted with the consumer's express consent for ${escapeHtml(realtorName)} and Rodrigo DeOliveira / Ideal Lending LLC to follow up.
+    This lead was submitted with the consumer's express consent for ${escapeHtml(realtorName)} and Rodrigo L. Deoliveira / Rize Mortgage to follow up.
     You and Rodrigo are independent service providers; the consumer has chosen to engage both.
-    Equal Housing Lender. NMLS #2471779 (Ideal Lending) · NMLS #1435896 (Rodrigo DeOliveira).
+    Equal Housing Lender. NMLS #1604663 (Standard Mortgage Capital LLC dba Rize Mortgage) · NMLS #1435896 (Rodrigo L. Deoliveira).
   </div>
 </div>
 </body></html>`;

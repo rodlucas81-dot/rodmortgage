@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Find the Home You Can Afford — Rodrigo DeOliveira Mortgage</title>
-<meta name="description" content="See how much home you can afford and get pre-qualified with Rodrigo DeOliveira at Ideal Lending. Bilingual service in English & Portuguese." />
+<title>Find the Home You Can Afford — Rodrigo L. Deoliveira Mortgage</title>
+<meta name="description" content="See how much home you can afford and get pre-qualified with Rodrigo L. Deoliveira at Rize Mortgage. Bilingual service in English & Portuguese." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-<!-- UserWay accessibility widget (matches ideallending.net account) — ADA/WCAG 2.1 conformance assist -->
-<script src="https://cdn.userway.org/widget.js" data-account="IUuYGCGogX"></script>
+<!-- Rize Mortgage in-house ADA widget — ADA/WCAG 2.1 conformance assist -->
+<script src="https://ambitious-cliff-0d2c37f10.1.azurestaticapps.net/rize-ada-widget.js" data-position="bottom-left" defer></script>
 
 <!-- ========================================================================
      CONFIG — edit values here to update pricing, branding, integrations
@@ -22,18 +22,20 @@ const CONFIG = {
   termYears: 30,
   dtiCeiling: 0.50,
 
-  // Branding & contact
-  loName: "Rodrigo DeOliveira",
-  loTitle: "Lic. Mortgage Loan Originator",
+  // Branding & contact — Rize Mortgage (Finstars Lending Team)
+  loName: "Rodrigo L. Deoliveira",
+  loTitle: "Loan Officer Team Lead · Finstars Lending Team",
   loPhone: "(561) 613-1935",
-  loEmail: "rodrigo@ideallending.net",
-  nmls: "NMLS ID 1435896",
-  company: "Ideal Lending LLC",
-  companyNmls: "NMLS #2471779",
-  states: "CT, FL, MA",
-  loWebsite: "https://www.ideallending.net/rodrigo/",
+  loEmail: "rodrigo@rizemtg.com",
+  nmls: "NMLS #1435896",
+  company: "Standard Mortgage Capital LLC dba Rize Mortgage",
+  companyNmls: "NMLS #1604663",
+  companyAddress: "53 NW 100th Ave, Plantation, FL 33324",
+  states: "multiple states — see NMLS Consumer Access",
+  loWebsite: "https://rizemtg.com/",
+  // TODO: Rod to provide new Rize headshot URL. Keeping the Ideal URL until then.
   loHeadshot: "https://www.ideallending.net/wp-content/uploads/rodrigo-2024-350.png",
-  companyLogo: "https://www.ideallending.net/wp-content/uploads/131x38-ideal-lending-logo-new.png",
+  companyLogo: "https://rizemtg.com/img/logo.png",
 
   // Integrations
   // formspreeEndpoint kept here as a fallback / reference; the form now posts to the
@@ -153,7 +155,7 @@ const i18n = {
     aprNote: "*APR (Annual Percentage Rate) includes a $1,195 application fee, a $595 processing fee, 15 days of prepaid interest, no discount points, mortgage insurance for as long as it applies, and for FHA the financed 1.75% upfront premium. Rates follow a daily market index adjusted for credit score and down payment; they change daily and may not be available at application, lock or closing. Your actual rate and APR depend on your final loan terms, credit profile and closing costs. This is an estimate only, not a commitment to lend.",
     ratesAsOf: "market rates as of {0}",
     ratesFallbackAsOf: "market estimate from {0}",
-    consentText: "By submitting, I consent to receive phone calls, text messages (SMS), and emails from Rodrigo DeOliveira and Ideal Lending LLC at the contact info I provide, including via automated technology and pre-recorded messages, regarding my mortgage inquiry. Consent is not required as a condition of service. Message and data rates may apply. Reply STOP to opt out.",
+    consentText: "By submitting, I consent to receive phone calls, text messages (SMS), and emails from Rodrigo L. Deoliveira and Standard Mortgage Capital LLC dba Rize Mortgage at the contact info I provide, including via automated technology and pre-recorded messages, regarding my mortgage inquiry. Consent is not required as a condition of service. Message and data rates may apply. Reply STOP to opt out.",
     consentRealtorAddendum: " I also consent to share my contact information with {realtor} of {brokerage} so they can follow up about my home search.",
     consentErr: "Please consent to be contacted to continue.",
 
@@ -161,9 +163,9 @@ const i18n = {
     partnerBadgeLabel: "In partnership with",
     partnerLicenseLabel: "License",
     antiTyingTitle: "Your choice, your right",
-    antiTyingNotice: "You are not required to use Rodrigo DeOliveira / Ideal Lending for your mortgage even if you choose {realtor} to represent you in your home purchase. You may shop for your loan and your real estate agent independently. {realtor} and Rodrigo are independent service providers.",
+    antiTyingNotice: "You are not required to use Rodrigo L. Deoliveira / Rize Mortgage for your mortgage even if you choose {realtor} to represent you in your home purchase. You may shop for your loan and your real estate agent independently. {realtor} and Rodrigo are independent service providers.",
     privacyHeader: "Your privacy",
-    privacyNotice: "Your information is used only to respond to your mortgage inquiry. Data is transmitted via Formspree (our form processor) to Rodrigo DeOliveira at Ideal Lending LLC. We do not sell your information.",
+    privacyNotice: "Your information is used only to respond to your mortgage inquiry. Data is transmitted via Formspree (our form processor) to Rodrigo L. Deoliveira at Standard Mortgage Capital LLC dba Rize Mortgage. We do not sell your information.",
     privacyPolicyLink: "Privacy Policy",
     accessibilityLink: "Accessibility Statement",
     portuguese: "Português",
@@ -311,7 +313,7 @@ const i18n = {
     legalP1: "This calculator provides estimates based on information you enter and assumptions about current market conditions. Results are not a commitment to lend, a loan approval, an offer to lend, or a guaranteed rate or term.",
     legalP2: "Actual loan terms, rates, monthly payments, and approval depend on factors not addressed by this calculator, including full income and asset documentation, credit report review, employment verification, debt-to-income analysis, property appraisal, title review, automated underwriting findings, lender overlays, and program-specific eligibility requirements. Application required.",
     legalP3: "Interest rates, loan terms, fees, and program availability are subject to change without notice. Rates and mortgage insurance factors shown are estimates and may not reflect your final rate. Your actual Annual Percentage Rate (APR) will include lender fees and points and may be higher than the interest rate displayed.",
-    legalP4: "Ideal Lending LLC, NMLS 2471779 is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA) or any government agency or government-sponsored entity and this offer is not being made by an agency of the government. Ideal Lending LLC is a Licensed Mortgage Lender Servicer, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC only lends in CO, CT, FL, GA, MA, NJ, TN, TX. Reverse mortgages are not available in the state of MA.",
+    legalP4: "Standard Mortgage Capital LLC dba Rize Mortgage, NMLS #1604663, is not affiliated with or acting on behalf of or at the direction of the Federal Housing Administration (FHA), the Department of Veterans Affairs (VA), the U.S. Department of Agriculture (USDA), or any other government agency or government-sponsored entity, and this offer is not being made by an agency of the government. Standard Mortgage Capital LLC dba Rize Mortgage is licensed to originate residential mortgage loans in multiple states. To verify state authorization for your location, see nmlsconsumeraccess.org/EntityDetails.aspx/COMPANY/1604663. Rodrigo L. Deoliveira is a licensed Mortgage Loan Originator, NMLS #1435896, sponsored by Standard Mortgage Capital LLC dba Rize Mortgage.",
     legalP5: "Equal Opportunity Employer; Equal Opportunity Lender. This is not an offer for extension of credit or commitment to lend. Information and pricing are subject to change at any time and without notice.",
     eho: "Equal Housing Lender",
     nmlsConsumerAccess: "NMLS Consumer Access",
@@ -333,7 +335,7 @@ const i18n = {
     aprNote: "*O APR (Taxa Percentual Anual) inclui taxa de aplicação de $1,195, taxa de processamento de $595, 15 dias de juros pré-pagos, nenhum ponto de desconto, seguro hipotecário enquanto se aplicar e, no FHA, o prêmio inicial de 1,75% financiado. As taxas seguem um índice diário de mercado ajustado ao score e à entrada; mudam diariamente e podem não estar disponíveis na aplicação, no travamento (lock) ou no fechamento. Sua taxa e APR reais dependem dos termos finais, do perfil de crédito e dos custos de fechamento. Esta é apenas uma estimativa, não um compromisso de empréstimo.",
     ratesAsOf: "taxas de mercado de {0}",
     ratesFallbackAsOf: "estimativa de mercado de {0}",
-    consentText: "Ao enviar, eu autorizo receber ligações, mensagens de texto (SMS) e e-mails de Rodrigo DeOliveira e Ideal Lending LLC nos contatos fornecidos, incluindo por tecnologia automatizada e mensagens pré-gravadas, sobre minha consulta hipotecária. O consentimento não é condição para o serviço. Tarifas de mensagem e dados podem ser aplicadas. Responda STOP para cancelar.",
+    consentText: "Ao enviar, eu autorizo receber ligações, mensagens de texto (SMS) e e-mails de Rodrigo L. Deoliveira e Standard Mortgage Capital LLC dba Rize Mortgage nos contatos fornecidos, incluindo por tecnologia automatizada e mensagens pré-gravadas, sobre minha consulta hipotecária. O consentimento não é condição para o serviço. Tarifas de mensagem e dados podem ser aplicadas. Responda STOP para cancelar.",
     consentRealtorAddendum: " Também autorizo compartilhar minhas informações de contato com {realtor} da {brokerage} para que possam dar continuidade à minha busca por imóvel.",
     consentErr: "Por favor autorize o contato para continuar.",
 
@@ -341,9 +343,9 @@ const i18n = {
     partnerBadgeLabel: "Em parceria com",
     partnerLicenseLabel: "Licença",
     antiTyingTitle: "Sua escolha, seu direito",
-    antiTyingNotice: "Você não é obrigado a usar Rodrigo DeOliveira / Ideal Lending para seu financiamento mesmo que escolha {realtor} para te representar na compra. Você pode escolher seu empréstimo e seu corretor de imóveis de forma independente. {realtor} e Rodrigo são prestadores de serviços independentes.",
+    antiTyingNotice: "Você não é obrigado a usar Rodrigo L. Deoliveira / Rize Mortgage para seu financiamento mesmo que escolha {realtor} para te representar na compra. Você pode escolher seu empréstimo e seu corretor de imóveis de forma independente. {realtor} e Rodrigo são prestadores de serviços independentes.",
     privacyHeader: "Sua privacidade",
-    privacyNotice: "Suas informações são usadas apenas para responder à sua consulta hipotecária. Os dados são transmitidos via Formspree (nosso processador de formulários) para Rodrigo DeOliveira na Ideal Lending LLC. Não vendemos suas informações.",
+    privacyNotice: "Suas informações são usadas apenas para responder à sua consulta hipotecária. Os dados são transmitidos via Formspree (nosso processador de formulários) para Rodrigo L. Deoliveira na Standard Mortgage Capital LLC dba Rize Mortgage. Não vendemos suas informações.",
     privacyPolicyLink: "Política de Privacidade",
     accessibilityLink: "Declaração de Acessibilidade",
     portuguese: "Português",
@@ -486,7 +488,7 @@ const i18n = {
     legalP1: "Esta calculadora fornece estimativas baseadas nas informações que você inserir e em premissas sobre as condições de mercado atuais. Os resultados não constituem compromisso de empréstimo, aprovação de empréstimo, oferta de empréstimo ou taxa garantida.",
     legalP2: "Termos reais do empréstimo, taxas, pagamentos mensais e aprovação dependem de fatores não tratados por esta calculadora, incluindo documentação completa de renda e ativos, análise de crédito, verificação de emprego, análise de DTI, avaliação do imóvel, análise de título, conclusões da subscrição automatizada, sobreposições do credor e requisitos de elegibilidade específicos do programa. Aplicação obrigatória.",
     legalP3: "Taxas de juros, termos do empréstimo, taxas e disponibilidade de programas estão sujeitos a alterações sem aviso prévio. Taxas e fatores de seguro hipotecário mostrados são estimativas e podem não refletir sua taxa final. Sua Taxa Percentual Anual real (APR) incluirá taxas e pontos do credor e pode ser maior que a taxa de juros exibida.",
-    legalP4: "Ideal Lending LLC, NMLS 2471779 não é afiliada nem age em nome ou sob direção da Federal Housing Administration (FHA) ou qualquer agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Ideal Lending LLC é um Mortgage Lender Servicer Licenciado, FL MLD2414; Massachusetts Mortgage Lender & Mortgage Broker License MC2471779; Connecticut Mortgage Lender License ML-2471779; Ideal Lending LLC empresta apenas em CO, CT, FL, GA, MA, NJ, TN, TX. Hipotecas reversas não estão disponíveis no estado de MA.",
+    legalP4: "Standard Mortgage Capital LLC dba Rize Mortgage, NMLS #1604663, não é afiliada nem age em nome ou sob direção da Federal Housing Administration (FHA), do Department of Veterans Affairs (VA), do U.S. Department of Agriculture (USDA), ou de qualquer outra agência governamental ou entidade patrocinada pelo governo, e esta oferta não está sendo feita por uma agência do governo. Standard Mortgage Capital LLC dba Rize Mortgage é licenciada para originar empréstimos hipotecários residenciais em vários estados. Para verificar a autorização estadual para seu local, consulte nmlsconsumeraccess.org/EntityDetails.aspx/COMPANY/1604663. Rodrigo L. Deoliveira é Mortgage Loan Originator licenciado, NMLS #1435896, patrocinado por Standard Mortgage Capital LLC dba Rize Mortgage.",
     legalP5: "Empregador de Igualdade de Oportunidades; Credor de Igualdade de Oportunidades. Isto não é uma oferta de extensão de crédito nem compromisso de empréstimo. Informações e preços estão sujeitos a alterações a qualquer momento e sem aviso prévio.",
     eho: "Equal Housing Lender",
     nmlsConsumerAccess: "NMLS Consumer Access",
@@ -1088,11 +1090,11 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
 
 <body>
   <div class="topbar">
-    <a href="https://www.ideallending.net/rodrigo/" class="brand">
+    <a href="https://rizemtg.com/" class="brand">
       <div class="brand-icon">RD</div>
       <div class="brand-text">
-        <div class="brand-name">Rodrigo <span class="gold">DeOliveira</span></div>
-        <div class="brand-sub">Lic. Mortgage Loan Originator | NMLS ID 1435896</div>
+        <div class="brand-name">Rodrigo L. <span class="gold">Deoliveira</span></div>
+        <div class="brand-sub">Loan Officer Team Lead · Finstars · NMLS #1435896</div>
       </div>
     </a>
     <div class="topbar-right">
@@ -1103,8 +1105,8 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
       <div class="lo-tag">
         <img id="topHeadshot" src="" alt="" />
         <div class="lo-tag-text">
-          <strong>Rodrigo DeOliveira</strong>
-          <span>NMLS #1435896</span>
+          <strong>Rodrigo L. Deoliveira</strong>
+          <span>NMLS #1435896 · Rize Mortgage</span>
         </div>
       </div>
     </div>
@@ -1396,7 +1398,7 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
         <div class="foot-meta" id="footerMeta"></div>
       </div>
       <div class="foot-logo-block">
-        <img id="footerLogo" src="" alt="Ideal Lending LLC" />
+        <img id="footerLogo" src="" alt="Rize Mortgage" />
         <div class="foot-co-nmls" id="footerCompanyNmls"></div>
       </div>
       <div class="eho-row">
@@ -1423,15 +1425,13 @@ footer { background: var(--dark2); border-top: 1px solid var(--border); padding:
         <p data-i18n="legalP3"></p>
         <p data-i18n="legalP4"></p>
         <p data-i18n="legalP5"></p>
-        <p>For state-specific license information, including Connecticut and Massachusetts, please verify our credentials via NMLS Consumer Access using NMLS #2471779 (company) or NMLS #1435896 (Rodrigo DeOliveira).</p>
+        <p>For state-specific license information, please verify our credentials via NMLS Consumer Access using NMLS #1604663 (Standard Mortgage Capital LLC dba Rize Mortgage) or NMLS #1435896 (Rodrigo L. Deoliveira).</p>
         <p>
           <a data-i18n='privacyPolicyLink' href='/privacy_policy'>Privacy Policy</a>
           &nbsp;·&nbsp;
-          <a href="https://www.ideallending.net/accessibility/" target="_blank" rel="noopener" data-i18n="accessibilityLink">Accessibility Statement</a>
-          &nbsp;·&nbsp;
-          <a href="https://www.nmlsconsumeraccess.org/EntityDetails.aspx/COMPANY/2471779" target="_blank" rel="noopener" data-i18n="nmlsConsumerAccess"></a>
+          <a href="https://www.nmlsconsumeraccess.org/EntityDetails.aspx/COMPANY/1604663" target="_blank" rel="noopener" data-i18n="nmlsConsumerAccess"></a>
         </p>
-        <p style="margin-top:14px; opacity:0.6;">© <span id="footerYear"></span> Ideal Lending LLC. 5589 Okeechobee Blvd STE 101, West Palm Beach, FL 33417.</p>
+        <p style="margin-top:14px; opacity:0.6;">© <span id="footerYear"></span> Standard Mortgage Capital LLC dba Rize Mortgage. 53 NW 100th Ave, Plantation, FL 33324.</p>
       </div>
     </div>
   </footer>
