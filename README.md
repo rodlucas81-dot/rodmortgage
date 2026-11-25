@@ -24,7 +24,7 @@ Function: `netlify/functions/lead-router.mts` — fans out leads to Formspree + 
 
 ## Branding (Nov 2026)
 
-- **Loan Officer:** Rodrigo L. Deoliveira — Loan Officer Team Lead · Finstars Lending Team
+- **Loan Officer:** Rodrigo L. Deoliveira — Loan Officer Team Lead · Rize Mortgage
 - **Individual NMLS:** #1435896
 - **Company:** Standard Mortgage Capital LLC dba Rize Mortgage
 - **Company NMLS:** #1604663
